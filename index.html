@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DnD Welt-Glossar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <button class="icon-button menu-toggle" id="menu-toggle" aria-label="Navigation öffnen">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+      <div class="title-block">
+        <h1 class="app-title">Welt-Glossar</h1>
+        <p class="app-subtitle">DnD Kampagne</p>
+      </div>
+      <button class="icon-button theme-toggle" id="theme-toggle" aria-label="Theme umschalten">
+        <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+        <span id="theme-toggle-label" class="theme-toggle-label">Dunkel</span>
+      </button>
+    </header>
+
+    <div class="app-layout">
+      <nav class="sidebar" id="sidebar" aria-label="Kategorien">
+        <div class="sidebar-inner">
+          <div class="sidebar-header">
+            <span class="sidebar-title">Kategorien</span>
+          </div>
+          <ul class="category-list" id="category-list">
+            <!-- Kategorien werden von app.js eingefügt -->
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+      <main class="main">
+        <section class="toolbar">
+          <div class="search-group">
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Suche nach Namen, Tags oder Beschreibung..."
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Filter-Zeile: Sortierung + Tag-Filter -->
+          <div class="toolbar-filters">
+            <label class="toolbar-filters-label" for="sort-select">Sortierung:</label>
+            <select id="sort-select" class="toolbar-select">
+              <option value="default">Standard (Eintragsreihenfolge)</option>
+              <option value="name-asc">Name A–Z</option>
+              <option value="name-desc">Name Z–A</option>
+              <option value="session-asc">Session (aufsteigend)</option>
+              <option value="updated-desc">Zuletzt aktualisiert (neu → alt)</option>
+            </select>
+
+            <span class="toolbar-filters-label">Tags:</span>
+            <div class="tag-filter" id="tag-filter">
+              <!-- Tag-Filter-Chips oder Filter-Button werden von app.js eingefügt -->
+            </div>
+          </div>
+
+          <div class="toolbar-meta" id="toolbar-meta"></div>
+        </section>
+
+        <section class="content">
+          <div class="entry-list" id="entry-list">
+            <!-- Eintragsliste -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Overlay-Detailansicht (Extra-Fenster) -->
+    <div class="detail-overlay" id="detail-overlay" aria-hidden="true">
+      <div class="detail-backdrop" id="detail-backdrop"></div>
+      <div
+        class="detail-panel"
+        id="detail-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="detail-overlay-title"
+      >
+        <button class="icon-button detail-back-button" id="detail-back-button">
+          ← Zurück
+        </button>
+        <div id="detail-content">
+          <!-- Detail-Inhalt wird dynamisch von app.js gerendert -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag-Filter-Overlay (für viele Tags, z.B. im Tab "Alle") -->
+    <div class="tag-overlay" id="tag-overlay" aria-hidden="true">
+      <div class="tag-overlay-backdrop" id="tag-overlay-backdrop"></div>
+      <div
+        class="tag-overlay-panel"
+        id="tag-overlay-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tag-overlay-title"
+      >
+        <header class="tag-overlay-header">
+          <h2 id="tag-overlay-title">Tag-Filter</h2>
+          <button
+            class="icon-button tag-overlay-close"
+            id="tag-overlay-close"
+            aria-label="Tag-Filter schließen"
+          >
+            ✕
+          </button>
+        </header>
+        <div class="tag-overlay-body">
+          <p class="tag-overlay-hint">
+            Wähle einen Tag, um die Liste zu filtern. „Alle“ entfernt den Tag-Filter.
+          </p>
+          <div class="tag-overlay-chips" id="tag-overlay-chips">
+            <!-- Globale Tag-Chips werden von app.js eingefügt -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
