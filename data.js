@@ -88,7 +88,11 @@ window.entries = [
     "relatedIds": [
       "faction-stadtwache-grauwasser",
       "faction-diebesgilde-grauwasser"
-    ]
+    ],
+    "cityId": "",
+    "factionId": "",
+    "visible": true,
+    "isNew": true
   },
   {
     "id": "city-lichtfels",
@@ -107,7 +111,11 @@ window.entries = [
     "lastUpdated": "2025-12-01",
     "relatedIds": [
       "faction-magusakademie-lichtfels"
-    ]
+    ],
+    "cityId": "",
+    "factionId": "",
+    "visible": false,
+    "isNew": false
   },
   {
     "id": "city-marktfleck-thal",
@@ -583,5 +591,22 @@ window.entries = [
     "summary": "Kurze Teleportation zwischen zwei Schatten.",
     "body": "Wirkungsvorschlag:\n- Der Held kann sich zwischen zwei Schatten in kurzer Distanz bewegen.\n- Zählt als Bonusaktion, solange beide Schatten sichtbar sind.\n- Ermöglicht kreative Positionswechsel im Kampf.",
     "lastUpdated": "2025-12-01"
+  },
+  {
+    "id": "map-campari-region",
+    "categoryId": "cities",
+    "title": "Karte der Region Campari",
+    "tags": [
+      "Karte",
+      "Campari",
+      "Übersicht"
+    ],
+    "region": "Campari",
+    "summary": "Übersichtskarte der Region Campari mit wichtigen Orten und Städten.",
+    "body": "Diese Karte zeigt die bekannte Region Campari mit ihren wichtigsten Orten,\nStädten und Landmarken: von Goobing über Festung Glutfels bis hin zur Helios\nZitadelle. Sie eignet sich hervorragend, um Spieler*innen einen Überblick über\ndie aktuelle Kampagnenregion zu geben oder Reisewege zu planen.",
+    "lastUpdated": "2025-12-01",
+    "images": [
+      "images/Campari Regional.jpg"
+    ]
   }
 ];
