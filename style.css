@@ -183,27 +183,27 @@ select {
   background: var(--button-bg-hover);
 }
 
-.theme-toggle {
+/* Einstellungs-Button (rechts im Header) */
+.settings-toggle {
   margin-left: auto;
-  gap: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
-.theme-toggle-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-/* Hamburger Icon */
+/* Hamburger Icon / Kategorien-Button (floating) */
 
 .menu-toggle {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 3rem;
+  height: 3rem;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 35;
+  padding: 0.45rem;
 }
 
 .menu-bar {
   display: block;
-  width: 1.2rem;
+  width: 1.3rem;
   height: 2px;
   border-radius: 999px;
   background: #e5e7eb;
@@ -229,6 +229,18 @@ select {
   transform: translateY(-6px) rotate(-45deg);
 }
 
+/* Handedness – Position des Buttons */
+
+.app.hand-right .menu-toggle {
+  right: 1.5rem;
+  left: auto;
+}
+
+.app.hand-left .menu-toggle {
+  left: 1.5rem;
+  right: auto;
+}
+
 /* Main layout */
 
 .app-layout {
@@ -251,6 +263,21 @@ select {
   background: var(--bg-sidebar);
   border-right: 1px solid var(--sidebar-border);
   box-shadow: none;
+}
+
+/* Handedness – Sidebar-Seite (mobil) */
+.app.hand-right .sidebar {
+  inset: 0 auto 0 0;
+  transform: translateX(-100%);
+  border-right: 1px solid var(--sidebar-border);
+  border-left: none;
+}
+
+.app.hand-left .sidebar {
+  inset: 0 0 0 auto;
+  transform: translateX(100%);
+  border-left: 1px solid var(--sidebar-border);
+  border-right: none;
 }
 
 .sidebar-inner {
@@ -365,15 +392,15 @@ select {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0.75rem 0.75rem 1rem;
+  padding: 1.25rem 0.75rem 1rem; /* mehr Abstand zum Header */
   background: var(--bg-main);
 }
 
 .toolbar {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
 }
 
 .search-group {
@@ -698,6 +725,50 @@ select {
   color: var(--text-main);
 }
 
+/* Bilder im Detailbereich */
+
+.entry-detail-images {
+  margin-top: 0.9rem;
+}
+
+.entry-detail-images-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-subtle);
+}
+
+.entry-detail-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+
+.entry-detail-image-card {
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(4, 26, 23, 0.96);
+  border: 1px solid rgba(31, 165, 139, 0.4);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-detail-image-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.entry-detail-image-card figcaption {
+  padding: 0.35rem 0.45rem;
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  border-top: 1px solid rgba(15, 23, 42, 0.6);
+}
+
 /* Related links */
 
 .entry-detail-related {
@@ -869,6 +940,128 @@ select {
   gap: 0.35rem;
 }
 
+/* Einstellungs-Overlay */
+
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.settings-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.settings-panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background:
+    radial-gradient(circle at top left, rgba(31, 165, 139, 0.22), transparent 55%),
+    var(--bg-main);
+  border-radius: 20px;
+  border: 1px solid rgba(31, 165, 139, 0.6);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.7);
+  padding: 0.9rem 1rem 1.1rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.settings-header {
+  margin-bottom: 0.75rem;
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.settings-section {
+  margin-bottom: 0.85rem;
+}
+
+.settings-section h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.settings-option input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+.settings-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Buttons im Einstellungs-Overlay */
+
+.btn-primary,
+.btn-secondary {
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0f172a;
+  border-color: var(--accent-border);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: #22c1a0;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-main);
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
+.btn-secondary:hover {
+  background: rgba(15, 23, 42, 0.4);
+}
+
 /* Platzhalter / leere Zustände */
 
 .placeholder {
@@ -892,7 +1085,13 @@ select {
 
 @media (min-width: 900px) {
   .app-layout {
-    padding-left: 260px; /* Platz für Sidebar */
+    padding-left: 260px; /* Standard: Sidebar links (Rechtshänder) */
+    padding-right: 0;
+  }
+
+  .app.hand-left .app-layout {
+    padding-left: 0;
+    padding-right: 260px; /* Sidebar auf der rechten Seite */
   }
 
   .sidebar {
@@ -902,12 +1101,22 @@ select {
     box-shadow: none !important;
   }
 
+  .app.hand-right .sidebar {
+    border-right: 1px solid var(--sidebar-border);
+    border-left: none;
+  }
+
+  .app.hand-left .sidebar {
+    border-left: 1px solid var(--sidebar-border);
+    border-right: none;
+  }
+
   .sidebar-backdrop {
     display: none;
   }
 
   .main {
-    padding: 1rem 1rem 1.2rem;
+    padding: 1.5rem 1rem 1.2rem; /* oben etwas mehr Platz */
   }
 
   .toolbar {
@@ -965,4 +1174,198 @@ select {
   .entry-detail-title {
     font-size: 1rem;
   }
+}
+/* ---------------------------------------
+   "Neu"-Badges in Karten & Detailansicht
+--------------------------------------- */
+
+.entry-card-badge,
+.entry-detail-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.entry-card-badge-new,
+.entry-detail-badge-new {
+  background: var(--badge-new-bg, #f97316);
+  color: var(--badge-new-fg, #111827);
+}
+
+/* etwas Abstand im Detailtitel */
+
+.entry-detail-title .entry-detail-badge {
+  vertical-align: middle;
+}
+
+/* ---------------------------------------
+   Bilder im Eintrag (Ausschnitt)
+--------------------------------------- */
+
+.entry-detail-images {
+  margin-top: 1.5rem;
+}
+
+.entry-detail-images-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  opacity: 0.9;
+}
+
+.entry-detail-images-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .entry-detail-images-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.entry-detail-image-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle, #374151);
+  background: var(--surface-elevated, #111827);
+  cursor: zoom-in;
+}
+
+.entry-detail-image-card img {
+  display: block;
+  width: 100%;
+  max-height: clamp(220px, 35vh, 340px);
+  object-fit: cover;
+}
+
+.entry-detail-image-card figcaption {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  border-top: 1px solid var(--border-subtle, #374151);
+}
+
+/* ---------------------------------------
+   Tag-Filter Button & Info
+--------------------------------------- */
+
+.tag-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle, #374151);
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.tag-filter-toggle span[aria-hidden="true"] {
+  font-size: 0.9rem;
+}
+
+.tag-filter-active-info {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* ---------------------------------------
+   Bild-Viewer (Lightbox)
+--------------------------------------- */
+
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-viewer.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-viewer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.image-viewer-panel {
+  position: relative;
+  width: 100%;
+  max-width: min(96vw, 1200px);
+  max-height: min(96vh, 800px);
+  margin: 0 1rem;
+  background: var(--surface-elevated, #0b1120);
+  border-radius: 1rem;
+  border: 1px solid var(--border-subtle, #1f2937);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--border-subtle, #1f2937);
+}
+
+.image-viewer-toolbar-spacer {
+  flex: 1;
+}
+
+.image-viewer-inner {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.18), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.12), transparent 55%),
+    #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.image-viewer-inner:active {
+  cursor: grabbing;
+}
+
+.image-viewer-image {
+  max-width: none;
+  max-height: none;
+  will-change: transform;
+  /* transform wird komplett von JS gesetzt */
+}
+
+/* Icon-Buttons im Viewer erben dein bestehendes .icon-button Styling;
+   hier nur etwas Abstand/Größe sicherstellen */
+
+.image-viewer .icon-button {
+  min-width: 2rem;
+  min-height: 2rem;
+  font-size: 0.9rem;
 }
