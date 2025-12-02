@@ -1,8 +1,14 @@
 (function () {
-  const categories = Array.isArray(window.categories) ? window.categories.slice() : [];
-  const entries = Array.isArray(window.entries) ? window.entries.slice() : [];
+  const categories = Array.isArray(window.categories)
+    ? window.categories.slice()
+    : [];
+  const entries = Array.isArray(window.entries)
+    ? window.entries.slice()
+    : [];
 
   const THEME_STORAGE_KEY = "dnd-glossar-theme";
+  const HAND_STORAGE_KEY = "dnd-glossar-handedness";
+  const NEW_SEEN_STORAGE_KEY = "dnd-glossar-new-seen";
 
   const state = {
     activeCategoryId: "all",
@@ -10,8 +16,10 @@
     selectedEntryId: entries.length ? entries[0].id : null,
     sidebarOpen: false,
     theme: "dark",
-    sortBy: "default",      // Sortierung
-    activeTag: null         // Tag-Filter
+    sortBy: "default", // Sortierung
+    activeTag: null, // Tag-Filter
+    handedness: "right", // Links-/Rechtshänder
+    newSeenMap: {}, // id -> lastUpdated, für „Neu“ bereits gesehen
   };
 
   const dom = {
@@ -20,11 +28,24 @@
     entryList: document.getElementById("entry-list"),
     searchInput: document.getElementById("search-input"),
     toolbarMeta: document.getElementById("toolbar-meta"),
+
     menuToggle: document.getElementById("menu-toggle"),
     sidebarBackdrop: document.getElementById("sidebar-backdrop"),
-    themeToggle: document.getElementById("theme-toggle"),
-    themeToggleIcon: document.getElementById("theme-toggle-icon"),
-    themeToggleLabel: document.getElementById("theme-toggle-label"),
+
+    // Einstellungs-Overlay
+    settingsToggle: document.getElementById("settings-toggle"),
+    settingsOverlay: document.getElementById("settings-overlay"),
+    settingsBackdrop: document.getElementById("settings-backdrop"),
+    settingsPanel: document.getElementById("settings-panel"),
+    settingsSave: document.getElementById("settings-save"),
+    settingsCancel: document.getElementById("settings-cancel"),
+    settingsThemeRadios: document.querySelectorAll(
+      'input[name="settings-theme"]'
+    ),
+    settingsHandRadios: document.querySelectorAll(
+      'input[name="settings-hand"]'
+    ),
+
     // Filter & Detail-Overlay
     sortSelect: document.getElementById("sort-select"),
     tagFilter: document.getElementById("tag-filter"),
@@ -38,7 +59,28 @@
     tagOverlayBackdrop: document.getElementById("tag-overlay-backdrop"),
     tagOverlayPanel: document.getElementById("tag-overlay-panel"),
     tagOverlayClose: document.getElementById("tag-overlay-close"),
-    tagOverlayChips: document.getElementById("tag-overlay-chips")
+    tagOverlayChips: document.getElementById("tag-overlay-chips"),
+  };
+
+  // einfacher Lightbox-Viewer für Bilder
+  const imageViewer = {
+    root: null,
+    backdrop: null,
+    panel: null,
+    inner: null,
+    img: null,
+    closeBtn: null,
+    zoomInBtn: null,
+    zoomOutBtn: null,
+    resetBtn: null,
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+    isDragging: false,
+    dragStartX: 0,
+    dragStartY: 0,
+    imgStartX: 0,
+    imgStartY: 0,
   };
 
   const allCategories = [
@@ -51,9 +93,15 @@
     return allCategories.find((c) => c.id === id) || null;
   }
 
+  function isEntryVisible(entry) {
+    // fehlendes visible -> sichtbar; visible === false -> versteckt
+    return !!entry && entry.visible !== false;
+  }
+
   function findEntryById(id) {
     if (!id) return null;
-    return entries.find((e) => e.id === id) || null;
+    const e = entries.find((entry) => entry.id === id) || null;
+    return isEntryVisible(e) ? e : null;
   }
 
   function escapeHtml(value) {
@@ -65,7 +113,23 @@
       .replace(/'/g, "&#039;");
   }
 
-  // --- Theme Handling ---
+  // Bild-URL aufbauen: Standard ist "images/<dateiname>", aber Pfade/URLs erlaubt
+  function buildImageUrl(raw) {
+    const value = String(raw || "").trim();
+    if (!value) return "";
+    // absolute oder data-URL
+    if (/^(https?:)?\/\//.test(value) || value.startsWith("data:")) {
+      return value;
+    }
+    // eigener Pfad im String
+    if (value.includes("/")) {
+      return value;
+    }
+    // nur Dateiname → Standard images-Ordner
+    return "images/" + value;
+  }
+
+  // --- Theme & Handedness Handling ---
 
   function detectInitialTheme() {
     try {
@@ -87,22 +151,22 @@
     return "dark";
   }
 
-  function updateThemeToggleUi(theme) {
-    if (!dom.themeToggleIcon || !dom.themeToggleLabel) return;
-    if (theme === "dark") {
-      dom.themeToggleIcon.textContent = "🌙";
-      dom.themeToggleLabel.textContent = "Dunkel";
-    } else {
-      dom.themeToggleIcon.textContent = "☀️";
-      dom.themeToggleLabel.textContent = "Hell";
+  function detectInitialHandedness() {
+    try {
+      const stored = window.localStorage.getItem(HAND_STORAGE_KEY);
+      if (stored === "left" || stored === "right") {
+        return stored;
+      }
+    } catch {
+      // Ignorieren, wenn localStorage nicht verfügbar ist
     }
+    return "right"; // Standard: Rechtshänder
   }
 
   function applyTheme(theme) {
     state.theme = theme === "light" ? "light" : "dark";
     const root = document.documentElement;
     root.setAttribute("data-theme", state.theme);
-    updateThemeToggleUi(state.theme);
 
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, state.theme);
@@ -111,9 +175,127 @@
     }
   }
 
-  function onThemeToggleClick() {
-    const next = state.theme === "dark" ? "light" : "dark";
-    applyTheme(next);
+  function applyHandedness(hand) {
+    const value = hand === "left" ? "left" : "right";
+    state.handedness = value;
+
+    if (!dom.app) return;
+
+    dom.app.classList.toggle("hand-left", value === "left");
+    dom.app.classList.toggle("hand-right", value === "right");
+
+    try {
+      window.localStorage.setItem(HAND_STORAGE_KEY, value);
+    } catch {
+      // Ignorieren, wenn localStorage nicht verfügbar ist
+    }
+  }
+
+  // --- "Neu"-Status Handling ---
+
+  function loadNewSeenMap() {
+    try {
+      const raw = window.localStorage.getItem(NEW_SEEN_STORAGE_KEY);
+      if (!raw) {
+        state.newSeenMap = {};
+        return;
+      }
+      const obj = JSON.parse(raw);
+      if (obj && typeof obj === "object") {
+        state.newSeenMap = obj;
+      } else {
+        state.newSeenMap = {};
+      }
+    } catch {
+      state.newSeenMap = {};
+    }
+  }
+
+  function saveNewSeenMap() {
+    try {
+      window.localStorage.setItem(
+        NEW_SEEN_STORAGE_KEY,
+        JSON.stringify(state.newSeenMap || {})
+      );
+    } catch {
+      // ignorieren
+    }
+  }
+
+  // soll dieser Eintrag aktuell als "Neu" angezeigt werden?
+  function isEntryNew(entry) {
+    if (!entry || !entry.isNew) return false;
+    const ref = entry.lastUpdated || "";
+    const map = state.newSeenMap || {};
+    const stored = map[entry.id];
+    if (!stored) return true;
+    // wenn lastUpdated sich geändert hat, wieder als "Neu" anzeigen
+    return stored !== ref;
+  }
+
+  // beim Öffnen eines Eintrags auf "gesehen" setzen
+  function markEntryNewSeen(entry, options) {
+    if (!entry || !entry.isNew) return;
+    const ref = entry.lastUpdated || "";
+    if (!state.newSeenMap) state.newSeenMap = {};
+    if (state.newSeenMap[entry.id] === ref) return;
+    state.newSeenMap[entry.id] = ref;
+    saveNewSeenMap();
+    if (!options || !options.skipRender) {
+      renderAll();
+    }
+  }
+
+  // --- Einstellungs-Overlay ---
+
+  function openSettings() {
+    if (!dom.settingsOverlay) return;
+    dom.settingsOverlay.classList.add("open");
+    dom.settingsOverlay.setAttribute("aria-hidden", "false");
+
+    // Theme-Radios mit aktuellem State vorbelegen
+    if (dom.settingsThemeRadios && dom.settingsThemeRadios.length) {
+      dom.settingsThemeRadios.forEach((radio) => {
+        radio.checked = radio.value === state.theme;
+      });
+    }
+    // Hand-Radios mit aktuellem State vorbelegen
+    if (dom.settingsHandRadios && dom.settingsHandRadios.length) {
+      dom.settingsHandRadios.forEach((radio) => {
+        radio.checked = radio.value === state.handedness;
+      });
+    }
+  }
+
+  function closeSettings() {
+    if (!dom.settingsOverlay) return;
+    dom.settingsOverlay.classList.remove("open");
+    dom.settingsOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  function saveSettingsFromForm() {
+    let selectedTheme = state.theme;
+    let selectedHand = state.handedness;
+
+    if (dom.settingsThemeRadios && dom.settingsThemeRadios.length) {
+      dom.settingsThemeRadios.forEach((radio) => {
+        if (radio.checked) {
+          selectedTheme = radio.value;
+        }
+      });
+    }
+
+    if (dom.settingsHandRadios && dom.settingsHandRadios.length) {
+      dom.settingsHandRadios.forEach((radio) => {
+        if (radio.checked) {
+          selectedHand = radio.value;
+        }
+      });
+    }
+
+    applyTheme(selectedTheme);
+    applyHandedness(selectedHand);
+    closeSettings();
   }
 
   // --- Hash / Detail-Overlay-Helfer ---
@@ -150,14 +332,25 @@
       return;
     }
 
-    // Kategorie & Auswahl anpassen, aber Filter (Suche/Tag) unverändert lassen
+    // Kategorie & Auswahl anpassen
     state.activeCategoryId = entry.categoryId || "all";
     state.selectedEntryId = entry.id;
+
+    // "Neu" beim Öffnen als gesehen markieren
+    markEntryNewSeen(entry, { skipRender: true });
     renderAll();
     showDetailOverlay(entry);
   }
 
   // --- Tag-Overlay-Helfer ---
+
+  function getEntriesInActiveCategory() {
+    return entries.filter((entry) => {
+      if (!isEntryVisible(entry)) return false;
+      if (state.activeCategoryId === "all") return true;
+      return entry.categoryId === state.activeCategoryId;
+    });
+  }
 
   function getAvailableTagsForActiveCategory() {
     const inCategory = getEntriesInActiveCategory();
@@ -253,13 +446,6 @@
     setSidebarOpen(!state.sidebarOpen);
   }
 
-  function getEntriesInActiveCategory() {
-    return entries.filter((entry) => {
-      if (state.activeCategoryId === "all") return true;
-      return entry.categoryId === state.activeCategoryId;
-    });
-  }
-
   function getFilteredEntries() {
     const query = state.searchQuery.trim().toLowerCase();
 
@@ -274,6 +460,7 @@
         entry.session,
         entry.status,
         ...(entry.tags || []),
+        ...(entry.images || []), // Bild-Dateinamen in die Suche einbeziehen
       ]
         .filter(Boolean)
         .join(" ")
@@ -290,9 +477,10 @@
     }
 
     // Sortierung anwenden
-    const collator = typeof Intl !== "undefined"
-      ? new Intl.Collator("de", { sensitivity: "base" })
-      : null;
+    const collator =
+      typeof Intl !== "undefined"
+        ? new Intl.Collator("de", { sensitivity: "base" })
+        : null;
 
     function compareTitles(a, b) {
       const aTitle = (a.title || "").toString();
@@ -433,7 +621,7 @@
       return;
     }
 
-    // Für alle anderen Kategorien: wie bisher Tag-Chips direkt anzeigen
+    // Für alle anderen Kategorien: Tag-Chips direkt anzeigen
     const tags = getAvailableTagsForActiveCategory();
 
     if (!tags.length) {
@@ -534,6 +722,7 @@
     // Stadt-Verknüpfungen
     if (entry.categoryId === "cities") {
       entries.forEach((e) => {
+        if (!isEntryVisible(e)) return;
         if (e.cityId === entry.id) addById(e.id);
       });
     } else if (entry.cityId) {
@@ -543,6 +732,7 @@
     // Fraktions-Verknüpfungen
     if (entry.categoryId === "factions") {
       entries.forEach((e) => {
+        if (!isEntryVisible(e)) return;
         if (e.factionId === entry.id) addById(e.id);
       });
     } else if (entry.factionId) {
@@ -602,6 +792,40 @@
     }
 
     const relatedEntries = computeRelatedEntries(entry);
+
+    // Bilder-Block
+    const images = Array.isArray(entry.images) ? entry.images : [];
+    let imagesHtml = "";
+    if (images.length) {
+      const imageCards = images
+        .map((imgName) => {
+          const src = buildImageUrl(imgName);
+          if (!src) return "";
+          const alt = `${entry.title || "Bild"} – ${imgName}`;
+          return `
+            <figure class="entry-detail-image-card">
+              <img src="${escapeHtml(
+                src
+              )}" alt="${escapeHtml(alt)}" loading="lazy" />
+              <figcaption>${escapeHtml(imgName)}</figcaption>
+            </figure>
+          `;
+        })
+        .filter(Boolean)
+        .join("");
+
+      if (imageCards) {
+        imagesHtml = `
+          <section class="entry-detail-images">
+            <h3 class="entry-detail-images-title">Bilder</h3>
+            <div class="entry-detail-images-grid">
+              ${imageCards}
+            </div>
+          </section>
+        `;
+      }
+    }
+
     const relatedHtml = relatedEntries
       .map((rel) => {
         const cat = getCategoryById(rel.categoryId);
@@ -616,13 +840,17 @@
       .join("");
 
     const titleIdAttr = titleId ? ` id="${escapeHtml(titleId)}"` : "";
+    const newBadgeHtml = isEntryNew(entry)
+      ? '<span class="entry-detail-badge entry-detail-badge-new">Neu</span>'
+      : "";
 
     return `
       <header class="entry-detail-header">
         <div>
-          <h2 class="entry-detail-title"${titleIdAttr}>${escapeHtml(
-            entry.title || "Ohne Titel"
-          )}</h2>
+          <h2 class="entry-detail-title"${titleIdAttr}>
+            ${escapeHtml(entry.title || "Ohne Titel")}
+            ${newBadgeHtml}
+          </h2>
           ${
             category
               ? `<p class="entry-detail-category">${escapeHtml(
@@ -639,6 +867,7 @@
       }
       ${tagsHtml ? `<div class="entry-detail-tags">${tagsHtml}</div>` : ""}
       <div class="entry-detail-body">${escapeHtml(entry.body || "")}</div>
+      ${imagesHtml}
       ${
         relatedEntries.length
           ? `<section class="entry-detail-related">
@@ -691,6 +920,7 @@
       }
 
       const category = getCategoryById(entry.categoryId);
+      const entryIsNew = isEntryNew(entry);
 
       const tagsHtml = (entry.tags || [])
         .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
@@ -699,9 +929,14 @@
       card.innerHTML = `
         <div class="entry-card-header">
           <div>
-            <h3 class="entry-card-title">${escapeHtml(
-              entry.title || "Ohne Titel"
-            )}</h3>
+            <h3 class="entry-card-title">
+              ${escapeHtml(entry.title || "Ohne Titel")}
+              ${
+                entryIsNew
+                  ? '<span class="entry-card-badge entry-card-badge-new">Neu</span>'
+                  : ""
+              }
+            </h3>
             ${
               entry.summary
                 ? `<p class="entry-card-summary">${escapeHtml(
@@ -722,7 +957,7 @@
       `;
 
       card.addEventListener("click", () => {
-        // Statt scrollIntoView: Hash setzen → Overlay öffnen
+        // Öffnen über Hash → handleHashChange übernimmt „Neu“-Update
         window.location.hash = `#entry-${entry.id}`;
       });
 
@@ -742,14 +977,178 @@
     }
   }
 
+  // --- Bild-Viewer (Lightbox) ---
+
+  function ensureImageViewerDom() {
+    if (imageViewer.root) return;
+
+    const root = document.createElement("div");
+    root.className = "image-viewer";
+    root.setAttribute("aria-hidden", "true");
+    root.innerHTML = `
+      <div class="image-viewer-backdrop"></div>
+      <div class="image-viewer-panel">
+        <div class="image-viewer-toolbar">
+          <button type="button" class="icon-button image-viewer-close" aria-label="Bild schließen">✕</button>
+          <div class="image-viewer-toolbar-spacer"></div>
+          <button type="button" class="icon-button image-viewer-zoom-out" aria-label="Herauszoomen">−</button>
+          <button type="button" class="icon-button image-viewer-zoom-in" aria-label="Heranzoomen">+</button>
+          <button type="button" class="icon-button image-viewer-reset" aria-label="Zoom zurücksetzen">⟳</button>
+        </div>
+        <div class="image-viewer-inner">
+          <img class="image-viewer-image" src="" alt="" />
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(root);
+
+    imageViewer.root = root;
+    imageViewer.backdrop = root.querySelector(".image-viewer-backdrop");
+    imageViewer.panel = root.querySelector(".image-viewer-panel");
+    imageViewer.inner = root.querySelector(".image-viewer-inner");
+    imageViewer.img = root.querySelector(".image-viewer-image");
+    imageViewer.closeBtn = root.querySelector(".image-viewer-close");
+    imageViewer.zoomInBtn = root.querySelector(".image-viewer-zoom-in");
+    imageViewer.zoomOutBtn = root.querySelector(".image-viewer-zoom-out");
+    imageViewer.resetBtn = root.querySelector(".image-viewer-reset");
+
+    const updateTransform = () => {
+      if (!imageViewer.img) return;
+      imageViewer.img.style.transform = `translate(${imageViewer.translateX}px, ${imageViewer.translateY}px) scale(${imageViewer.scale})`;
+    };
+
+    const setScale = (next) => {
+      const clamped = Math.min(4, Math.max(1, next));
+      imageViewer.scale = clamped;
+      if (clamped === 1) {
+        imageViewer.translateX = 0;
+        imageViewer.translateY = 0;
+      }
+      updateTransform();
+    };
+
+    const onClose = () => {
+      if (!imageViewer.root) return;
+      imageViewer.root.classList.remove("open");
+      imageViewer.root.setAttribute("aria-hidden", "true");
+    };
+
+    imageViewer.backdrop.addEventListener("click", onClose);
+    imageViewer.closeBtn.addEventListener("click", onClose);
+
+    imageViewer.zoomInBtn.addEventListener("click", () => {
+      setScale(imageViewer.scale + 0.25);
+    });
+
+    imageViewer.zoomOutBtn.addEventListener("click", () => {
+      setScale(imageViewer.scale - 0.25);
+    });
+
+    imageViewer.resetBtn.addEventListener("click", () => {
+      setScale(1);
+    });
+
+    // Drag zum Verschieben
+    imageViewer.inner.addEventListener("pointerdown", (ev) => {
+      if (!imageViewer.img) return;
+      ev.preventDefault();
+      imageViewer.isDragging = true;
+      imageViewer.dragStartX = ev.clientX;
+      imageViewer.dragStartY = ev.clientY;
+      imageViewer.imgStartX = imageViewer.translateX;
+      imageViewer.imgStartY = imageViewer.translateY;
+      imageViewer.img.setPointerCapture(ev.pointerId);
+    });
+
+    imageViewer.inner.addEventListener("pointermove", (ev) => {
+      if (!imageViewer.isDragging) return;
+      ev.preventDefault();
+      const dx = ev.clientX - imageViewer.dragStartX;
+      const dy = ev.clientY - imageViewer.dragStartY;
+      imageViewer.translateX = imageViewer.imgStartX + dx;
+      imageViewer.translateY = imageViewer.imgStartY + dy;
+      updateTransform();
+    });
+
+    imageViewer.inner.addEventListener("pointerup", (ev) => {
+      if (!imageViewer.isDragging) return;
+      imageViewer.isDragging = false;
+      try {
+        imageViewer.img.releasePointerCapture(ev.pointerId);
+      } catch {
+        // egal
+      }
+    });
+    imageViewer.inner.addEventListener("pointercancel", () => {
+      imageViewer.isDragging = false;
+    });
+
+    // Zoom per Scrollrad
+    imageViewer.inner.addEventListener(
+      "wheel",
+      (ev) => {
+        ev.preventDefault();
+        const delta = ev.deltaY || 0;
+        if (delta < 0) {
+          setScale(imageViewer.scale + 0.1);
+        } else if (delta > 0) {
+          setScale(imageViewer.scale - 0.1);
+        }
+      },
+      { passive: false }
+    );
+
+    // helper, damit andere Funktionen Scale setzen können
+    imageViewer._setScale = setScale;
+  }
+
+  function openImageViewer(src, alt) {
+    if (!src) return;
+    ensureImageViewerDom();
+    if (!imageViewer.root || !imageViewer.img) return;
+
+    imageViewer.scale = 1;
+    imageViewer.translateX = 0;
+    imageViewer.translateY = 0;
+    imageViewer.img.src = src;
+    imageViewer.img.alt = alt || "";
+
+    if (imageViewer._setScale) {
+      imageViewer._setScale(1);
+    }
+
+    imageViewer.root.classList.add("open");
+    imageViewer.root.setAttribute("aria-hidden", "false");
+  }
+
+  function isImageViewerOpen() {
+    return !!(imageViewer.root && imageViewer.root.classList.contains("open"));
+  }
+
+  function closeImageViewer() {
+    if (!imageViewer.root) return;
+    imageViewer.root.classList.remove("open");
+    imageViewer.root.setAttribute("aria-hidden", "true");
+  }
+
   // --- Events ---
 
-  function onDetailClick(event) {
+  function onDetailContentClick(event) {
+    // 1) Bild-Klick → Viewer öffnen
+    const img = event.target.closest(".entry-detail-images img");
+    if (img) {
+      const src = img.getAttribute("src");
+      const alt = img.getAttribute("alt") || "";
+      openImageViewer(src, alt);
+      return;
+    }
+
+    // 2) Related-Link-Klick → anderen Eintrag öffnen
     const btn = event.target.closest(".related-link");
     if (!btn) return;
     const entryId = btn.getAttribute("data-entry-id");
     if (!entryId) return;
-    // Detail über Hash öffnen
     window.location.hash = `#entry-${entryId}`;
   }
 
@@ -772,17 +1171,27 @@
       });
     }
 
-    if (dom.themeToggle) {
-      dom.themeToggle.addEventListener("click", onThemeToggleClick);
+    // Settings-Overlay
+    if (dom.settingsToggle) {
+      dom.settingsToggle.addEventListener("click", openSettings);
+    }
+    if (dom.settingsBackdrop) {
+      dom.settingsBackdrop.addEventListener("click", closeSettings);
+    }
+    if (dom.settingsCancel) {
+      dom.settingsCancel.addEventListener("click", closeSettings);
+    }
+    if (dom.settingsSave) {
+      dom.settingsSave.addEventListener("click", saveSettingsFromForm);
     }
 
     if (dom.detailContent) {
-      dom.detailContent.addEventListener("click", onDetailClick);
+      dom.detailContent.addEventListener("click", onDetailContentClick);
     }
 
     if (dom.detailBackButton) {
       dom.detailBackButton.addEventListener("click", function () {
-        // Spezifikation: Zurück-Taste nutzt history.back()
+        // Zurück-Taste nutzt history.back()
         window.history.back();
       });
     }
@@ -805,13 +1214,25 @@
       });
     }
 
-    // ESC schließt zuerst Tag-Overlay, dann Detail-Overlay
+    // ESC: erst Bild-Viewer, dann Settings, Tag, Detail
     window.addEventListener("keydown", function (event) {
       if (event.key !== "Escape" && event.key !== "Esc") return;
+
+      if (isImageViewerOpen()) {
+        closeImageViewer();
+        return;
+      }
+
+      if (dom.settingsOverlay && dom.settingsOverlay.classList.contains("open")) {
+        closeSettings();
+        return;
+      }
+
       if (dom.tagOverlay && dom.tagOverlay.classList.contains("is-open")) {
         closeTagOverlay();
         return;
       }
+
       if (dom.detailOverlay && dom.detailOverlay.classList.contains("is-open")) {
         window.history.back();
       }
@@ -834,6 +1255,10 @@
     const initialTheme = detectInitialTheme();
     applyTheme(initialTheme);
 
+    const initialHandedness = detectInitialHandedness();
+    applyHandedness(initialHandedness);
+
+    loadNewSeenMap();
     initEvents();
     renderAll();
 
