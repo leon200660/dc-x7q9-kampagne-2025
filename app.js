@@ -74,6 +74,7 @@
     zoomOutBtn: null,
     resetBtn: null,
     scale: 1,
+    baseScale: 1,
     translateX: 0,
     translateY: 0,
     isDragging: false,
@@ -81,6 +82,12 @@
     dragStartY: 0,
     imgStartX: 0,
     imgStartY: 0,
+    isPinching: false,
+    pinchStartDistance: 0,
+    pinchStartScale: 1,
+    activePointers: {},
+    historyPushed: false,
+    _setScale: null,
   };
 
   const allCategories = [
@@ -1018,20 +1025,45 @@
       imageViewer.img.style.transform = `translate(${imageViewer.translateX}px, ${imageViewer.translateY}px) scale(${imageViewer.scale})`;
     };
 
-    const setScale = (next) => {
-      const clamped = Math.min(4, Math.max(1, next));
+    const setScale = (next, options) => {
+      const base = imageViewer.baseScale || 1;
+      const minScale = Math.max(0.1, base * 0.5);
+      const maxScale = 4;
+      const clamped = Math.min(maxScale, Math.max(minScale, next));
       imageViewer.scale = clamped;
-      if (clamped === 1) {
+      if (options && options.resetTranslation) {
         imageViewer.translateX = 0;
         imageViewer.translateY = 0;
       }
       updateTransform();
     };
 
+    const handleImageLoad = () => {
+      if (!imageViewer.img || !imageViewer.inner) return;
+
+      const vw = imageViewer.inner.clientWidth || window.innerWidth || 1;
+      const vh = imageViewer.inner.clientHeight || window.innerHeight || 1;
+      const iw = imageViewer.img.naturalWidth || 1;
+      const ih = imageViewer.img.naturalHeight || 1;
+
+      let fitScale = Math.min(vw / iw, vh / ih);
+      if (!isFinite(fitScale) || fitScale <= 0) {
+        fitScale = 1;
+      }
+      if (fitScale > 1) {
+        // nicht automatisch größer skalieren als Original
+        fitScale = 1;
+      }
+
+      imageViewer.baseScale = fitScale;
+      imageViewer.translateX = 0;
+      imageViewer.translateY = 0;
+      imageViewer.scale = fitScale;
+      updateTransform();
+    };
+
     const onClose = () => {
-      if (!imageViewer.root) return;
-      imageViewer.root.classList.remove("open");
-      imageViewer.root.setAttribute("aria-hidden", "true");
+      closeImageViewer();
     };
 
     imageViewer.backdrop.addEventListener("click", onClose);
@@ -1046,42 +1078,116 @@
     });
 
     imageViewer.resetBtn.addEventListener("click", () => {
-      setScale(1);
+      const targetScale = imageViewer.baseScale || 1;
+      setScale(targetScale, { resetTranslation: true });
     });
 
-    // Drag zum Verschieben
+    // Drag / Pinch zum Verschieben / Zoomen
     imageViewer.inner.addEventListener("pointerdown", (ev) => {
       if (!imageViewer.img) return;
       ev.preventDefault();
-      imageViewer.isDragging = true;
-      imageViewer.dragStartX = ev.clientX;
-      imageViewer.dragStartY = ev.clientY;
-      imageViewer.imgStartX = imageViewer.translateX;
-      imageViewer.imgStartY = imageViewer.translateY;
-      imageViewer.img.setPointerCapture(ev.pointerId);
+
+      try {
+        imageViewer.img.setPointerCapture(ev.pointerId);
+      } catch {
+        // ignore
+      }
+
+      if (!imageViewer.activePointers) {
+        imageViewer.activePointers = {};
+      }
+      imageViewer.activePointers[ev.pointerId] = {
+        x: ev.clientX,
+        y: ev.clientY,
+      };
+
+      const ids = Object.keys(imageViewer.activePointers);
+
+      if (ids.length === 2) {
+        // Pinch startet
+        imageViewer.isPinching = true;
+        imageViewer.isDragging = false;
+        const p1 = imageViewer.activePointers[ids[0]];
+        const p2 = imageViewer.activePointers[ids[1]];
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        imageViewer.pinchStartDistance = dist;
+        imageViewer.pinchStartScale =
+          imageViewer.scale || imageViewer.baseScale || 1;
+      } else if (ids.length === 1) {
+        // Einfaches Draggen
+        imageViewer.isDragging = true;
+        imageViewer.isPinching = false;
+        imageViewer.dragStartX = ev.clientX;
+        imageViewer.dragStartY = ev.clientY;
+        imageViewer.imgStartX = imageViewer.translateX;
+        imageViewer.imgStartY = imageViewer.translateY;
+      }
     });
 
     imageViewer.inner.addEventListener("pointermove", (ev) => {
-      if (!imageViewer.isDragging) return;
+      if (!imageViewer.img) return;
+      if (!imageViewer.isDragging && !imageViewer.isPinching) return;
       ev.preventDefault();
-      const dx = ev.clientX - imageViewer.dragStartX;
-      const dy = ev.clientY - imageViewer.dragStartY;
-      imageViewer.translateX = imageViewer.imgStartX + dx;
-      imageViewer.translateY = imageViewer.imgStartY + dy;
-      updateTransform();
-    });
 
-    imageViewer.inner.addEventListener("pointerup", (ev) => {
-      if (!imageViewer.isDragging) return;
-      imageViewer.isDragging = false;
-      try {
-        imageViewer.img.releasePointerCapture(ev.pointerId);
-      } catch {
-        // egal
+      if (imageViewer.isPinching) {
+        if (
+          imageViewer.activePointers &&
+          imageViewer.activePointers[ev.pointerId]
+        ) {
+          imageViewer.activePointers[ev.pointerId].x = ev.clientX;
+          imageViewer.activePointers[ev.pointerId].y = ev.clientY;
+        }
+        const ids = Object.keys(imageViewer.activePointers || {});
+        if (ids.length >= 2) {
+          const p1 = imageViewer.activePointers[ids[0]];
+          const p2 = imageViewer.activePointers[ids[1]];
+          if (p1 && p2) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            if (imageViewer.pinchStartDistance > 0) {
+              const factor = dist / imageViewer.pinchStartDistance;
+              const nextScale = imageViewer.pinchStartScale * factor;
+              setScale(nextScale);
+            }
+          }
+        }
+      } else if (imageViewer.isDragging) {
+        const dx = ev.clientX - imageViewer.dragStartX;
+        const dy = ev.clientY - imageViewer.dragStartY;
+        imageViewer.translateX = imageViewer.imgStartX + dx;
+        imageViewer.translateY = imageViewer.imgStartY + dy;
+        updateTransform();
       }
     });
-    imageViewer.inner.addEventListener("pointercancel", () => {
-      imageViewer.isDragging = false;
+
+    const endPointer = (ev) => {
+      if (imageViewer.activePointers) {
+        delete imageViewer.activePointers[ev.pointerId];
+      }
+      try {
+        if (imageViewer.img) {
+          imageViewer.img.releasePointerCapture(ev.pointerId);
+        }
+      } catch {
+        // ignore
+      }
+      const ids = Object.keys(imageViewer.activePointers || {});
+      if (ids.length < 2) {
+        imageViewer.isPinching = false;
+      }
+      if (ids.length === 0) {
+        imageViewer.isDragging = false;
+      }
+    };
+
+    imageViewer.inner.addEventListener("pointerup", (ev) => {
+      endPointer(ev);
+    });
+    imageViewer.inner.addEventListener("pointercancel", (ev) => {
+      endPointer(ev);
     });
 
     // Zoom per Scrollrad
@@ -1101,6 +1207,11 @@
 
     // helper, damit andere Funktionen Scale setzen können
     imageViewer._setScale = setScale;
+
+    // Bild nach dem Laden automatisch einpassen
+    if (imageViewer.img) {
+      imageViewer.img.addEventListener("load", handleImageLoad);
+    }
   }
 
   function openImageViewer(src, alt) {
@@ -1108,28 +1219,68 @@
     ensureImageViewerDom();
     if (!imageViewer.root || !imageViewer.img) return;
 
+    // History-Eintrag hinzufügen, damit die Zurück-Taste den Viewer schließen kann
+    try {
+      if (
+        !imageViewer.historyPushed &&
+        window.history &&
+        window.history.pushState
+      ) {
+        window.history.pushState({ imageViewer: true }, "");
+        imageViewer.historyPushed = true;
+      }
+    } catch {
+      // ignorieren
+    }
+
+    // Zustand zurücksetzen
     imageViewer.scale = 1;
+    imageViewer.baseScale = 1;
     imageViewer.translateX = 0;
     imageViewer.translateY = 0;
+    imageViewer.isDragging = false;
+    imageViewer.isPinching = false;
+    imageViewer.activePointers = {};
+
+    imageViewer.root.classList.add("open");
+    imageViewer.root.setAttribute("aria-hidden", "false");
+
     imageViewer.img.src = src;
     imageViewer.img.alt = alt || "";
 
     if (imageViewer._setScale) {
-      imageViewer._setScale(1);
+      imageViewer._setScale(1, { resetTranslation: true });
     }
-
-    imageViewer.root.classList.add("open");
-    imageViewer.root.setAttribute("aria-hidden", "false");
   }
 
   function isImageViewerOpen() {
     return !!(imageViewer.root && imageViewer.root.classList.contains("open"));
   }
 
-  function closeImageViewer() {
+  function closeImageViewer(options) {
+    const fromHistory = options && options.fromHistory;
+
     if (!imageViewer.root) return;
     imageViewer.root.classList.remove("open");
     imageViewer.root.setAttribute("aria-hidden", "true");
+    imageViewer.isDragging = false;
+    imageViewer.isPinching = false;
+    imageViewer.activePointers = {};
+
+    if (fromHistory) {
+      // Viewer wurde durch Browser-Zurück geschlossen, keinen weiteren history.back() ausführen
+      imageViewer.historyPushed = false;
+      return;
+    }
+
+    if (imageViewer.historyPushed && window.history && window.history.back) {
+      imageViewer.historyPushed = false;
+      try {
+        window.history.back();
+      } catch {
+        // ignorieren
+      }
+    }
   }
 
   // --- Events ---
@@ -1223,7 +1374,10 @@
         return;
       }
 
-      if (dom.settingsOverlay && dom.settingsOverlay.classList.contains("open")) {
+      if (
+        dom.settingsOverlay &&
+        dom.settingsOverlay.classList.contains("open")
+      ) {
         closeSettings();
         return;
       }
@@ -1245,6 +1399,13 @@
     });
 
     window.addEventListener("hashchange", handleHashChange);
+
+    // Browser-Zurück-Taste: falls Bild-Viewer offen ist, zuerst diesen schließen
+    window.addEventListener("popstate", function () {
+      if (isImageViewerOpen()) {
+        closeImageViewer({ fromHistory: true });
+      }
+    });
   }
 
   // --- Init ---
