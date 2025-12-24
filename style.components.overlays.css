@@ -1,0 +1,825 @@
+/* =========================================================
+   Components – Overlays
+   (Detail Overlay, Category Sheet, Tag Overlay, Settings Overlay,
+    Image Viewer, Timeline, Overlay Responsive)
+========================================================= */
+
+/* Gemeinsame Tokens (theme-treu, mit Fallbacks) */
+:root {
+  /* "Immer dunkel" für Backdrops (wichtig für Light-Theme!) */
+  --overlay-ink: var(--ink-0, #000);
+
+  /* Fallbacks (falls color-mix nicht unterstützt wird) */
+  --overlay-backdrop: rgba(0, 0, 0, 0.62);
+  --overlay-backdrop-strong: rgba(0, 0, 0, 0.78);
+
+  --overlay-shadow: 0 22px 45px rgba(0, 0, 0, 0.7);
+  --overlay-shadow-up: 0 -22px 40px rgba(0, 0, 0, 0.7);
+
+  /* Panel Surface Fallback */
+  --overlay-panel-surface: var(--surface-elevated, var(--surface-3, var(--card-bg)));
+  --overlay-panel-border: var(--border-subtle, var(--card-border));
+
+  /* Accent surfaces (fallbacks) */
+  --overlay-accent-surface: var(--accent-surface, var(--accent));
+  --overlay-accent-surface-hover: var(--accent-surface-hover, var(--accent));
+
+  /* Subtile “Glints” (fallbacks) */
+  --overlay-glint: rgba(255, 255, 255, 0.03);
+  --overlay-glint-soft: rgba(255, 255, 255, 0.018);
+}
+
+/* bevorzugt, wenn verfügbar (Browser ohne color-mix ignorieren diese Zeilen) */
+:root {
+  /* Backdrop bekommt leichte Akzent-Tönung -> Dark wirkt “themed” statt “nur dunkel”
+     UND: Basis ist immer --overlay-ink, damit Light sauber dimmt. */
+  --overlay-backdrop:
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--accent-2, var(--accent)) 7%, transparent),
+      transparent 68%
+    ),
+    color-mix(in srgb, var(--overlay-ink) 72%, transparent);
+
+  --overlay-backdrop-strong:
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--accent-2, var(--accent)) 9%, transparent),
+      transparent 68%
+    ),
+    color-mix(in srgb, var(--overlay-ink) 86%, transparent);
+
+  --overlay-shadow: 0 22px 45px color-mix(in srgb, var(--overlay-ink) 70%, transparent);
+  --overlay-shadow-up: 0 -22px 40px color-mix(in srgb, var(--overlay-ink) 68%, transparent);
+
+  /* Panel Surface: leicht “elevated” über Main */
+  --overlay-panel-surface: color-mix(
+    in srgb,
+    var(--surface-elevated, var(--surface-3, var(--card-bg))) 92%,
+    var(--surface-1, var(--bg-main))
+  );
+
+  --overlay-panel-border: color-mix(
+    in srgb,
+    var(--border-subtle, var(--card-border)) 85%,
+    transparent
+  );
+
+  --overlay-accent-surface: var(--accent-surface, var(--accent));
+  --overlay-accent-surface-hover: var(--accent-surface-hover, var(--accent));
+
+  --overlay-glint: var(--ui-glint, rgba(255, 255, 255, 0.04));
+  --overlay-glint-soft: var(--ui-glint-soft, rgba(255, 255, 255, 0.02));
+}
+
+/* ---------------------------------------
+   Detail Overlay
+--------------------------------------- */
+
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.detail-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Detail-Panel: “Sheet” + extra Theme-Layering */
+.detail-panel {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%),
+    radial-gradient(circle at 88% 14%, color-mix(in srgb, var(--accent-2, var(--accent)) 10%, transparent), transparent 70%),
+    linear-gradient(135deg, var(--overlay-glint), transparent 55%),
+    var(--detail-bg);
+
+  border-radius: 20px 20px 0 0;
+  border: 1px solid var(--overlay-panel-border);
+  box-shadow: var(--overlay-shadow-up);
+
+  padding: 0.85rem 0.9rem 1.1rem;
+  padding-bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  transform: translateY(24px);
+  transition: transform var(--transition-med);
+}
+
+.detail-overlay.is-open .detail-panel {
+  transform: translateY(0);
+}
+
+.detail-back-button {
+  margin-bottom: 0.5rem;
+  font-size: 0.82rem;
+  gap: 0.35rem;
+}
+
+/* ---------------------------------------
+   Mobile Kategorie Bottom-Sheet
+--------------------------------------- */
+
+.category-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 38;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.category-sheet.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.category-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.category-sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 62%),
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--accent-2, var(--accent)) 14%, transparent), transparent 72%),
+    linear-gradient(135deg, var(--overlay-glint), transparent 55%),
+    var(--overlay-panel-surface);
+
+  border-radius: 20px 20px 0 0;
+  border: 1px solid color-mix(in srgb, var(--accent-border) 70%, var(--overlay-panel-border));
+  box-shadow: var(--overlay-shadow-up);
+
+  transform: translateY(28px);
+  transition: transform var(--transition-med);
+  max-height: min(calc(100vh - 4rem), 82vh);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-sheet.is-open .category-sheet-panel {
+  transform: translateY(0);
+}
+
+.category-sheet-handle {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+
+  background: rgba(148, 163, 184, 0.45);
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+
+  margin: 0.55rem auto 0.35rem;
+}
+
+.category-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0.85rem 0.6rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--overlay-panel-border) 70%, transparent);
+}
+
+.category-sheet-title {
+  margin: 0;
+  font-size: 1rem;
+  font-family: var(--font-display);
+}
+
+.category-sheet-close {
+  padding-inline: 0.6rem;
+}
+
+.category-sheet-body {
+  padding: 0.75rem 0.85rem 0.85rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+}
+
+.category-sheet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.category-sheet-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.category-sheet-quick .category-sheet-cat-btn {
+  flex: 1 1 auto;
+}
+
+.category-sheet-group {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  background:
+    radial-gradient(circle at 18% 12%, var(--overlay-glint-soft), transparent 60%),
+    var(--card-bg);
+  box-shadow: var(--shadow-card, 0 8px 18px rgba(0, 0, 0, 0.28));
+  overflow: hidden;
+}
+
+.category-sheet-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 0.6rem;
+  cursor: pointer;
+  user-select: none;
+
+  background:
+    radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%),
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--accent-2, var(--accent)) 10%, transparent), transparent 78%),
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%);
+}
+
+.category-sheet-group-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--text-main);
+}
+
+.category-sheet-group-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+
+  border: 1px solid color-mix(in srgb, var(--overlay-panel-border) 75%, transparent);
+  background:
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%),
+    color-mix(in srgb, var(--overlay-panel-surface) 70%, transparent);
+}
+
+.category-sheet-group-toggle {
+  border: none;
+  background: transparent;
+  color: var(--text-subtle);
+  font-size: 0.9rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+.category-sheet-group-toggle:hover {
+  background:
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%),
+    color-mix(in srgb, var(--accent-soft) 70%, transparent);
+  color: var(--text-main);
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.category-sheet-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.55rem 0.6rem 0.65rem;
+  border-top: 1px solid color-mix(in srgb, var(--overlay-panel-border) 60%, transparent);
+}
+
+.category-sheet-group.is-collapsed .category-sheet-cats {
+  display: none;
+}
+
+.category-sheet-cat-btn {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--overlay-panel-border) 75%, transparent);
+
+  background:
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%),
+    var(--chip-bg);
+
+  color: var(--text-main);
+  padding: 0.62rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
+
+  outline: none;
+}
+
+.category-sheet-cat-btn:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.category-sheet-cat-btn:hover {
+  border-color: var(--accent-border);
+  background:
+    linear-gradient(180deg, var(--overlay-glint), transparent 65%),
+    radial-gradient(circle at 18% 25%, color-mix(in srgb, var(--accent-2, var(--accent)) 12%, transparent), transparent 62%),
+    color-mix(in srgb, var(--overlay-accent-surface-hover) 18%, transparent);
+
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-pop, 0 10px 18px rgba(0, 0, 0, 0.25));
+  filter: brightness(1.02);
+}
+
+.category-sheet-cat-btn.is-active {
+  border-color: var(--accent-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.0) 62%),
+    radial-gradient(circle at 16% 25%, color-mix(in srgb, var(--accent-2, var(--accent)) 14%, transparent), transparent 62%),
+    color-mix(in srgb, var(--overlay-accent-surface) 20%, transparent);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 22px color-mix(in srgb, var(--accent) 22%, rgba(0, 0, 0, 0.25));
+}
+
+.category-sheet-cat-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.category-sheet-cat-icon {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+
+  border: 1px solid color-mix(in srgb, var(--overlay-panel-border) 75%, transparent);
+  background:
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%),
+    color-mix(in srgb, var(--overlay-panel-surface) 70%, transparent);
+}
+
+.category-sheet-cat-btn.is-active .category-sheet-cat-icon {
+  border-color: color-mix(in srgb, var(--accent-border) 85%, transparent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.0) 62%),
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%),
+    color-mix(in srgb, var(--accent-soft) 80%, transparent);
+}
+
+.category-sheet-cat-name {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-sheet-cat-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: 0 0 auto;
+  color: var(--text-subtle);
+  font-size: 0.78rem;
+}
+
+.category-sheet-cat-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+
+  border: 1px solid color-mix(in srgb, var(--overlay-panel-border) 70%, transparent);
+  background:
+    linear-gradient(180deg, var(--overlay-glint-soft), transparent 70%),
+    color-mix(in srgb, var(--overlay-panel-surface) 70%, transparent);
+
+  color: var(--text-subtle);
+}
+
+@media (min-width: 1100px) {
+  .category-sheet-panel {
+    border-radius: 24px;
+  }
+}
+
+/* ---------------------------------------
+   Tag-Overlay
+--------------------------------------- */
+
+.tag-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.tag-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tag-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.tag-overlay-panel {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 62%),
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--accent-2, var(--accent)) 14%, transparent), transparent 72%),
+    linear-gradient(135deg, var(--overlay-glint), transparent 55%),
+    var(--overlay-panel-surface);
+
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-border) 70%, var(--overlay-panel-border));
+  box-shadow: var(--overlay-shadow);
+
+  padding: 0.9rem 1rem 1.1rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tag-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.tag-overlay-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: var(--font-display);
+}
+
+.tag-overlay-close {
+  padding-inline: 0.6rem;
+}
+
+.tag-overlay-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.tag-overlay-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+}
+
+.tag-overlay-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* ---------------------------------------
+   Einstellungs-Overlay
+--------------------------------------- */
+
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+/* kompatibel: alt (.open) + neu (.is-open) */
+.settings-overlay.open,
+.settings-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.settings-panel {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 62%),
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--accent-2, var(--accent)) 14%, transparent), transparent 72%),
+    linear-gradient(135deg, var(--overlay-glint), transparent 55%),
+    var(--overlay-panel-surface);
+
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-border) 70%, var(--overlay-panel-border));
+  box-shadow: var(--overlay-shadow);
+
+  padding: 0.9rem 1rem 1.1rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.settings-header {
+  margin-bottom: 0.75rem;
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: var(--font-display);
+}
+
+.settings-section {
+  margin-bottom: 0.85rem;
+}
+
+.settings-section h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.settings-option input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+.settings-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* ---------------------------------------
+   Bild-Viewer (Lightbox)
+--------------------------------------- */
+
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-viewer.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-viewer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop-strong);
+}
+
+.image-viewer-panel {
+  position: relative;
+  width: 100%;
+  max-width: min(96vw, 1200px);
+  max-height: min(96vh, 800px);
+  margin: 0 1rem;
+
+  background:
+    radial-gradient(circle at 18% 10%, var(--overlay-glint-soft), transparent 60%),
+    var(--surface-elevated, var(--overlay-panel-surface));
+
+  border-radius: 1rem;
+  border: 1px solid var(--overlay-panel-border);
+  box-shadow: var(--overlay-shadow);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.image-viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--overlay-panel-border) 70%, transparent);
+}
+
+.image-viewer-toolbar-spacer {
+  flex: 1;
+}
+
+.image-viewer-inner {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 58%),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent-2, var(--accent)) 10%, transparent), transparent 58%),
+    radial-gradient(circle at 50% 18%, var(--overlay-glint-soft), transparent 62%),
+    var(--surface-0, var(--ink-0, #020617));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.image-viewer-inner:active {
+  cursor: grabbing;
+}
+
+.image-viewer-image {
+  max-width: none;
+  max-height: none;
+  will-change: transform;
+}
+
+.image-viewer .icon-button {
+  min-width: 2rem;
+  min-height: 2rem;
+  font-size: 0.9rem;
+}
+
+/* ---------------------------------------
+   Timeline – Patch/Overlays (nur Ergänzungen)
+--------------------------------------- */
+
+.timeline-header .timeline-title {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.2px;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
+.timeline-card .timeline-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.1px;
+  font-family: var(--font-display);
+}
+
+.timeline-grid-line {
+  background: var(--timeline-grid);
+  opacity: 0.9;
+}
+
+/* Lane-Label sticky halten */
+.timeline-lane-label {
+  position: sticky !important;
+  left: 0;
+  z-index: 3;
+  box-shadow: 10px 0 22px color-mix(in srgb, var(--overlay-ink) 35%, transparent);
+}
+
+.timeline-controls .timeline-lane-chip.is-active {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.timeline-bar:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------
+   Overlay Responsive
+--------------------------------------- */
+
+@media (min-width: 900px) {
+  .detail-overlay {
+    align-items: center;
+  }
+
+  .detail-panel {
+    border-radius: 24px;
+    max-height: calc(100vh - 3rem);
+  }
+
+  .tag-overlay-panel {
+    border-radius: 24px;
+    max-width: 560px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .detail-overlay,
+  .category-sheet,
+  .tag-overlay,
+  .settings-overlay,
+  .image-viewer {
+    transition: none;
+  }
+
+  .detail-panel,
+  .category-sheet-panel {
+    transition: none;
+    transform: none;
+  }
+}

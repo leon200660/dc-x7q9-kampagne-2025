@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Das Handbuch des Wanderers</title>
+
+  <!-- Fonts (Theme-geeignet: Body clean + Display fantasy + Serif für Parchment/Tavern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:wght@500;600;700&display=swap"
+  />
+
+  <!-- Aufgeteilte Styles -->
+  <link rel="stylesheet" href="style.base.css" />
+  <link rel="stylesheet" href="style.layout.css" />
+
+  <!-- Components aufgeteilt (statt style.components.css) -->
+  <link rel="stylesheet" href="style.components.controls.css" />
+  <link rel="stylesheet" href="style.components.cards.css" />
+  <link rel="stylesheet" href="style.components.overlays.css" />
+
+  <!-- Bestiarium (neu, bewusst separat halten wegen 2100-Zeilen-Regel) -->
+  <link rel="stylesheet" href="style.bestiary.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <!-- Banner-Layout (Idee A): Links Kompass, Center Titel, Rechts Slot.
+           Ornament/Glanz kommt per CSS (Pseudo-Elemente). -->
+      <div class="app-header-banner" aria-label="Kopfbereich">
+        <div class="app-header-left">
+          <!-- Kompass/Emblem (dekorativ) -->
+          <div class="header-emblem" aria-hidden="true">
+            <svg
+              class="header-emblem-svg"
+              viewBox="0 0 64 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              focusable="false"
+            >
+              <!-- Außenring -->
+              <circle cx="32" cy="32" r="26" stroke="currentColor" stroke-width="2" opacity="0.9" />
+              <circle cx="32" cy="32" r="21" stroke="currentColor" stroke-width="1.5" opacity="0.5" />
+
+              <!-- Kompassstern -->
+              <path
+                d="M32 12 L36 28 L52 32 L36 36 L32 52 L28 36 L12 32 L28 28 Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+                opacity="0.95"
+              />
+              <path
+                d="M32 18 L34 30 L46 32 L34 34 L32 46 L30 34 L18 32 L30 30 Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+                opacity="0.6"
+              />
+
+              <!-- Center Dot -->
+              <circle cx="32" cy="32" r="2" fill="currentColor" opacity="0.85" />
+            </svg>
+          </div>
+
+          <!-- Optionaler View-Badge (später per CSS/JS befüllbar; aktuell leer) -->
+          <div class="header-badge" id="header-badge" aria-hidden="true"></div>
+        </div>
+
+        <!-- Center/Title Zone: wird in style.layout.css so ausgerichtet,
+             dass der Text “mehr mittig bis rechts” wirkt -->
+        <div class="app-header-center">
+          <div class="title-block">
+            <h1 class="app-title" id="header-title">Das Handbuch des Wanderers</h1>
+            <p class="app-subtitle" id="header-subtitle">Ein Nachschlagewerk von Duria</p>
+          </div>
+        </div>
+
+        <!-- Rechter Slot: reserviert für spätere Header-Actions/Chips -->
+        <div class="app-header-right" aria-hidden="true"></div>
+      </div>
+
+      <!-- Menü-Cluster: Home / Kategorien / Bestiarium / Timeline / Settings + Hauptbutton -->
+      <div class="menu-fab" id="menu-fab">
+        <button
+          class="icon-button fab-action"
+          id="nav-home"
+          aria-label="Dashboard anzeigen"
+          type="button"
+        >
+          <span aria-hidden="true">🏠</span>
+        </button>
+
+        <button
+          class="icon-button fab-action"
+          id="nav-categories"
+          aria-label="Kategorien anzeigen"
+          type="button"
+        >
+          <span aria-hidden="true">📚</span>
+        </button>
+
+        <!-- Bestiarium (neu) -->
+        <button
+          class="icon-button fab-action"
+          id="nav-bestiary"
+          aria-label="Bestiarium anzeigen"
+          type="button"
+        >
+          <span aria-hidden="true">🐉</span>
+        </button>
+
+        <!-- Timeline -->
+        <button
+          class="icon-button fab-action"
+          id="nav-timeline"
+          aria-label="Timeline anzeigen"
+          type="button"
+        >
+          <span aria-hidden="true">🗓️</span>
+        </button>
+
+        <!-- Settings -->
+        <button
+          class="icon-button fab-action"
+          id="settings-toggle"
+          aria-label="Einstellungen öffnen"
+          type="button"
+        >
+          <span aria-hidden="true">⚙️</span>
+        </button>
+
+        <button
+          class="icon-button menu-toggle"
+          id="menu-toggle"
+          aria-label="Navigation öffnen"
+          type="button"
+        >
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-layout">
+      <nav class="sidebar" id="sidebar" aria-label="Kategorien">
+        <div class="sidebar-inner">
+          <div class="sidebar-header">
+            <span class="sidebar-title">Kategorien</span>
+          </div>
+
+          <ul class="category-list" id="category-list">
+            <!-- Kategorien werden von app.ui.js eingefügt -->
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+      <main class="main">
+        <!-- Dashboard-Ansicht -->
+        <section class="dashboard" id="dashboard">
+          <h2 class="dashboard-title">Kampagnenübersicht</h2>
+
+          <div class="dashboard-shell">
+            <div class="dashboard-hero" aria-label="Kampagnen-Highlights">
+              <article class="dashboard-card dashboard-hero-card" id="dashboard-progress-card">
+                <h3>Kampagnenfortschritt</h3>
+                <div class="progressbar" aria-label="Fortschrittsbalken">
+                  <div class="progressbar-fill" id="dashboard-progress-fill"></div>
+                </div>
+                <p class="progress-label" id="dashboard-progress-label"></p>
+                <p class="dashboard-note" id="dashboard-note"></p>
+              </article>
+            </div>
+
+            <section class="dashboard-quick-actions" aria-label="Schnellaktionen">
+              <div class="dashboard-quick-actions-row">
+                <article class="dashboard-card dashboard-mini-card" id="dashboard-quests-card">
+                  <h3>Quests</h3>
+                  <p class="dashboard-note">
+                    Tippe auf eine Zahl, um direkt zur Liste zu springen.
+                  </p>
+
+                  <div class="entry-detail-related-list" aria-label="Quest Schnellnavigation">
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      id="dashboard-link-quests-success"
+                      aria-label="Erfolgreiche Quests anzeigen"
+                    >
+                      ✅ Erfolgreich:
+                      <strong style="margin-left:0.25rem" id="dashboard-quests-success">0</strong>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      id="dashboard-link-quests-failed"
+                      aria-label="Gescheiterte Quests anzeigen"
+                    >
+                      ❌ Gescheitert:
+                      <strong style="margin-left:0.25rem" id="dashboard-quests-failed">0</strong>
+                    </button>
+                  </div>
+                </article>
+
+                <article class="dashboard-card dashboard-mini-card" id="dashboard-new-card">
+                  <h3>Neu</h3>
+                  <p class="dashboard-note">
+                    Neu-markierte Einträge seit dem letzten Besuch.
+                  </p>
+
+                  <div class="entry-detail-related-list" aria-label="Neu Schnellnavigation">
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      id="dashboard-link-new-unseen"
+                      aria-label="Ungesehene neue Einträge anzeigen"
+                    >
+                      ✨ Ungesehen:
+                      <strong style="margin-left:0.25rem" id="dashboard-new-unseen">0</strong>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      id="dashboard-link-new-total"
+                      aria-label="Alle als neu markierten Einträge anzeigen"
+                    >
+                      🏷️ Gesamt neu:
+                      <strong style="margin-left:0.25rem" id="dashboard-new-total">0</strong>
+                    </button>
+                  </div>
+                </article>
+
+                <article class="dashboard-card dashboard-mini-card" id="dashboard-timeline-card">
+                  <h3>Timeline</h3>
+                  <p class="dashboard-note">
+                    Zeitstrahl mit Events – klicke ein Event, um direkt zum passenden Eintrag zu springen.
+                  </p>
+
+                  <div class="entry-detail-related-list" aria-label="Timeline Schnellnavigation">
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      id="dashboard-link-timeline"
+                      aria-label="Timeline öffnen"
+                    >
+                      🗓️ Timeline öffnen
+                    </button>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <div class="dashboard-grid">
+              <article class="dashboard-card" id="dashboard-latest-card">
+                <h3>Letzter Recap / Patch</h3>
+                <p class="dashboard-note">
+                  Direkt zum neuesten Recap und den letzten Patch Notes.
+                </p>
+
+                <div class="dashboard-latest-links">
+                  <div
+                    class="dashboard-latest-links-list"
+                    id="dashboard-latest-list"
+                    aria-label="Letzte Recap/Patch Links"
+                  >
+                    <!-- Buttons/Links werden von app.ui.js eingefügt -->
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card" id="dashboard-recent-card">
+                <h3>Zuletzt aktualisiert</h3>
+                <p class="dashboard-note">
+                  Schnellzugriff auf die letzten Änderungen.
+                </p>
+                <div
+                  class="entry-detail-related-list"
+                  id="dashboard-recent-list"
+                  aria-label="Zuletzt aktualisiert Liste"
+                >
+                  <!-- Buttons/Links werden von app.ui.js eingefügt -->
+                </div>
+              </article>
+
+              <article class="dashboard-card" id="dashboard-quick-card">
+                <h3>Schnellzugriff</h3>
+                <p class="dashboard-note">
+                  Häufig genutzte Bereiche.
+                </p>
+                <div
+                  class="entry-detail-related-list"
+                  id="dashboard-quick-links"
+                  aria-label="Schnellzugriff Links"
+                >
+                  <!-- Buttons/Links werden von app.ui.js eingefügt -->
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- Glossar-Ansicht -->
+        <section class="glossary-view" id="glossary-view">
+          <section class="toolbar">
+            <div class="search-group">
+              <input
+                type="search"
+                id="search-input"
+                placeholder="Suche nach Namen, Tags oder Beschreibung..."
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="toolbar-filters">
+              <label class="toolbar-filters-label" for="sort-select">Sortierung:</label>
+              <select id="sort-select" class="toolbar-select">
+                <option value="default">Standard (Eintragsreihenfolge)</option>
+                <option value="name-asc">Name A–Z</option>
+                <option value="name-desc">Name Z–A</option>
+                <option value="session-asc">Session (aufsteigend)</option>
+                <option value="updated-desc">Zuletzt aktualisiert (neu → alt)</option>
+              </select>
+
+              <span class="toolbar-filters-label">Tags:</span>
+              <div class="tag-filter" id="tag-filter">
+                <!-- Tag-Filter-Chips oder Filter-Button werden von app.ui.js eingefügt -->
+              </div>
+            </div>
+
+            <div class="toolbar-meta" id="toolbar-meta"></div>
+          </section>
+
+          <section class="content">
+            <div class="entry-list" id="entry-list">
+              <!-- Eintragsliste -->
+            </div>
+          </section>
+        </section>
+
+        <!-- Timeline-Ansicht -->
+        <section class="timeline-view" id="timeline-view" hidden>
+          <header class="timeline-header">
+            <div class="timeline-header-top">
+              <div class="timeline-header-copy">
+                <h2 class="timeline-title">Timeline</h2>
+                <p class="timeline-subtitle">
+                  Events und Zeiträume – klicke ein Event, um direkt den verknüpften Eintrag zu öffnen.
+                </p>
+              </div>
+
+              <div class="timeline-header-actions" id="timeline-header-actions" aria-label="Timeline Optionen">
+                <div class="timeline-mode-toggle" role="group" aria-label="Timeline Ansicht">
+                  <button
+                    type="button"
+                    class="filter-chip timeline-mode-chip"
+                    id="timeline-mode-story"
+                    data-mode="list"
+                    aria-pressed="true"
+                    title="Story-Ansicht (mobil optimiert)"
+                  >
+                    📖 Story
+                  </button>
+                  <button
+                    type="button"
+                    class="filter-chip timeline-mode-chip"
+                    id="timeline-mode-axis"
+                    data-mode="axis"
+                    aria-pressed="false"
+                    title="Achsen-Ansicht (eher Desktop)"
+                  >
+                    📏 Achse
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="timeline-content">
+            <div class="timeline-toolbar" id="timeline-toolbar" aria-label="Timeline Filter"></div>
+
+            <div class="timeline-list" id="timeline-list" aria-label="Timeline Events">
+              <!-- Timeline-Items werden von app.ui.js eingefügt -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Bestiarium-Ansicht (neu) -->
+        <section class="bestiary-view" id="bestiary-view" hidden>
+          <header class="bestiary-header">
+            <div class="bestiary-header-top">
+              <div class="bestiary-header-copy">
+                <h2 class="bestiary-title">Bestiarium</h2>
+                <p class="bestiary-subtitle">
+                  Ein Buch der Kreaturen – wische, um zu blättern. Öffne „Inhalt“, um schnell zu springen.
+                </p>
+              </div>
+
+              <div class="bestiary-header-actions" aria-label="Bestiarium Optionen">
+                <button
+                  type="button"
+                  class="filter-chip"
+                  id="bestiary-toc-button"
+                  aria-label="Inhaltsverzeichnis öffnen"
+                >
+                  📜 Inhalt
+                </button>
+              </div>
+            </div>
+
+            <div class="bestiary-toolbar">
+              <div class="search-group">
+                <input
+                  type="search"
+                  id="bestiary-search"
+                  placeholder="Monster suchen..."
+                  autocomplete="off"
+                />
+              </div>
+              <div class="bestiary-meta" id="bestiary-meta" aria-label="Bestiarium Status"></div>
+            </div>
+          </header>
+
+          <div class="bestiary-content">
+            <!-- Buchseiten (horizontal, scroll-snap) -->
+            <div class="bestiary-book" id="bestiary-book" aria-label="Bestiarium Buchseiten">
+              <!-- Seiten werden von app.ui.render.bestiary.js eingefügt -->
+            </div>
+          </div>
+
+          <!-- TOC / Inhaltsverzeichnis (als Sheet innerhalb der View; kann später auch Overlay werden) -->
+          <div class="bestiary-toc" id="bestiary-toc" aria-hidden="true" hidden>
+            <div class="bestiary-toc-backdrop" id="bestiary-toc-backdrop"></div>
+
+            <div
+              class="bestiary-toc-panel"
+              id="bestiary-toc-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="bestiary-toc-title"
+              tabindex="-1"
+            >
+              <div class="bestiary-toc-handle" aria-hidden="true"></div>
+
+              <header class="bestiary-toc-header">
+                <h2 class="bestiary-toc-title" id="bestiary-toc-title">Inhaltsverzeichnis</h2>
+
+                <button
+                  class="icon-button bestiary-toc-close"
+                  id="bestiary-toc-close"
+                  type="button"
+                  aria-label="Inhaltsverzeichnis schließen"
+                >
+                  ✕
+                </button>
+              </header>
+
+              <div class="bestiary-toc-body">
+                <div class="search-group">
+                  <input
+                    type="search"
+                    id="bestiary-toc-search"
+                    placeholder="Im Inhalt suchen..."
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div class="bestiary-toc-list" id="bestiary-toc-list" aria-label="Monsterliste">
+                  <!-- TOC Items werden von app.ui.render.bestiary.js eingefügt -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Category Bottom Sheet -->
+    <div class="category-sheet" id="category-sheet" aria-hidden="true" hidden>
+      <div class="category-sheet-backdrop" id="category-sheet-backdrop"></div>
+
+      <div
+        class="category-sheet-panel"
+        id="category-sheet-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="category-sheet-title"
+        tabindex="-1"
+      >
+        <div class="category-sheet-handle" aria-hidden="true"></div>
+
+        <header class="category-sheet-header">
+          <h2 class="category-sheet-title" id="category-sheet-title">Kategorien</h2>
+
+          <button
+            class="icon-button category-sheet-close"
+            id="category-sheet-close"
+            type="button"
+            aria-label="Kategorien schließen"
+          >
+            ✕
+          </button>
+        </header>
+
+        <div class="category-sheet-body">
+          <div class="category-sheet-content" id="category-sheet-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay-Detailansicht -->
+    <div class="detail-overlay" id="detail-overlay" aria-hidden="true">
+      <div class="detail-backdrop" id="detail-backdrop"></div>
+      <div
+        class="detail-panel"
+        id="detail-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="detail-overlay-title"
+      >
+        <h2
+          id="detail-overlay-title"
+          style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+        >
+          Eintragdetails
+        </h2>
+
+        <button class="icon-button detail-back-button" id="detail-back-button" type="button">
+          ← Zurück
+        </button>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+
+    <!-- Tag-Filter-Overlay -->
+    <div class="tag-overlay" id="tag-overlay" aria-hidden="true">
+      <div class="tag-overlay-backdrop" id="tag-overlay-backdrop"></div>
+      <div
+        class="tag-overlay-panel"
+        id="tag-overlay-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tag-overlay-title"
+      >
+        <header class="tag-overlay-header">
+          <h2 id="tag-overlay-title">Tag-Filter</h2>
+          <button
+            class="icon-button tag-overlay-close"
+            id="tag-overlay-close"
+            aria-label="Tag-Filter schließen"
+            type="button"
+          >
+            ✕
+          </button>
+        </header>
+        <div class="tag-overlay-body">
+          <p class="tag-overlay-hint">
+            Wähle einen Tag, um die Liste zu filtern. „Alle“ entfernt den Tag-Filter.
+          </p>
+          <div class="tag-overlay-chips" id="tag-overlay-chips"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Einstellungs-Overlay -->
+    <div class="settings-overlay" id="settings-overlay" aria-hidden="true">
+      <div class="settings-backdrop" id="settings-backdrop"></div>
+      <div
+        class="settings-panel"
+        id="settings-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+      >
+        <header class="settings-header">
+          <h2 id="settings-title">Einstellungen</h2>
+        </header>
+
+        <section class="settings-section">
+          <h3>Personalisierung</h3>
+
+          <label class="settings-field" for="settings-owner-name">
+            <span class="settings-label">Charaktername</span>
+            <input
+              type="text"
+              id="settings-owner-name"
+              class="settings-input"
+              placeholder="z. B. Gottfried"
+              autocomplete="off"
+              inputmode="text"
+            />
+          </label>
+
+          <p class="settings-hint">
+            Optional: Wenn du einen Namen einträgst, erscheint im Header z.&nbsp;B. „Gottfried’s Nachschlagewerk …“.
+            Wenn das Feld leer ist, bleibt es bei „Ein Nachschlagewerk von Duria“.
+          </p>
+        </section>
+
+        <section class="settings-section">
+          <h3>Theme</h3>
+
+          <div class="theme-picker is-paged" id="theme-picker">
+            <div class="theme-kind-tabs" role="tablist" aria-label="Theme-Gruppen">
+              <button
+                type="button"
+                class="theme-kind-tab is-active"
+                id="theme-tab-light"
+                role="tab"
+                aria-selected="true"
+                aria-controls="theme-page-light"
+                data-kind="light"
+              >
+                Solis
+              </button>
+
+              <button
+                type="button"
+                class="theme-kind-tab"
+                id="theme-tab-dark"
+                role="tab"
+                aria-selected="false"
+                aria-controls="theme-page-dark"
+                data-kind="dark"
+              >
+                Nox
+              </button>
+            </div>
+
+            <div class="theme-pages">
+              <div
+                class="theme-page is-active"
+                id="theme-page-light"
+                data-kind="light"
+                role="tabpanel"
+                aria-labelledby="theme-tab-light"
+              >
+                <div class="theme-grid" aria-label="Solis Themes">
+                  <label class="theme-tile" data-theme="light">
+                    <input type="radio" name="settings-theme" value="light" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Hell</p>
+                    <p class="theme-desc">Klar & kühl – modern, sehr gut lesbar.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="parchment">
+                    <input type="radio" name="settings-theme" value="parchment" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Pergament</p>
+                    <p class="theme-desc">Pergament + Tinte – bibliophil, ruhig.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="sage">
+                    <input type="radio" name="settings-theme" value="sage" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Salbei</p>
+                    <p class="theme-desc">Leinen & Botanik – gedeckt, stoffig, warm.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="tavern">
+                    <input type="radio" name="settings-theme" value="tavern" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Taverne</p>
+                    <p class="theme-desc">Holz, Kupfer, Kerzenlicht – gemütlich & rauchig.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="sky">
+                    <input type="radio" name="settings-theme" value="sky" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Himmelskarte</p>
+                    <p class="theme-desc">Kartografie & Wolken – luftig, kühl, klar.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="sunrise">
+                    <input type="radio" name="settings-theme" value="sunrise" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Sonnenaufgang</p>
+                    <p class="theme-desc">Rosé & Gold – Dämmerung, freundlich, lebendig.</p>
+                  </label>
+                </div>
+              </div>
+
+              <div
+                class="theme-page"
+                id="theme-page-dark"
+                data-kind="dark"
+                role="tabpanel"
+                aria-labelledby="theme-tab-dark"
+                hidden
+              >
+                <div class="theme-grid" aria-label="Nox Themes">
+                  <label class="theme-tile" data-theme="dark">
+                    <input type="radio" name="settings-theme" value="dark" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Dunkel</p>
+                    <p class="theme-desc">Petrol-Wald – Standard Dark-Mode.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="forest">
+                    <input type="radio" name="settings-theme" value="forest" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Dämmerwald</p>
+                    <p class="theme-desc">Moosig & erdig – naturdunkel, sattgrün.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="bloodmoon">
+                    <input type="radio" name="settings-theme" value="bloodmoon" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Blutmond</p>
+                    <p class="theme-desc">Rot + Violett – dramatisch, mondnachtig.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="deepsea">
+                    <input type="radio" name="settings-theme" value="deepsea" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Tiefsee</p>
+                    <p class="theme-desc">Navy/Teal – ruhiger Schimmer in der Dunkelheit.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="arcane">
+                    <input type="radio" name="settings-theme" value="arcane" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Arkanum</p>
+                    <p class="theme-desc">Sternenstaub & Magie – mystisch, kontrastreich.</p>
+                  </label>
+
+                  <label class="theme-tile" data-theme="ember">
+                    <input type="radio" name="settings-theme" value="ember" style="position:absolute;opacity:0;pointer-events:none" />
+                    <div class="theme-swatch" aria-hidden="true"></div>
+                    <p class="theme-name">Glut</p>
+                    <p class="theme-desc">Asche & Funken – Schmiede-Feeling, warm-dunkel.</p>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Benutzerhand</h3>
+          <label class="settings-option">
+            <input type="radio" name="settings-hand" value="right" />
+            Rechtshänder (Standard)
+          </label>
+          <label class="settings-option">
+            <input type="radio" name="settings-hand" value="left" />
+            Linkshänder
+          </label>
+          <p class="settings-hint">
+            Die Position des Kategorie-Buttons und die Seite des Menüs richten sich nach dieser Auswahl.
+          </p>
+        </section>
+
+        <footer class="settings-footer">
+          <button type="button" id="settings-save" class="btn-primary">Änderungen übernehmen</button>
+          <button type="button" id="settings-cancel" class="btn-secondary">Abbrechen</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- WICHTIG: Reihenfolge der Skripte -->
+  <script src="data.js"></script>
+  <script src="app.core.js"></script>
+
+  <script src="app.ui.js"></script>
+  <script src="app.ui.render.js"></script>
+  <script src="app.ui.render.bestiary.js"></script>
+  <script src="app.ui.overlays.js"></script>
+
+  <script src="app.main.js"></script>
+</body>
+</html>

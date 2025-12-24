@@ -1,0 +1,750 @@
+/* =========================================================
+   Layout – Welt-Glossar
+   (Header, Sidebar, Main, Toolbar, Responsive)
+========================================================= */
+
+/* ---------------------------------------
+   App Layout
+--------------------------------------- */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  /* Safety: Layout darf niemals horizontal “rauslaufen” */
+  overflow-x: hidden;
+}
+
+/* Optional: wenn Sidebar offen ist, soll der Hintergrund nicht scrollen */
+.app.sidebar-open {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ---------------------------------------
+   Header (Idee A: Banner + Ornament + Emblem)
+--------------------------------------- */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  /* Safe-Area (iOS) + solide Mobile-Paddings */
+  padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  padding-right: calc(1rem + env(safe-area-inset-right, 0px));
+  padding-bottom: 0.75rem;
+  padding-left: calc(1rem + env(safe-area-inset-left, 0px));
+
+  /* Token-basiert (Idee A) */
+  background: var(--header-surface, var(--bg-header));
+  border-bottom: 1px solid var(--header-border, var(--sidebar-border));
+  box-shadow: var(--shadow-soft);
+
+  min-width: 0; /* wichtig: verhindert Overflow in Flex-Header */
+  overflow: hidden;
+  isolation: isolate;
+
+  /* kleiner, kontrollierter Shift: Titel wirkt “mittiger bis rechts” */
+  --header-title-shift: 18px;
+}
+
+/* Glints/Noise Overlay (Banner-Material) */
+.app-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 18% 22%, var(--header-glint-1, rgba(255, 255, 255, 0.04)), transparent 58%),
+    radial-gradient(circle at 78% 16%, var(--header-glint-2, rgba(255, 255, 255, 0.02)), transparent 64%),
+    var(--header-noise, none);
+
+  opacity: var(--header-glint-opacity, 0.8);
+  filter: saturate(1.05);
+}
+
+/* Ornament-Leiste am unteren Rand */
+.app-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 4px;
+  background: var(--header-ornament, var(--accent));
+  opacity: var(--header-ornament-opacity, 0.9);
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Header-Content immer über den Layern */
+.app-header > * {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+/* ----------------------------------------------------------
+   NEU: Banner-Layout (Kompass links, Titel “center/right”)
+---------------------------------------------------------- */
+
+.app-header-banner {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.app-header-center {
+  min-width: 0;
+
+  /* Titelblock mittiger, aber leicht nach rechts “gezogen” */
+  justify-self: center;
+  transform: translateX(var(--header-title-shift));
+
+  /* schützt vor Kollision mit FAB/Menu rechts */
+  max-width: min(70vw, 46rem);
+}
+
+.app-header-right {
+  /* Slot für spätere Actions – bleibt aktuell “unsichtbar” */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* Optionales Emblem (nur wenn im Markup vorhanden) */
+.header-emblem {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--header-emblem-fg, var(--text-main));
+  background:
+    radial-gradient(circle at 30% 25%, var(--header-emblem-glow, rgba(31, 165, 139, 0.22)), transparent 60%),
+    linear-gradient(180deg, var(--ui-glint, rgba(255, 255, 255, 0.04)), transparent 70%),
+    var(--header-emblem-bg, rgba(255, 255, 255, 0.04));
+
+  border: 1px solid var(--header-emblem-border, rgba(255, 255, 255, 0.1));
+  box-shadow:
+    0 14px 30px color-mix(in srgb, var(--header-emblem-glow, rgba(0, 0, 0, 0.25)) 35%, transparent),
+    inset 0 1px 0 var(--ui-glint-faint, rgba(255, 255, 255, 0.015));
+}
+
+.header-emblem-svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+/* View-Badge nur zeigen, wenn Inhalt da ist */
+#header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  padding: 0.22rem 0.55rem;
+  border-radius: var(--radius-sm);
+
+  background: color-mix(in srgb, var(--chip-bg) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  color: var(--text-muted);
+
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12px;
+  white-space: nowrap;
+}
+
+#header-badge:empty {
+  display: none;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  margin: 0;
+  letter-spacing: 0.05em;
+
+  /* Header-Titel: “Fantasy/Display” */
+  font-family: "Cinzel", var(--font-display);
+  font-weight: 800;
+
+  /* lange Titel sollen nicht den Header sprengen */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* Idee A: dezenter “Banner-Glow” */
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.12),
+    0 0 18px var(--header-title-glow, rgba(31, 165, 139, 0.16));
+}
+
+.app-subtitle {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+
+  /* Subtitle: clean/lesbar */
+  font-family: "Inter", var(--font-body);
+  letter-spacing: 0.02em;
+
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Einstellungs-Button (legacy – falls irgendwo noch genutzt) */
+.settings-toggle {
+  margin-left: auto;
+  font-size: 1rem;
+  flex: 0 0 auto;
+
+  background: var(--header-badge-bg, transparent);
+  border: 1px solid var(--header-badge-border, transparent);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.6rem;
+  color: var(--header-badge-fg, var(--text-muted));
+
+  box-shadow: inset 0 1px 0 var(--ui-glint-faint, rgba(255, 255, 255, 0.015));
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+.settings-toggle:hover {
+  background: color-mix(in srgb, var(--header-badge-bg, transparent) 70%, var(--ui-glint-soft, rgba(255, 255, 255, 0.02)));
+  color: var(--text-main);
+  filter: brightness(1.02);
+}
+
+.settings-toggle:active {
+  transform: translateY(0.5px);
+}
+
+.settings-toggle:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------
+   Main layout container
+--------------------------------------- */
+
+.app-layout {
+  flex: 1;
+  display: flex;
+  position: relative;
+
+  /* wichtig: Kinder dürfen schrumpfen (verhindert “geht nach rechts”) */
+  min-width: 0;
+}
+
+/* ---------------------------------------
+   Sidebar / Navigation (Mobile Overlay)
+--------------------------------------- */
+
+.sidebar {
+  position: fixed;
+  z-index: 30;
+  inset: 0 auto 0 0;
+
+  width: min(86vw, 300px);
+
+  transform: translateX(-100%);
+  transition:
+    transform var(--transition-med),
+    box-shadow var(--transition-med);
+
+  background:
+    radial-gradient(circle at 18% 12%, var(--ui-glint, rgba(255, 255, 255, 0.04)), transparent 60%),
+    radial-gradient(
+      circle at 82% 14%,
+      color-mix(in srgb, var(--accent-2, var(--accent)) 10%, transparent),
+      transparent 62%
+    ),
+    var(--surface-2, var(--bg-sidebar));
+
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: none;
+
+  max-width: 100%;
+}
+
+/* Handedness – Sidebar-Seite (mobil) */
+.app.hand-right .sidebar {
+  inset: 0 auto 0 0;
+  transform: translateX(-100%);
+  border-right: 1px solid var(--sidebar-border);
+  border-left: none;
+}
+
+.app.hand-left .sidebar {
+  inset: 0 0 0 auto;
+  transform: translateX(100%);
+  border-left: 1px solid var(--sidebar-border);
+  border-right: none;
+}
+
+.sidebar-inner {
+  height: 100%;
+  padding: 0.75rem 0.75rem 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.sidebar-header {
+  padding: 0.35rem 0.5rem 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.sidebar-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-subtle);
+  font-family: var(--font-display);
+}
+
+.category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.category-item {
+  border-radius: var(--radius-md);
+}
+
+.category-button {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border-radius: inherit;
+
+  border: 1px solid transparent;
+
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: left;
+
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    filter var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  min-width: 0;
+}
+
+.category-button:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.category-icon {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+
+  background:
+    linear-gradient(180deg, var(--ui-glint-faint, rgba(255, 255, 255, 0.015)), transparent 70%),
+    var(--chip-bg);
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
+
+  flex: 0 0 auto;
+}
+
+.category-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-item:hover .category-button {
+  background:
+    linear-gradient(180deg, var(--ui-glint-soft, rgba(255, 255, 255, 0.02)), transparent 70%),
+    radial-gradient(circle at 16% 28%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 62%),
+    radial-gradient(circle at 86% 18%, color-mix(in srgb, var(--accent-2, var(--accent)) 10%, transparent), transparent 70%),
+    color-mix(in srgb, var(--surface-2, var(--bg-sidebar)) 18%, transparent);
+
+  color: var(--text-main);
+  transform: translateX(1px);
+  filter: brightness(1.02);
+
+  border-color: color-mix(in srgb, var(--accent-border) 55%, transparent);
+  box-shadow: inset 0 1px 0 var(--ui-glint-faint, rgba(255, 255, 255, 0.015));
+}
+
+.category-item.is-active .category-button {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.0) 62%),
+    radial-gradient(circle at 16% 28%, color-mix(in srgb, var(--accent-2, var(--accent)) 14%, transparent), transparent 62%),
+    color-mix(in srgb, var(--accent-surface, var(--accent)) 18%, transparent);
+
+  color: var(--text-main);
+  border-color: var(--accent-border);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 18px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.category-item.is-active .category-icon {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.0) 62%),
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 58%),
+    color-mix(in srgb, var(--accent-soft) 85%, transparent);
+
+  border-color: color-mix(in srgb, var(--accent-border) 80%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+
+  background: color-mix(in srgb, var(--surface-0, #000) 65%, transparent);
+  backdrop-filter: blur(3px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-med);
+  z-index: 25;
+}
+
+.app.sidebar-open .sidebar {
+  transform: translateX(0);
+  box-shadow: var(--shadow-soft);
+}
+
+.app.sidebar-open .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------------------------------------
+   Main content
+--------------------------------------- */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  padding-top: 1.25rem;
+  padding-right: calc(0.75rem + env(safe-area-inset-right, 0px));
+  padding-bottom: calc(1rem + 6rem + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(0.75rem + env(safe-area-inset-left, 0px));
+
+  background:
+    radial-gradient(circle at 22% 10%, var(--ui-glint-faint, rgba(255, 255, 255, 0.015)), transparent 60%),
+    var(--surface-1, var(--bg-main));
+
+  min-width: 0;
+}
+
+/* ---------------------------------------
+   Toolbar
+--------------------------------------- */
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+  min-width: 0;
+}
+
+.search-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+#search-input {
+  flex: 1 1 0;
+  min-width: 0;
+
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
+
+  box-shadow: 0 0 0 0 rgba(31, 165, 139, 0.4);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+#search-input::placeholder {
+  color: var(--text-subtle);
+}
+
+#search-input:focus-visible {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+  background: var(--input-bg-focus);
+}
+
+.toolbar-meta {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.toolbar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+
+.toolbar-filters-label {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.toolbar-select {
+  padding: 0.35rem 0.85rem;
+  padding-right: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+
+  box-shadow: 0 0 0 0 rgba(31, 165, 139, 0.4);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-subtle) 50%),
+    linear-gradient(135deg, var(--text-subtle) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% - 3px),
+    calc(100% - 9px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+
+  max-width: 100%;
+  min-width: 0;
+}
+
+.toolbar-select:focus-visible {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+  background: var(--input-bg-focus);
+}
+
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+/* ---------------------------------------
+   Content
+--------------------------------------- */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* ---------------------------------------
+   Responsives Verhalten – Desktop
+--------------------------------------- */
+
+@media (min-width: 900px) {
+  .app-layout {
+    flex-direction: row;
+  }
+
+  .app.hand-left .app-layout {
+    flex-direction: row-reverse;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    inset: auto;
+    transform: none !important;
+    box-shadow: none !important;
+
+    flex: 0 0 260px;
+    width: 260px;
+    height: calc(100dvh - 0px);
+    z-index: 10;
+  }
+
+  .app.hand-right .sidebar {
+    border-right: 1px solid var(--sidebar-border);
+    border-left: none;
+  }
+
+  .app.hand-left .sidebar {
+    border-left: 1px solid var(--sidebar-border);
+    border-right: none;
+  }
+
+  .sidebar-backdrop {
+    display: none;
+  }
+
+  .main {
+    padding-top: 1.5rem;
+    padding-right: 1rem;
+    padding-bottom: calc(1.2rem + 6rem);
+    padding-left: 1rem;
+  }
+
+  .toolbar {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.9rem;
+  }
+
+  .toolbar-filters {
+    justify-content: flex-end;
+  }
+
+  .entry-list {
+    max-height: calc(100dvh - 165px);
+    overflow: auto;
+    padding-right: 0.2rem;
+    padding-bottom: 6rem;
+    scrollbar-gutter: stable;
+  }
+
+  .app-header {
+    padding-inline: 1.2rem;
+    padding-top: 0.75rem;
+    --header-title-shift: 26px;
+  }
+
+  .app-header-center {
+    max-width: min(60vw, 54rem);
+  }
+}
+
+/* ---------------------------------------
+   Kleinere Bildschirme
+--------------------------------------- */
+
+@media (max-width: 520px) {
+  .app-header {
+    gap: 0.6rem;
+    --header-title-shift: 12px;
+  }
+
+  .header-emblem {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header-emblem-svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding-right: calc(0.65rem + env(safe-area-inset-right, 0px));
+    padding-left: calc(0.65rem + env(safe-area-inset-left, 0px));
+  }
+
+  .app-title {
+    font-size: 1.05rem;
+  }
+}

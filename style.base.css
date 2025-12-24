@@ -1,0 +1,1988 @@
+:root {
+  /* =========================================
+     TYPOGRAPHY / UI BASICS (theme-able)
+  ========================================= */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 999px;
+
+  --transition-fast: 150ms ease-out;
+  --transition-med: 220ms ease-out;
+
+  /* =========================================
+     STANDARD: Dark Theme (petrol / Wald-Fantasy)
+     (bewusst: dunkles Teal/Charcoal statt „reines schwarz“)
+  ========================================= */
+
+  /* Ink: dunkler Anker für Schatten/Overlays (wird in Light-Schemes überschrieben) */
+  --ink-0: #061412;
+
+  /* Mehr Layering + minimal mehr Farbtiefe */
+  --bg-body:
+    radial-gradient(circle at 18% 12%, rgba(31, 165, 139, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 18%, rgba(34, 197, 94, 0.09), transparent 60%),
+    radial-gradient(circle at 70% 78%, rgba(14, 165, 233, 0.05), transparent 62%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.016) 0 2px, transparent 2px 7px),
+    #06110f;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(45, 212, 191, 0.22), transparent 58%),
+    radial-gradient(circle at 78% 12%, rgba(34, 197, 94, 0.12), transparent 62%),
+    radial-gradient(circle at top left, #1a7b6e 0%, #0b3a32 38%, #061412 100%);
+
+  /* klarere Trennung: Sidebar minimal heller / “satter”, Main neutraler & tiefer */
+  --bg-sidebar: rgba(7, 32, 29, 0.985);
+  --bg-main: rgba(4, 18, 17, 0.985);
+
+  --accent: #1fa58b;
+  --accent-soft: rgba(31, 165, 139, 0.18);
+  --accent-border: rgba(45, 212, 191, 0.78);
+
+  /* Zusätzliche Akzente (für Dashboard/Progress/Highlights) */
+  --accent-2: #22c55e;
+  --accent-3: #0ea5e9;
+
+  /* Text auf Accent-Flächen */
+  --on-accent: #f8fafc;
+
+  /* =========================================
+     NEW: Accent Surfaces (für Primary Buttons/FAB/Active States)
+     -> macht Dark Themes deutlich “theme-iger” (mehrfarbig statt 1 Accent)
+  ========================================= */
+
+  /* Fallbacks (wenn color-mix nicht verfügbar ist) */
+  --accent-soft-2: rgba(34, 197, 94, 0.14);
+  --accent-soft-3: rgba(14, 165, 233, 0.12);
+
+  /* bevorzugt */
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  /* Solid für Ringe/Outlines/Icons */
+  --accent-surface-solid: var(--accent);
+
+  /* Primary-Flächen (Gradient in Dark) */
+  --accent-surface: var(--accent); /* fallback */
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+
+  /* Hover-Variante */
+  --accent-surface-hover: var(--accent); /* fallback */
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  /* Cards: mehr Material/Glanz, weniger “eine Fläche” */
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(10, 36, 32, 0.86);
+
+  --card-border: rgba(139, 184, 176, 0.26);
+  --card-border: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.14));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(16, 60, 54, 0.84);
+
+  --text-main: #f9fafb;
+  --text-muted: #aab8bd;
+  --text-subtle: #7b8b8f;
+
+  --shadow-soft: 0 20px 42px rgba(0, 0, 0, 0.68);
+
+  /* Controls: sichtbarer Unterschied zwischen Chip/Input/Button */
+  --sidebar-border: rgba(12, 46, 42, 0.92);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(7, 36, 33, 0.58);
+
+  --meta-border: rgba(46, 64, 61, 0.88);
+  --meta-border: color-mix(in srgb, var(--accent) 30%, rgba(46, 64, 61, 0.88));
+
+  --empty-border: rgba(45, 64, 60, 0.90);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(5, 24, 23, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(7, 32, 30, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(7, 38, 35, 0.74);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(14, 64, 58, 0.92);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(31, 165, 139, 0.46), transparent 60%),
+    radial-gradient(circle at 80% 25%, rgba(45, 212, 191, 0.22), transparent 55%),
+    radial-gradient(circle at 35% 90%, rgba(14, 165, 233, 0.08), transparent 60%),
+    #061412;
+
+  /* =========================================
+     Shared tokens (macht Components theme-treu)
+  ========================================= */
+
+  /* Surfaces */
+  --surface-0: var(--ink-0);            /* „Ink“ für Backdrops/Shadows (auch in Light dunkel lassen) */
+  --surface-1: var(--bg-main);          /* main */
+  --surface-2: var(--bg-sidebar);       /* sidebar */
+  --surface-3: var(--card-bg);          /* card */
+  --surface-4: var(--card-hover-bg);    /* hover/elevated alt */
+
+  /* Elevated Surface (Fallback + bevorzugt) */
+  --surface-elevated: var(--card-bg);
+  --surface-elevated: color-mix(in srgb, var(--card-bg) 92%, var(--bg-main));
+
+  /* Borders */
+  --border-subtle: var(--card-border);
+  --border-strong: var(--card-border);
+  --border-strong: color-mix(in srgb, var(--card-border) 55%, var(--text-main));
+
+  /* Shadows */
+  --shadow-card: var(--shadow-soft);
+  --shadow-pop: 0 14px 30px rgba(0, 0, 0, 0.45);
+
+  /* “Material”-Glints (Dark: leicht getönt statt neutral-grau) */
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.03));
+
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.02));
+
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  /* Swatch-Ring/Check (Light-Scheme überschreibt) */
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.06));
+
+  --swatch-check-border: rgba(255, 255, 255, 0.55);
+
+  /* Badges */
+  --badge-new-bg: #f97316;
+  --badge-new-fg: #111827;
+
+  /* Timeline Tokens */
+  --timeline-border: var(--border-subtle);
+  --timeline-axis: rgba(255, 255, 255, 0.10);
+  --timeline-grid: rgba(255, 255, 255, 0.06);
+
+  /* Fallback falls color-mix nicht unterstützt wird */
+  --timeline-label-bg: rgba(4, 18, 17, 0.88);
+  --timeline-label-border: rgba(255, 255, 255, 0.06);
+  --timeline-bar-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+
+  /* bevorzugt, wenn verfügbar */
+  --timeline-label-bg: color-mix(in srgb, var(--bg-main) 88%, transparent);
+
+  /* =========================================
+     NEW: Header Banner Tokens (Idee A)
+     -> wird in style.layout.css genutzt (Grid/Ornament/Emblem),
+        bleibt hier rein "theme-able".
+  ========================================= */
+
+  /* Grundfläche/Material */
+  --header-surface: var(--bg-header);
+
+  /* Fallback */
+  --header-border: rgba(255, 255, 255, 0.08);
+  /* bevorzugt */
+  --header-border: color-mix(in srgb, var(--accent) 20%, var(--card-border));
+
+  /* Ornament-Linie (unten im Header) */
+  --header-ornament: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, var(--accent-3) 100%);
+  --header-ornament-opacity: 0.90;
+
+  /* Glanz/Pattern (für ::before Layer im Header) */
+  --header-glint-1: var(--ui-glint);
+  --header-glint-2: var(--ui-glint-soft);
+  --header-glint-opacity: 0.85;
+
+  /* Dezentes "Noise"-Band (falls du das im Layout als Overlay nutzt) */
+  --header-noise:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.020) 0 2px, transparent 2px 9px);
+  --header-noise-opacity: 0.22;
+
+  /* Titel/Untertitel – optional für Text-Shadow */
+  --header-title-glow: rgba(31, 165, 139, 0.18);
+  --header-title-glow: color-mix(in srgb, var(--accent) 22%, transparent);
+
+  /* Emblem/Badge Flächen */
+  --header-emblem-fg: var(--text-main);
+
+  /* Fallback */
+  --header-emblem-bg: rgba(255, 255, 255, 0.04);
+  /* bevorzugt */
+  --header-emblem-bg: color-mix(in srgb, var(--surface-elevated) 55%, transparent);
+
+  /* Fallback */
+  --header-emblem-border: rgba(255, 255, 255, 0.10);
+  /* bevorzugt */
+  --header-emblem-border: color-mix(in srgb, var(--accent) 28%, var(--ring-outer));
+
+  --header-emblem-glow: rgba(31, 165, 139, 0.22);
+  --header-emblem-glow: color-mix(in srgb, var(--accent) 26%, transparent);
+
+  /* Badge (optional, z.B. View-Label) */
+  --header-badge-bg: rgba(255, 255, 255, 0.04);
+  --header-badge-bg: color-mix(in srgb, var(--chip-bg) 70%, transparent);
+
+  --header-badge-border: rgba(255, 255, 255, 0.08);
+  --header-badge-border: color-mix(in srgb, var(--accent) 16%, var(--card-border));
+
+  --header-badge-fg: var(--text-muted);
+
+  /* Hilft Browsern bei Form-UI */
+  color-scheme: dark;
+}
+
+/* Optional explizit */
+:root[data-theme="dark"] {
+  /* nutzt Standardwerte aus :root */
+}
+
+/* -----------------------------------------
+   LIGHT-SCHEME HELPERS (global für alle Light Themes)
+----------------------------------------- */
+:root[data-theme="light"],
+:root[data-theme="parchment"],
+:root[data-theme="sage"],
+:root[data-theme="tavern"],
+:root[data-theme="sky"],
+:root[data-theme="sunrise"] {
+  /* wichtig: Overlays/Shadows sollen auch im Light „abdunkeln“ */
+  --ink-0: #0b0f14;
+
+  --ring-outer: rgba(15, 23, 42, 0.10);
+  --swatch-check-border: rgba(15, 23, 42, 0.18);
+
+  --ui-glint: rgba(15, 23, 42, 0.06);
+  --ui-glint-soft: rgba(15, 23, 42, 0.035);
+  --ui-glint-faint: rgba(15, 23, 42, 0.02);
+
+  /* Light bleibt bewusst „clean“: Primary-Flächen nicht automatisch bunt/gradient */
+  --accent-surface-solid: var(--accent);
+  --accent-surface: var(--accent);
+  --accent-surface-hover: var(--accent);
+
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 10%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 10%, transparent);
+
+  /* Fallback für Timeline-Label in Light (falls color-mix fehlt) */
+  --timeline-label-bg: rgba(255, 255, 255, 0.72);
+
+  /* =========================================
+     Header Banner Tokens: Light-Overrides (Idee A)
+  ========================================= */
+
+  /* Ornament & Glows etwas zurücknehmen */
+  --header-ornament-opacity: 0.74;
+  --header-glint-opacity: 0.70;
+  --header-noise-opacity: 0.14;
+
+  /* Titelglow in Light viel subtiler */
+  --header-title-glow: rgba(15, 23, 42, 0.08);
+
+  /* Emblem wirkt "gedruckt" statt neon */
+  --header-emblem-bg: rgba(255, 255, 255, 0.55);
+  --header-emblem-border: rgba(15, 23, 42, 0.12);
+  --header-emblem-glow: rgba(15, 23, 42, 0.06);
+
+  --header-badge-bg: rgba(255, 255, 255, 0.55);
+  --header-badge-border: rgba(15, 23, 42, 0.10);
+  --header-badge-fg: var(--text-muted);
+}
+
+/* -----------------------------------------
+   LIGHT THEMES
+----------------------------------------- */
+
+:root[data-theme="light"] {
+  /* CLEAN / HELLES UI: kühl, modern (nicht “weiß + akzent”) */
+  --bg-body:
+    radial-gradient(circle at 15% 10%, rgba(31, 165, 139, 0.10), transparent 60%),
+    radial-gradient(circle at 85% 20%, rgba(37, 99, 235, 0.08), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(15, 23, 42, 0.018) 0 2px, transparent 2px 8px),
+    #edf3f4;
+
+  --bg-header: linear-gradient(
+    135deg,
+    #e6f5f1 0%,
+    #d4f1ec 38%,
+    #f4faf9 100%
+  );
+
+  --bg-sidebar: rgba(251, 253, 252, 0.94);
+  --bg-main: rgba(241, 246, 245, 0.96);
+
+  --accent: #1fa58b;
+  --accent-soft: rgba(31, 165, 139, 0.10);
+  --accent-border: rgba(31, 165, 139, 0.55);
+
+  --accent-2: #2563eb;
+  --accent-3: #10b981;
+  --on-accent: #0b0f14;
+
+  /* Cards leicht “milchig” statt reinweiß */
+  --card-bg: rgba(255, 255, 255, 0.86);
+  --card-border: rgba(148, 163, 184, 0.42);
+  --card-hover-bg: rgba(214, 243, 238, 0.92);
+
+  --text-main: #0f1b1f;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+
+  --shadow-soft: 0 12px 26px rgba(15, 23, 42, 0.14);
+
+  --sidebar-border: rgba(179, 201, 193, 0.85);
+  --chip-bg: rgba(214, 243, 238, 0.72);
+  --meta-border: rgba(163, 190, 182, 0.85);
+  --empty-border: rgba(203, 213, 225, 0.95);
+  --input-bg: rgba(255, 255, 255, 0.90);
+  --input-bg-focus: rgba(249, 250, 251, 0.98);
+  --button-bg: rgba(255, 255, 255, 0.85);
+  --button-bg-hover: rgba(214, 243, 238, 0.88);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(31, 165, 139, 0.16),
+      rgba(255, 255, 255, 0.86) 42%,
+      rgba(236, 253, 245, 0.90) 100%
+    );
+
+  --timeline-axis: rgba(15, 23, 42, 0.14);
+  --timeline-grid: rgba(15, 23, 42, 0.08);
+  --timeline-label-border: rgba(15, 23, 42, 0.08);
+
+  color-scheme: light;
+}
+
+/* Parchment Theme – echtes Pergament + Tinte */
+:root[data-theme="parchment"] {
+  --font-body: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-display: var(--font-body);
+
+  --bg-body:
+    radial-gradient(circle at 20% 15%, rgba(29, 78, 216, 0.06), transparent 55%),
+    radial-gradient(circle at 80% 18%, rgba(120, 53, 15, 0.07), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(120, 53, 15, 0.04) 0 1px, transparent 1px 6px),
+    #f4ecd9;
+
+  --bg-header: linear-gradient(
+    135deg,
+    #f4e6cd 0%,
+    #efe0c7 34%,
+    #faf2e2 100%
+  );
+
+  --bg-sidebar: rgba(251, 246, 235, 0.94);
+  --bg-main: rgba(248, 240, 224, 0.96);
+
+  --accent: #1f4e79;
+  --accent-soft: rgba(31, 78, 121, 0.12);
+  --accent-border: rgba(31, 78, 121, 0.55);
+
+  --accent-2: #b45309;
+  --accent-3: #16a34a;
+  --on-accent: #f8fafc;
+
+  --card-bg: rgba(255, 250, 240, 0.88);
+  --card-border: rgba(120, 53, 15, 0.22);
+  --card-hover-bg: rgba(251, 243, 220, 0.95);
+
+  --text-main: #1f2937;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+
+  --shadow-soft: 0 14px 28px rgba(88, 61, 32, 0.18);
+
+  --sidebar-border: rgba(120, 53, 15, 0.18);
+  --chip-bg: rgba(251, 243, 220, 0.9);
+  --meta-border: rgba(31, 78, 121, 0.45);
+  --empty-border: rgba(120, 53, 15, 0.22);
+  --input-bg: rgba(255, 250, 240, 0.92);
+  --input-bg-focus: rgba(255, 252, 247, 0.98);
+  --button-bg: rgba(255, 250, 240, 0.90);
+  --button-bg-hover: rgba(251, 243, 220, 0.96);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(31, 78, 121, 0.18),
+      rgba(255, 250, 240, 0.88) 44%,
+      rgba(242, 231, 211, 0.92) 100%
+    );
+
+  --timeline-axis: rgba(31, 41, 55, 0.16);
+  --timeline-grid: rgba(31, 41, 55, 0.10);
+  --timeline-label-border: rgba(31, 41, 55, 0.08);
+
+  color-scheme: light;
+}
+
+/* Sage Theme – LINEN / BOTANIK */
+:root[data-theme="sage"] {
+  --bg-body:
+    radial-gradient(circle at 18% 18%, rgba(63, 111, 90, 0.10), transparent 55%),
+    radial-gradient(circle at 85% 22%, rgba(15, 23, 42, 0.04), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(63, 111, 90, 0.035) 0 2px, transparent 2px 10px),
+    #f1efe3;
+
+  --bg-header: linear-gradient(
+    135deg,
+    #f0eddc 0%,
+    #e3ece0 40%,
+    #faf9f2 100%
+  );
+
+  --bg-sidebar: rgba(251, 250, 243, 0.94);
+  --bg-main: rgba(244, 242, 233, 0.96);
+
+  --accent: #3f6f5a;
+  --accent-soft: rgba(63, 111, 90, 0.15);
+  --accent-border: rgba(63, 111, 90, 0.55);
+
+  --accent-2: #0f766e;
+  --accent-3: #a16207;
+  --on-accent: #0b0f14;
+
+  --card-bg: rgba(253, 251, 246, 0.88);
+  --card-border: rgba(63, 111, 90, 0.22);
+  --card-hover-bg: rgba(231, 239, 228, 0.95);
+
+  --text-main: #12201a;
+  --text-muted: #3f4a45;
+  --text-subtle: #61706a;
+
+  --shadow-soft: 0 12px 26px rgba(15, 23, 42, 0.12);
+
+  --sidebar-border: rgba(63, 111, 90, 0.18);
+  --chip-bg: rgba(231, 239, 228, 0.9);
+  --meta-border: rgba(63, 111, 90, 0.42);
+  --empty-border: rgba(63, 111, 90, 0.22);
+  --input-bg: rgba(253, 251, 246, 0.92);
+  --input-bg-focus: rgba(255, 255, 252, 0.98);
+  --button-bg: rgba(253, 251, 246, 0.90);
+  --button-bg-hover: rgba(231, 239, 228, 0.96);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(63, 111, 90, 0.18),
+      rgba(253, 251, 246, 0.88) 46%,
+      rgba(231, 239, 228, 0.92) 100%
+    );
+
+  --timeline-axis: rgba(18, 32, 26, 0.16);
+  --timeline-grid: rgba(18, 32, 26, 0.10);
+  --timeline-label-border: rgba(18, 32, 26, 0.08);
+
+  color-scheme: light;
+}
+
+/* Tavern Theme – HOLZ / KERZENLICHT */
+:root[data-theme="tavern"] {
+  --font-body: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-display: var(--font-body);
+
+  --bg-body:
+    radial-gradient(circle at 18% 16%, rgba(154, 52, 18, 0.11), transparent 55%),
+    radial-gradient(circle at 82% 22%, rgba(161, 98, 7, 0.11), transparent 58%),
+    repeating-linear-gradient(90deg, rgba(78, 52, 33, 0.04) 0 1px, transparent 1px 8px),
+    #f0e0cc;
+
+  --bg-header: radial-gradient(
+      circle at 22% 0%,
+      rgba(249, 115, 22, 0.30) 0%,
+      rgba(154, 52, 18, 0.18) 42%,
+      rgba(242, 229, 211, 0.0) 70%
+    ),
+    linear-gradient(135deg, #f1d6ba 0%, #efc798 40%, #faefde 100%);
+
+  --bg-sidebar: rgba(255, 246, 234, 0.94);
+  --bg-main: rgba(249, 237, 220, 0.96);
+
+  --accent: #9a3412;
+  --accent-soft: rgba(154, 52, 18, 0.15);
+  --accent-border: rgba(154, 52, 18, 0.55);
+
+  --accent-2: #f97316;
+  --accent-3: #a16207;
+  --on-accent: #0b0f14;
+
+  --card-bg: rgba(255, 248, 238, 0.88);
+  --card-border: rgba(78, 52, 33, 0.22);
+  --card-hover-bg: rgba(255, 233, 204, 0.95);
+
+  --text-main: #2a160c;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+
+  --shadow-soft: 0 14px 30px rgba(78, 52, 33, 0.18);
+
+  --sidebar-border: rgba(78, 52, 33, 0.18);
+  --chip-bg: rgba(255, 233, 204, 0.92);
+  --meta-border: rgba(154, 52, 18, 0.42);
+  --empty-border: rgba(78, 52, 33, 0.22);
+  --input-bg: rgba(255, 248, 238, 0.92);
+  --input-bg-focus: rgba(255, 252, 247, 0.98);
+  --button-bg: rgba(255, 248, 238, 0.90);
+  --button-bg-hover: rgba(255, 233, 204, 0.96);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(249, 115, 22, 0.20),
+      rgba(255, 248, 238, 0.88) 46%,
+      rgba(255, 233, 204, 0.92) 100%
+    );
+
+  --timeline-axis: rgba(42, 22, 12, 0.16);
+  --timeline-grid: rgba(42, 22, 12, 0.10);
+  --timeline-label-border: rgba(42, 22, 12, 0.08);
+
+  color-scheme: light;
+}
+
+/* Sky Theme – Kartografie / Wolken */
+:root[data-theme="sky"] {
+  --bg-body:
+    radial-gradient(circle at 18% 10%, rgba(37, 99, 235, 0.10), transparent 60%),
+    radial-gradient(circle at 80% 18%, rgba(14, 165, 233, 0.10), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(11, 26, 51, 0.018) 0 2px, transparent 2px 9px),
+    #edf4ff;
+
+  --bg-header: linear-gradient(
+    135deg,
+    #e5efff 0%,
+    #d4ebff 42%,
+    #f5f9ff 100%
+  );
+
+  --bg-sidebar: rgba(250, 252, 255, 0.94);
+  --bg-main: rgba(241, 246, 255, 0.96);
+
+  --accent: #2563eb;
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  --accent-border: rgba(59, 130, 246, 0.6);
+
+  --accent-2: #0ea5e9;
+  --accent-3: #38bdf8;
+  --on-accent: #f8fafc;
+
+  --card-bg: rgba(248, 251, 255, 0.88);
+  --card-border: rgba(37, 99, 235, 0.18);
+  --card-hover-bg: rgba(230, 242, 255, 0.95);
+
+  --text-main: #0b1a33;
+  --text-muted: #3b4a5c;
+  --text-subtle: #64748b;
+
+  --shadow-soft: 0 12px 26px rgba(15, 23, 42, 0.12);
+
+  --sidebar-border: rgba(191, 219, 254, 0.8);
+  --chip-bg: rgba(230, 242, 255, 0.9);
+  --meta-border: rgba(59, 130, 246, 0.45);
+  --empty-border: rgba(37, 99, 235, 0.18);
+  --input-bg: rgba(248, 251, 255, 0.92);
+  --input-bg-focus: rgba(255, 255, 255, 0.98);
+  --button-bg: rgba(248, 251, 255, 0.90);
+  --button-bg-hover: rgba(230, 242, 255, 0.96);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.16),
+      rgba(248, 251, 255, 0.88) 46%,
+      rgba(239, 246, 255, 0.92) 100%
+    );
+
+  --timeline-axis: rgba(11, 26, 51, 0.16);
+  --timeline-grid: rgba(11, 26, 51, 0.10);
+  --timeline-label-border: rgba(11, 26, 51, 0.08);
+
+  color-scheme: light;
+}
+
+/* Sunrise Theme – Morgenrot / Dämmerung */
+:root[data-theme="sunrise"] {
+  --bg-body:
+    radial-gradient(circle at 16% 12%, rgba(244, 63, 94, 0.12), transparent 55%),
+    radial-gradient(circle at 82% 18%, rgba(234, 179, 8, 0.10), transparent 58%),
+    repeating-linear-gradient(135deg, rgba(42, 18, 8, 0.018) 0 2px, transparent 2px 9px),
+    #fff0ea;
+
+  --bg-header: linear-gradient(
+    135deg,
+    #ffdcd4 0%,
+    #ffcaa8 34%,
+    #f7cbff 62%,
+    #fff6e9 100%
+  );
+
+  --bg-sidebar: rgba(255, 249, 244, 0.94);
+  --bg-main: rgba(255, 244, 233, 0.96);
+
+  --accent: #f43f5e;
+  --accent-soft: rgba(244, 63, 94, 0.15);
+  --accent-border: rgba(244, 63, 94, 0.55);
+
+  --accent-2: #eab308;
+  --accent-3: #a855f7;
+  --on-accent: #0b0f14;
+
+  --card-bg: rgba(255, 250, 247, 0.88);
+  --card-border: rgba(244, 63, 94, 0.18);
+  --card-hover-bg: rgba(255, 231, 233, 0.95);
+
+  --text-main: #2a1208;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+
+  --shadow-soft: 0 14px 30px rgba(124, 58, 19, 0.14);
+
+  --sidebar-border: rgba(254, 215, 170, 0.75);
+  --chip-bg: rgba(255, 231, 233, 0.9);
+  --meta-border: rgba(244, 63, 94, 0.45);
+  --empty-border: rgba(244, 63, 94, 0.18);
+  --input-bg: rgba(255, 250, 247, 0.92);
+  --input-bg-focus: rgba(255, 255, 255, 0.98);
+  --button-bg: rgba(255, 250, 247, 0.90);
+  --button-bg-hover: rgba(255, 231, 233, 0.96);
+
+  --detail-bg: radial-gradient(
+      circle at top left,
+      rgba(244, 63, 94, 0.18),
+      rgba(255, 250, 247, 0.88) 46%,
+      rgba(255, 231, 233, 0.92) 100%
+    );
+
+  --timeline-axis: rgba(42, 18, 8, 0.16);
+  --timeline-grid: rgba(42, 18, 8, 0.10);
+  --timeline-label-border: rgba(42, 18, 8, 0.08);
+
+  color-scheme: light;
+}
+
+/* -----------------------------------------
+   DARK THEMES
+----------------------------------------- */
+
+/* Forest Theme – moosig */
+:root[data-theme="forest"] {
+  --ink-0: #06110b;
+
+  --bg-body:
+    radial-gradient(circle at 18% 12%, rgba(34, 197, 94, 0.16), transparent 55%),
+    radial-gradient(circle at 78% 18%, rgba(161, 98, 7, 0.11), transparent 60%),
+    radial-gradient(circle at 70% 78%, rgba(163, 230, 53, 0.06), transparent 62%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 7px),
+    #06110b;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(74, 222, 128, 0.22), transparent 60%),
+    radial-gradient(circle at 78% 12%, rgba(245, 158, 11, 0.10), transparent 62%),
+    radial-gradient(circle at top left, #1b7a3f 0%, #07351c 40%, #06110b 100%);
+
+  /* mehr Separation */
+  --bg-sidebar: rgba(6, 26, 16, 0.985);
+  --bg-main: rgba(3, 16, 10, 0.985);
+
+  --accent: #22c55e;
+  --accent-soft: rgba(34, 197, 94, 0.18);
+  --accent-border: rgba(74, 222, 128, 0.85);
+  --accent-border: color-mix(in srgb, var(--accent) 60%, var(--accent-2));
+
+  --accent-2: #a3e635;
+  --accent-3: #f59e0b;
+  --on-accent: #0b0f14;
+
+  --accent-soft-2: rgba(163, 230, 53, 0.14);
+  --accent-soft-3: rgba(245, 158, 11, 0.12);
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  --accent-surface-solid: var(--accent);
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(9, 30, 18, 0.86);
+
+  --card-border: rgba(34, 197, 94, 0.26);
+  --card-border: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.13));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(12, 54, 28, 0.84);
+
+  --text-main: #f9fafb;
+  --text-muted: #b6c2c0;
+  --text-subtle: #7f8a87;
+
+  --shadow-soft: 0 20px 42px rgba(0, 0, 0, 0.72);
+
+  --sidebar-border: rgba(34, 197, 94, 0.18);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(9, 40, 24, 0.60);
+
+  --meta-border: rgba(34, 197, 94, 0.45);
+  --meta-border: color-mix(in srgb, var(--accent) 34%, rgba(24, 54, 36, 0.9));
+
+  --empty-border: rgba(34, 197, 94, 0.28);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(5, 24, 14, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(7, 36, 20, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(9, 40, 24, 0.74);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(10, 58, 32, 0.92);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.44), transparent 60%),
+    radial-gradient(circle at 85% 22%, rgba(161, 98, 7, 0.20), transparent 58%),
+    radial-gradient(circle at 38% 90%, rgba(163, 230, 53, 0.08), transparent 60%),
+    #06110b;
+
+  /* getönte Glints */
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.03));
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.02));
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.06));
+}
+
+/* Bloodmoon Theme – Rot + Violett */
+:root[data-theme="bloodmoon"] {
+  --ink-0: #14060c;
+
+  --bg-body:
+    radial-gradient(circle at 18% 12%, rgba(239, 68, 68, 0.16), transparent 55%),
+    radial-gradient(circle at 82% 18%, rgba(168, 85, 247, 0.13), transparent 60%),
+    radial-gradient(circle at 68% 78%, rgba(249, 115, 22, 0.06), transparent 62%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.013) 0 2px, transparent 2px 8px),
+    #14060c;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(248, 113, 113, 0.20), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(168, 85, 247, 0.14), transparent 62%),
+    radial-gradient(circle at 78% 12%, rgba(249, 115, 22, 0.10), transparent 62%),
+    radial-gradient(circle at top left, #8b1d2c 0%, #3a0a12 40%, #14060c 100%);
+
+  /* mehr Separation: Main = “wein”, Sidebar = “violett” */
+  --bg-sidebar: rgba(22, 10, 28, 0.985);
+  --bg-main: rgba(13, 6, 14, 0.985);
+
+  --accent: #ef4444;
+  --accent-soft: rgba(239, 68, 68, 0.18);
+  --accent-border: rgba(248, 113, 113, 0.85);
+  --accent-border: color-mix(in srgb, var(--accent) 55%, var(--accent-2));
+
+  --accent-2: #a855f7;
+  --accent-3: #f97316;
+  --on-accent: #f8fafc;
+
+  --accent-soft-2: rgba(168, 85, 247, 0.14);
+  --accent-soft-3: rgba(249, 115, 22, 0.12);
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  --accent-surface-solid: var(--accent);
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(28, 12, 26, 0.86);
+
+  --card-border: rgba(239, 68, 68, 0.22);
+  --card-border: color-mix(in srgb, var(--accent) 18%, color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.14)));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(52, 14, 34, 0.84);
+
+  --text-main: #fff7f7;
+  --text-muted: #e5e7eb;
+  --text-subtle: #b7b0c2;
+
+  --shadow-soft: 0 22px 44px rgba(0, 0, 0, 0.78);
+
+  --sidebar-border: rgba(168, 85, 247, 0.16);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(46, 14, 38, 0.60);
+
+  --meta-border: rgba(239, 68, 68, 0.45);
+  --meta-border: color-mix(in srgb, var(--accent) 28%, rgba(90, 24, 44, 0.78));
+
+  --empty-border: rgba(239, 68, 68, 0.22);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(24, 10, 18, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(40, 14, 26, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(46, 14, 38, 0.72);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(127, 29, 29, 0.90);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(248, 113, 113, 0.44), transparent 60%),
+    radial-gradient(circle at 82% 24%, rgba(168, 85, 247, 0.24), transparent 58%),
+    radial-gradient(circle at 35% 90%, rgba(249, 115, 22, 0.10), transparent 60%),
+    #14060c;
+
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent-2) 14%, rgba(255, 255, 255, 0.03));
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent) 10%, rgba(255, 255, 255, 0.02));
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent-2) 12%, rgba(255, 255, 255, 0.06));
+}
+
+/* Deepsea Theme – Tiefsee (Teal/Navy) */
+:root[data-theme="deepsea"] {
+  --ink-0: #06101a;
+
+  --bg-body:
+    radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.14), transparent 55%),
+    radial-gradient(circle at 82% 18%, rgba(45, 212, 191, 0.11), transparent 60%),
+    radial-gradient(circle at 68% 78%, rgba(29, 78, 216, 0.06), transparent 62%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.013) 0 2px, transparent 2px 8px),
+    #06101a;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(56, 189, 248, 0.20), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(45, 212, 191, 0.14), transparent 62%),
+    radial-gradient(circle at 78% 12%, rgba(29, 78, 216, 0.10), transparent 62%),
+    radial-gradient(circle at top left, #0b2b3d 0%, #071225 42%, #06101a 100%);
+
+  /* mehr Separation: Main = tiefer navy, Sidebar = teal-navy */
+  --bg-sidebar: rgba(5, 16, 30, 0.985);
+  --bg-main: rgba(3, 10, 18, 0.985);
+
+  --accent: #0ea5e9;
+  --accent-soft: rgba(56, 189, 248, 0.20);
+  --accent-border: rgba(56, 189, 248, 0.78);
+  --accent-border: color-mix(in srgb, var(--accent) 55%, var(--accent-2));
+
+  --accent-2: #2dd4bf;
+  --accent-3: #1d4ed8;
+  --on-accent: #f8fafc;
+
+  --accent-soft-2: rgba(45, 212, 191, 0.14);
+  --accent-soft-3: rgba(29, 78, 216, 0.12);
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  --accent-surface-solid: var(--accent);
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(7, 24, 44, 0.86);
+
+  --card-border: rgba(56, 189, 248, 0.22);
+  --card-border: color-mix(in srgb, var(--accent) 18%, color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.14)));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(12, 40, 72, 0.84);
+
+  --text-main: #e6f7ff;
+  --text-muted: #b8c5d6;
+  --text-subtle: #7f93aa;
+
+  --shadow-soft: 0 22px 44px rgba(0, 0, 0, 0.78);
+
+  --sidebar-border: rgba(45, 212, 191, 0.14);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(10, 32, 58, 0.58);
+
+  --meta-border: rgba(56, 189, 248, 0.42);
+  --meta-border: color-mix(in srgb, var(--accent-2) 22%, rgba(56, 189, 248, 0.28));
+
+  --empty-border: rgba(56, 189, 248, 0.22);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(6, 18, 34, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(10, 32, 58, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(10, 32, 58, 0.72);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(30, 64, 175, 0.90);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.40), transparent 55%),
+    radial-gradient(circle at 85% 25%, rgba(45, 212, 191, 0.20), transparent 58%),
+    radial-gradient(circle at 35% 90%, rgba(29, 78, 216, 0.10), transparent 60%),
+    #06101a;
+
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.03));
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.02));
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.06));
+}
+
+/* Arcane Theme – Magie / Sternenstaub */
+:root[data-theme="arcane"] {
+  --ink-0: #090818;
+
+  --bg-body:
+    radial-gradient(circle at 20% 12%, rgba(192, 132, 252, 0.16), transparent 55%),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.12), transparent 60%),
+    radial-gradient(circle at 68% 78%, rgba(244, 114, 182, 0.06), transparent 62%),
+    radial-gradient(circle at 12% 78%, rgba(255, 255, 255, 0.045) 0 1px, transparent 2px 100%),
+    radial-gradient(circle at 48% 58%, rgba(255, 255, 255, 0.04) 0 1px, transparent 2px 100%),
+    radial-gradient(circle at 78% 72%, rgba(255, 255, 255, 0.035) 0 1px, transparent 2px 100%),
+    #090818;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(192, 132, 252, 0.18), transparent 62%),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.12), transparent 64%),
+    radial-gradient(circle at 78% 12%, rgba(244, 114, 182, 0.10), transparent 64%),
+    radial-gradient(circle at top left, #4c1d95 0%, #23114f 45%, #090818 100%);
+
+  /* mehr Separation */
+  --bg-sidebar: rgba(14, 12, 38, 0.985);
+  --bg-main: rgba(8, 7, 20, 0.985);
+
+  --accent: #a855f7;
+  --accent-soft: rgba(168, 85, 247, 0.18);
+  --accent-border: rgba(192, 132, 252, 0.82);
+  --accent-border: color-mix(in srgb, var(--accent) 55%, var(--accent-2));
+
+  --accent-2: #3b82f6;
+  --accent-3: #f472b6;
+  --on-accent: #f8fafc;
+
+  --accent-soft-2: rgba(59, 130, 246, 0.14);
+  --accent-soft-3: rgba(244, 114, 182, 0.12);
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  --accent-surface-solid: var(--accent);
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(18, 14, 40, 0.86);
+
+  --card-border: rgba(192, 132, 252, 0.24);
+  --card-border: color-mix(in srgb, var(--accent) 18%, color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.14)));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(30, 24, 72, 0.84);
+
+  --text-main: #f5f3ff;
+  --text-muted: #ddd6fe;
+  --text-subtle: #b7a7ff;
+
+  --shadow-soft: 0 22px 46px rgba(0, 0, 0, 0.80);
+
+  --sidebar-border: rgba(192, 132, 252, 0.14);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(26, 20, 56, 0.58);
+
+  --meta-border: rgba(168, 85, 247, 0.45);
+  --meta-border: color-mix(in srgb, var(--accent-3) 18%, rgba(168, 85, 247, 0.34));
+
+  --empty-border: rgba(192, 132, 252, 0.24);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(14, 12, 34, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(24, 20, 60, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(26, 20, 56, 0.72);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(76, 29, 149, 0.90);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(192, 132, 252, 0.40), transparent 58%),
+    radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.20), transparent 60%),
+    radial-gradient(circle at 35% 90%, rgba(244, 114, 182, 0.10), transparent 62%),
+    #090818;
+
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.03));
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.02));
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.06));
+}
+
+/* Ember Theme – Schmiede / Asche + Glut (charcoal) */
+:root[data-theme="ember"] {
+  --ink-0: #120d0b;
+
+  --bg-body:
+    radial-gradient(circle at 16% 14%, rgba(251, 146, 60, 0.16), transparent 55%),
+    radial-gradient(circle at 82% 18%, rgba(148, 163, 184, 0.10), transparent 60%),
+    radial-gradient(circle at 68% 78%, rgba(234, 179, 8, 0.07), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(148, 163, 184, 0.040) 0 1px, transparent 1px 7px),
+    #120d0b;
+
+  --bg-header:
+    radial-gradient(circle at 16% 10%, rgba(251, 146, 60, 0.22), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(234, 179, 8, 0.12), transparent 64%),
+    radial-gradient(circle at 78% 12%, rgba(148, 163, 184, 0.10), transparent 64%),
+    radial-gradient(circle at top left, #8a3417 0%, #2a0f0b 48%, #120d0b 100%);
+
+  /* mehr Separation */
+  --bg-sidebar: rgba(22, 12, 10, 0.985);
+  --bg-main: rgba(13, 8, 7, 0.985);
+
+  --accent: #fb923c;
+  --accent-soft: rgba(251, 146, 60, 0.18);
+  --accent-border: rgba(251, 146, 60, 0.82);
+  --accent-border: color-mix(in srgb, var(--accent) 55%, var(--accent-2));
+
+  --accent-2: #eab308;
+  --accent-3: #94a3b8;
+  --on-accent: #0b0f14;
+
+  --accent-soft-2: rgba(234, 179, 8, 0.14);
+  --accent-soft-3: rgba(148, 163, 184, 0.12);
+  --accent-soft-2: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  --accent-soft-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+
+  --accent-surface-solid: var(--accent);
+  --accent-surface: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 92%, var(--ink-0)) 0%,
+    color-mix(in srgb, var(--accent-2) 88%, var(--ink-0)) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, var(--ink-0)) 100%
+  );
+  --accent-surface-hover: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 88%, #ffffff 12%) 0%,
+    color-mix(in srgb, var(--accent-2) 86%, #ffffff 14%) 55%,
+    color-mix(in srgb, var(--accent-3) 84%, #ffffff 16%) 100%
+  );
+
+  --card-bg:
+    radial-gradient(circle at 22% 6%, var(--accent-soft-2), transparent 62%),
+    radial-gradient(circle at 92% 18%, var(--accent-soft-3), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.0) 58%),
+    rgba(24, 14, 12, 0.86);
+
+  --card-border: rgba(251, 146, 60, 0.22);
+  --card-border: color-mix(in srgb, var(--accent) 20%, color-mix(in srgb, var(--accent-3) 10%, rgba(255, 255, 255, 0.12)));
+
+  --card-hover-bg:
+    radial-gradient(circle at 22% 6%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 62%),
+    radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--accent-3) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.0) 58%),
+    rgba(46, 20, 12, 0.86);
+
+  --text-main: #fff7ed;
+  --text-muted: #fed7aa;
+  --text-subtle: #fdba74;
+
+  --shadow-soft: 0 22px 46px rgba(0, 0, 0, 0.80);
+
+  --sidebar-border: rgba(251, 146, 60, 0.14);
+
+  --chip-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 65%),
+    rgba(38, 18, 12, 0.60);
+
+  --meta-border: rgba(251, 146, 60, 0.45);
+  --meta-border: color-mix(in srgb, var(--accent-2) 18%, rgba(251, 146, 60, 0.34));
+
+  --empty-border: rgba(251, 146, 60, 0.22);
+
+  --input-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    rgba(18, 10, 9, 0.92);
+
+  --input-bg-focus:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(38, 18, 12, 0.98);
+
+  --button-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 70%),
+    rgba(38, 18, 12, 0.74);
+
+  --button-bg-hover:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(124, 45, 18, 0.90);
+
+  --detail-bg:
+    radial-gradient(circle at top left, rgba(251, 146, 60, 0.42), transparent 58%),
+    radial-gradient(circle at 85% 25%, rgba(148, 163, 184, 0.16), transparent 60%),
+    radial-gradient(circle at 35% 90%, rgba(234, 179, 8, 0.10), transparent 62%),
+    #120d0b;
+
+  --ui-glint: rgba(255, 255, 255, 0.04);
+  --ui-glint: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.03));
+  --ui-glint-soft: rgba(255, 255, 255, 0.02);
+  --ui-glint-soft: color-mix(in srgb, var(--accent-2) 10%, rgba(255, 255, 255, 0.02));
+  --ui-glint-faint: rgba(255, 255, 255, 0.015);
+
+  --ring-outer: rgba(255, 255, 255, 0.06);
+  --ring-outer: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.06));
+}
+
+/* [hidden] verlässlich ausblenden */
+[hidden] {
+  display: none !important;
+}
+
+/* Resets & Baseline */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  /* ✅ SAFETY: verhindert “1px-Overflow” + Chips/Buttons die rauslaufen */
+  overflow-x: hidden;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-body);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.35;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+/* -----------------------------------------
+   ADDITIONS: klare Fokus-Ränder (A11y)
+----------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+/* -----------------------------------------
+   ADDITIONS: Reduced motion (global)
+----------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------------------
+   ADDITIONS: Theme Picker – bessere Vorschau + klar ausgewählt
+----------------------------------------- */
+
+.theme-tile {
+  position: relative;
+  cursor: pointer;
+
+  --swatch-bg: linear-gradient(135deg, #111827 0%, #0b1120 45%, #020617 100%);
+  --swatch-accent: var(--accent);               /* solid (für Ring/Outline/Check) */
+  --swatch-accent-bar: var(--swatch-accent);    /* darf Gradient sein */
+  --swatch-border: var(--card-border);
+}
+
+.theme-tile .theme-swatch {
+  border-radius: 14px;
+  height: 56px;
+  width: 100%;
+  background: var(--swatch-bg);
+  border: 1px solid var(--swatch-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.theme-tile .theme-swatch::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: var(--swatch-accent-bar);
+  opacity: 0.95;
+}
+
+/* Auswahl deutlich sichtbar (Ring + Check) */
+.theme-tile.is-active {
+  box-shadow:
+    0 0 0 3px var(--swatch-accent),
+    0 0 0 7px var(--ring-outer);
+}
+
+.theme-tile.is-active::before {
+  content: "✓";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--on-accent);
+  background: var(--swatch-accent);
+  border: 2px solid var(--swatch-check-border);
+}
+
+/* Fokus innerhalb der Kachel */
+.theme-tile:focus-within {
+  outline: 3px solid var(--swatch-accent);
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+
+/* Swatch Presets pro Theme */
+.theme-tile[data-theme="light"] {
+  --swatch-bg: linear-gradient(135deg, #e6f5f1 0%, #d4f1ec 45%, #f4faf9 100%);
+  --swatch-accent: #1fa58b;
+  --swatch-accent-bar: linear-gradient(90deg, #1fa58b 0%, #2563eb 55%, #10b981 100%);
+  --swatch-border: rgba(179, 201, 193, 0.85);
+}
+.theme-tile[data-theme="parchment"] {
+  --swatch-bg: linear-gradient(135deg, #f4e6cd 0%, #efe0c7 45%, #faf2e2 100%);
+  --swatch-accent: #1f4e79;
+  --swatch-accent-bar: linear-gradient(90deg, #1f4e79 0%, #b45309 55%, #16a34a 100%);
+  --swatch-border: rgba(120, 53, 15, 0.22);
+}
+.theme-tile[data-theme="sage"] {
+  --swatch-bg: linear-gradient(135deg, #f0eddc 0%, #e3ece0 45%, #faf9f2 100%);
+  --swatch-accent: #3f6f5a;
+  --swatch-accent-bar: linear-gradient(90deg, #3f6f5a 0%, #0f766e 55%, #a16207 100%);
+  --swatch-border: rgba(63, 111, 90, 0.22);
+}
+.theme-tile[data-theme="tavern"] {
+  --swatch-bg: linear-gradient(135deg, #f1d6ba 0%, #efc798 45%, #faefde 100%);
+  --swatch-accent: #9a3412;
+  --swatch-accent-bar: linear-gradient(90deg, #9a3412 0%, #f97316 55%, #a16207 100%);
+  --swatch-border: rgba(78, 52, 33, 0.22);
+}
+.theme-tile[data-theme="sky"] {
+  --swatch-bg: linear-gradient(135deg, #e5efff 0%, #d4ebff 45%, #f5f9ff 100%);
+  --swatch-accent: #2563eb;
+  --swatch-accent-bar: linear-gradient(90deg, #2563eb 0%, #0ea5e9 55%, #38bdf8 100%);
+  --swatch-border: rgba(37, 99, 235, 0.18);
+}
+.theme-tile[data-theme="sunrise"] {
+  --swatch-bg: linear-gradient(135deg, #ffdcd4 0%, #ffcaa8 45%, #f7cbff 100%);
+  --swatch-accent: #f43f5e;
+  --swatch-accent-bar: linear-gradient(90deg, #f43f5e 0%, #eab308 55%, #a855f7 100%);
+  --swatch-border: rgba(244, 63, 94, 0.18);
+}
+
+/* Dark Swatches: an die neuen Layer/Highlights angeglichen */
+.theme-tile[data-theme="dark"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(45, 212, 191, 0.35), transparent 58%),
+    radial-gradient(circle at top left, #1a7b6e 0%, #0b3a32 38%, #061412 100%);
+  --swatch-accent: #1fa58b;
+  --swatch-accent-bar: linear-gradient(90deg, #1fa58b 0%, #22c55e 55%, #0ea5e9 100%);
+  --swatch-border: rgba(45, 212, 191, 0.30);
+}
+.theme-tile[data-theme="forest"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(74, 222, 128, 0.30), transparent 60%),
+    radial-gradient(circle at top left, #1b7a3f 0%, #07351c 45%, #06110b 100%);
+  --swatch-accent: #22c55e;
+  --swatch-accent-bar: linear-gradient(90deg, #22c55e 0%, #a3e635 55%, #f59e0b 100%);
+  --swatch-border: rgba(34, 197, 94, 0.28);
+}
+.theme-tile[data-theme="bloodmoon"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(248, 113, 113, 0.28), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(168, 85, 247, 0.18), transparent 62%),
+    radial-gradient(circle at top left, #8b1d2c 0%, #3a0a12 45%, #14060c 100%);
+  --swatch-accent: #ef4444;
+  --swatch-accent-bar: linear-gradient(90deg, #ef4444 0%, #a855f7 55%, #f97316 100%);
+  --swatch-border: rgba(239, 68, 68, 0.22);
+}
+.theme-tile[data-theme="deepsea"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(56, 189, 248, 0.28), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(45, 212, 191, 0.18), transparent 62%),
+    radial-gradient(circle at top left, #0b2b3d 0%, #071225 45%, #06101a 100%);
+  --swatch-accent: #0ea5e9;
+  --swatch-accent-bar: linear-gradient(90deg, #0ea5e9 0%, #2dd4bf 55%, #1d4ed8 100%);
+  --swatch-border: rgba(56, 189, 248, 0.22);
+}
+.theme-tile[data-theme="arcane"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(192, 132, 252, 0.24), transparent 62%),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.16), transparent 64%),
+    radial-gradient(circle at top left, #4c1d95 0%, #23114f 48%, #090818 100%);
+  --swatch-accent: #a855f7;
+  --swatch-accent-bar: linear-gradient(90deg, #a855f7 0%, #3b82f6 55%, #f472b6 100%);
+  --swatch-border: rgba(192, 132, 252, 0.24);
+}
+.theme-tile[data-theme="ember"] {
+  --swatch-bg:
+    radial-gradient(circle at 16% 10%, rgba(251, 146, 60, 0.26), transparent 60%),
+    radial-gradient(circle at 82% 18%, rgba(234, 179, 8, 0.14), transparent 64%),
+    radial-gradient(circle at top left, #8a3417 0%, #2a0f0b 50%, #120d0b 100%);
+  --swatch-accent: #fb923c;
+  --swatch-accent-bar: linear-gradient(90deg, #fb923c 0%, #eab308 55%, #94a3b8 100%);
+  --swatch-border: rgba(251, 146, 60, 0.22);
+}
+
+/* -----------------------------------------
+   ADDITIONS: Timeline View – Basis-Layout
+----------------------------------------- */
+.timeline-view {
+  padding: 1.25rem 1rem 2rem;
+}
+
+.timeline-header {
+  margin-bottom: 1rem;
+}
+
+.timeline-header .timeline-title {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.2px;
+}
+
+.timeline-header .timeline-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+}
+
+.timeline-content {
+  margin-top: 1rem;
+}
+
+/* ==========================
+   Timeline: Achsen-UI
+========================== */
+.timeline-root {
+  width: 100%;
+}
+
+.timeline-controls {
+  background: var(--surface-elevated);
+  border: 1px solid var(--timeline-border);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 0.9rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.timeline-controls-left,
+.timeline-controls-right {
+  display: flex;
+  align-items: center;
+}
+
+.timeline-controls .filter-chip {
+  background: var(--chip-bg);
+  border: 1px solid var(--timeline-border);
+}
+
+.timeline-controls .filter-chip:hover {
+  background: var(--button-bg-hover);
+}
+
+.timeline-zoom-readout,
+.timeline-start-info,
+.timeline-legend-label {
+  color: var(--text-muted);
+}
+
+.timeline-mode-chip {
+  font-weight: 800;
+  letter-spacing: 0.15px;
+}
+
+.timeline-scroll {
+  background: var(--bg-main);
+  border: 1px solid var(--timeline-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.timeline-inner {
+  background:
+    radial-gradient(circle at 20% 10%, var(--ui-glint), transparent 55%),
+    var(--bg-main);
+  border-radius: var(--radius-lg);
+}
+
+.timeline-axis {
+  position: relative;
+  background: linear-gradient(180deg, var(--ui-glint-soft), transparent);
+}
+
+.timeline-axis-line {
+  background: var(--timeline-axis);
+}
+
+.timeline-tick {
+  background: var(--timeline-axis);
+  opacity: 0.9;
+}
+
+.timeline-tick-label {
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+}
+
+.timeline-marker-gt0 {
+  background: var(--meta-border);
+  opacity: 0.65;
+}
+
+.timeline-marker-gt0-label {
+  color: var(--text-muted);
+}
+
+.timeline-marker-start {
+  opacity: 0.9;
+}
+
+.timeline-lane-row {
+  background:
+    linear-gradient(90deg, var(--ui-glint-faint), transparent 18%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 48px,
+      var(--timeline-grid) 48px 49px
+    );
+}
+
+.timeline-lane-label {
+  position: sticky !important;
+  left: 0;
+  z-index: 3;
+  background: var(--timeline-label-bg);
+  border-right: 1px solid var(--timeline-label-border);
+  backdrop-filter: blur(8px);
+}
+
+.timeline-lane-area {
+  background: transparent;
+}
+
+.timeline-bar {
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1;
+  box-shadow: var(--timeline-bar-shadow);
+  transition: transform var(--transition-fast), filter var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.timeline-bar.is-clickable:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: var(--shadow-pop);
+}
+
+.timeline-bar.is-clickable:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
+.timeline-bar:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-bar {
+    transition: none;
+  }
+  .timeline-bar.is-clickable:hover,
+  .timeline-bar.is-clickable:active {
+    transform: none;
+  }
+}
+
+.timeline-leftovers {
+  background: var(--surface-elevated);
+  border: 1px solid var(--timeline-border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 0.9rem;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ==========================
+   Timeline: Story/List
+========================== */
+.timeline-root--list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.timeline-controls--list {
+  padding: 0.7rem 0.85rem;
+}
+
+.timeline-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-left: 0.1rem;
+}
+
+.timeline-list::before {
+  content: "";
+  position: absolute;
+  left: 0.65rem;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  width: 2px;
+  background: var(--meta-border);
+  opacity: 0.55;
+  border-radius: 999px;
+}
+
+.timeline-group-header {
+  margin-top: 0.15rem;
+  padding: 0.35rem 0.65rem 0.35rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--timeline-border);
+  background: color-mix(in srgb, var(--surface-elevated) 70%, transparent);
+  color: var(--text-muted);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin-left: -0.1rem;
+}
+
+.timeline-item {
+  --tl-color: var(--accent);
+  position: relative;
+  display: flex;
+  gap: 0.65rem;
+  align-items: stretch;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  text-align: left;
+  min-width: 0;
+}
+
+.timeline-item.is-clickable {
+  cursor: pointer;
+}
+
+.timeline-marker {
+  flex: 0 0 1.3rem;
+  display: flex;
+  justify-content: center;
+  padding-top: 1.05rem;
+}
+
+.timeline-marker::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--tl-color, var(--accent));
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tl-color, var(--accent)) 18%, transparent);
+  display: block;
+}
+
+.timeline-card {
+  flex: 1 1 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 0.9rem 0.95rem;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  min-width: 0;
+}
+
+.timeline-item.is-clickable:hover .timeline-card {
+  background: var(--card-hover-bg);
+  transform: translateY(-1px);
+}
+
+.timeline-item.is-clickable:focus-visible .timeline-card {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.timeline-card-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.timeline-card .timeline-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.1px;
+  min-width: 0;
+}
+
+.timeline-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.timeline-range {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.timeline-lane-line {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.timeline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.15px;
+
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--timeline-border);
+  background: color-mix(in srgb, var(--chip-bg) 80%, transparent);
+  color: var(--text-muted);
+
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timeline-badge-range {
+  padding: 0.18rem 0.42rem;
+}
+
+.timeline-badge-type {
+  color: var(--text-main);
+  background: color-mix(in srgb, var(--tl-color, var(--accent)) 18%, var(--chip-bg));
+  border-color: color-mix(in srgb, var(--tl-color, var(--accent)) 45%, var(--timeline-border));
+}
+
+.timeline-note {
+  margin-top: 0.55rem;
+  color: var(--text-subtle);
+  font-size: 0.92rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.timeline-linkhint {
+  margin-top: 0.7rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  opacity: 0.95;
+}
+
+.timeline-linkhint.is-missing {
+  color: var(--badge-new-bg);
+  opacity: 0.95;
+}
+
+.timeline-list--compact {
+  gap: 0.65rem;
+}
+
+.timeline-list--compact::before {
+  opacity: 0.35;
+}
+
+.timeline-list--compact .timeline-card {
+  padding: 0.75rem 0.85rem;
+  box-shadow: none;
+}
+
+@media (max-width: 520px) {
+  .timeline-controls {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .timeline-card {
+    padding: 0.82rem 0.85rem;
+  }
+
+  .timeline-card .timeline-title {
+    font-size: 1.02rem;
+  }
+
+  .timeline-range {
+    white-space: normal;
+  }
+
+  .timeline-list::before {
+    left: 0.6rem;
+  }
+
+  .timeline-marker {
+    flex-basis: 1.15rem;
+  }
+}
+
+.timeline-item-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.timeline-item-range {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.timeline-item-meta {
+  margin-top: 0.6rem;
+  color: var(--text-subtle);
+  font-size: 0.88rem;
+}
+/* =========================================
+   Shared UI helpers (Bestiary / TOC / Misc)
+   - tag chips
+   - empty states
+   - related links (button-like)
+========================================= */
+
+/* Tags (z.B. Bestiary Tags) */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  padding: 0.22rem 0.55rem;
+  border-radius: var(--radius-sm);
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--chip-bg) 82%, transparent);
+
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14px;
+
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Empty state container (z.B. "Keine Monster gefunden") */
+.empty-state {
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--empty-border);
+  background: color-mix(in srgb, var(--surface-elevated) 70%, transparent);
+  box-shadow: none;
+  color: var(--text-muted);
+}
+
+.empty-state p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Related links: sehen wie "Button Cards" aus (Bestiary "Siehe auch") */
+.related-link {
+  width: 100%;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-md);
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
+  background: var(--button-bg);
+  color: var(--text-main);
+
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.related-link:hover {
+  background: var(--button-bg-hover);
+  border-color: color-mix(in srgb, var(--border-subtle) 55%, var(--accent) 25%);
+}
+
+.related-link:active {
+  transform: translateY(0);
+}
+
+.related-link:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}

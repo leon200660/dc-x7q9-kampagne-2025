@@ -1,0 +1,1122 @@
+/* style.bestiary.css
+   Bestiarium View: Mobile-first "Buch"-UX (Swipe + Scroll-Snap) + TOC Sheet/Overlay
+   bewusst separat gehalten (2100-Zeilen-Regel)
+*/
+
+:root {
+  /* Page tokens (theme-aware über bestehende base Tokens) */
+  --bestiary-page-surface: var(--surface-elevated);
+  --bestiary-page-border: var(--border-subtle);
+  --bestiary-page-shadow: var(--shadow-pop);
+  --bestiary-page-radius: var(--radius-lg);
+  --bestiary-page-padding: 18px;
+
+  /* Paper / texture */
+  --bestiary-paper-glint: var(--ui-glint);
+  --bestiary-paper-fiber: var(--ui-glint-soft);
+  --bestiary-paper-faint: var(--ui-glint-faint);
+
+  /* Flip tokens (Umblätter-Illusion) */
+  --bestiary-flip-perspective: 1200px;
+  --bestiary-flip-ease: cubic-bezier(.2,.9,.2,1);
+  --bestiary-flip-duration: 120ms;
+
+  /* Edge shadow overlay */
+  --bestiary-edge-shadow: rgb(0 0 0 / 0.22);
+  --bestiary-edge-glow: rgb(255 255 255 / 0.05);
+
+  /* Fold / gutter */
+  --bestiary-fold-width: 26px;
+
+  /* TOC sheet */
+  --bestiary-toc-backdrop: rgba(0, 0, 0, 0.55);
+  --bestiary-toc-surface: var(--surface-3);
+  --bestiary-toc-border: var(--border-subtle);
+
+  /* Sizes */
+  --bestiary-page-maxw: 720px; /* größer als vorher */
+  --bestiary-page-minw: 320px;
+  --bestiary-book-gap: 14px;
+
+  /* "Buch"-Zone padding */
+  --bestiary-book-pad-inline: 12px;
+  --bestiary-book-pad-block: 10px;
+
+  /* Hero image */
+  --bestiary-hero-radius: 16px;
+  --bestiary-hero-maxh: 260px;
+
+  /* Details */
+  --bestiary-details-radius: 16px;
+
+  /* Harvest */
+  --bestiary-harvest-radius: 16px;
+
+  /* Quickfacts */
+  --bestiary-quickfact-radius: 999px;
+
+  /* Extras (NEU) */
+  --bestiary-extras-radius: 16px;
+  --bestiary-code-radius: 14px;
+}
+
+/* ---------------------------------------
+   View layout
+--------------------------------------- */
+
+.bestiary-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0; /* wichtig für flex + scroll containers */
+}
+
+.bestiary-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bestiary-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bestiary-header-copy {
+  min-width: 0;
+}
+
+.bestiary-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.bestiary-subtitle {
+  margin: 0.35rem 0 0;
+  opacity: 0.85;
+  line-height: 1.35;
+  max-width: 60ch;
+}
+
+.bestiary-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.bestiary-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.bestiary-meta {
+  opacity: 0.85;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.bestiary-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+/* ---------------------------------------
+   Book (horizontal pages)
+--------------------------------------- */
+
+.bestiary-book {
+  flex: 1 1 auto;
+  min-height: 360px;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  gap: var(--bestiary-book-gap);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--bestiary-book-pad-inline);
+
+  padding:
+    var(--bestiary-book-pad-block)
+    var(--bestiary-book-pad-inline)
+    calc(12px + env(safe-area-inset-bottom));
+
+  border-radius: var(--radius-lg);
+
+  /* leichter Rahmen um die "Buchzone" */
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+
+  /* Buch-Hintergrund (subtil) */
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,255,255,0.03), transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(255,255,255,0.02), transparent 60%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-4) 24%, transparent),
+      transparent
+    );
+
+  /* Flip Stage */
+  perspective: var(--bestiary-flip-perspective);
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+/* Optional: wenn JS reduced-motion toggelt (zusätzlich zum Media-Query) */
+.bestiary-book.bestiary-book--reduced-motion {
+  perspective: none;
+  transform-style: flat;
+}
+
+/* Scrollbar (dezent) */
+.bestiary-book {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--border-subtle) 60%, transparent) transparent;
+}
+.bestiary-book::-webkit-scrollbar {
+  height: 10px;
+}
+.bestiary-book::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--border-subtle) 65%, transparent);
+  border-radius: 999px;
+}
+.bestiary-book::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------------------------------------
+   Page (paper card) + Flip Illusion
+--------------------------------------- */
+
+.bestiary-page {
+  /* Fast ganze Seite: nutzt Viewport, capped für sehr große Screens */
+  flex: 0 0 calc(100% - (var(--bestiary-book-pad-inline) * 2));
+  min-width: min(var(--bestiary-page-maxw), calc(100% - (var(--bestiary-book-pad-inline) * 2)));
+  max-width: var(--bestiary-page-maxw);
+
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  border-radius: var(--bestiary-page-radius);
+  border: 1px solid var(--bestiary-page-border);
+
+  /* Basis-Schatten + dynamischer Zusatz nach --bestiary-shadow */
+  box-shadow:
+    var(--bestiary-page-shadow),
+    0 18px 44px rgb(0 0 0 / calc(0.02 + (var(--bestiary-shadow) * 0.16)));
+
+  background: var(--bestiary-page-surface);
+  position: relative;
+  overflow: hidden;
+
+  /* leichter "Buchrücken" je nach Seite */
+  outline: 1px solid color-mix(in srgb, var(--border-subtle) 25%, transparent);
+
+  /* Flip vars (werden per JS gesetzt) */
+  --bestiary-t: 0;    /* -1..1 */
+  --bestiary-abs: 0;  /* 0..1 */
+  --bestiary-flip: 0deg;
+  --bestiary-shadow: 0; /* 0..1 */
+  --bestiary-origin: right; /* hinge side: left/right */
+
+  /* Fold weights aus t (rechts = t>0 => hinge left => fold links) */
+  --bestiary-fold-left: clamp(0, var(--bestiary-t), 1);
+  --bestiary-fold-right: clamp(0, calc(var(--bestiary-t) * -1), 1);
+
+  transform-style: preserve-3d;
+  transform-origin: var(--bestiary-origin) center;
+  backface-visibility: hidden;
+
+  /* kleine Parallax/Depth Note: translateX nutzt t */
+  transform:
+    translate3d(0,0,0)
+    translateX(calc(var(--bestiary-t) * -8px))
+    rotateY(var(--bestiary-flip));
+
+  will-change: transform;
+
+  transition:
+    transform var(--bestiary-flip-duration) var(--bestiary-flip-ease),
+    border-color var(--transition-fast),
+    outline-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  contain: layout paint;
+}
+
+/* Active Page subtle focus */
+.bestiary-page.is-active {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--bestiary-page-border));
+  outline-color: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Paper texture (sehr subtil, theme-aware) */
+.bestiary-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    radial-gradient(circle at 18% 12%, var(--bestiary-paper-glint), transparent 55%),
+    radial-gradient(circle at 80% 22%, var(--bestiary-paper-fiber), transparent 60%),
+    repeating-linear-gradient(
+      135deg,
+      var(--bestiary-paper-faint) 0 2px,
+      transparent 2px 7px
+    );
+  mix-blend-mode: overlay;
+}
+
+/* Faux "Buchfalz"/Knick – hängt von der Seite ab (über --bestiary-t) */
+.bestiary-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* zwei schmale Streifen: links + rechts, je nach Fold-Weight */
+  background:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / calc(0.10 + (var(--bestiary-shadow) * 0.12))) 0%,
+      transparent 65%
+    )
+    left / var(--bestiary-fold-width) 100% no-repeat,
+    linear-gradient(
+      270deg,
+      rgb(0 0 0 / calc(0.10 + (var(--bestiary-shadow) * 0.12))) 0%,
+      transparent 65%
+    )
+    right / var(--bestiary-fold-width) 100% no-repeat;
+
+  /* Fold-Sichtbarkeit je Seite über Alpha-Multiplikatoren */
+  mask:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / var(--bestiary-fold-left)) 0 var(--bestiary-fold-width),
+      transparent var(--bestiary-fold-width) calc(100% - var(--bestiary-fold-width)),
+      rgb(0 0 0 / var(--bestiary-fold-right)) calc(100% - var(--bestiary-fold-width)) 100%
+    );
+
+  opacity: 0.18;
+}
+
+/* Fallback, falls mask nicht unterstützt wird: grob über opacity/clip */
+@supports not (mask: linear-gradient(#000, transparent)) {
+  .bestiary-page::after {
+    opacity: calc(0.10 + (var(--bestiary-shadow) * 0.16));
+  }
+}
+
+.bestiary-page-inner {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  padding: var(--bestiary-page-padding);
+  box-sizing: border-box;
+
+  /* für Overlay-Shadows */
+  isolation: isolate;
+}
+
+/* Dynamischer Kanten-Schatten (Flip Illusion) */
+.bestiary-page-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--bestiary-shadow);
+  background:
+    linear-gradient(
+      to var(--bestiary-origin),
+      var(--bestiary-edge-shadow),
+      transparent 42%
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Ein kleines Kanten-Glühen (Papier-Licht), ebenfalls flip-abhängig */
+.bestiary-page-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: calc(var(--bestiary-shadow) * 0.85);
+  background:
+    linear-gradient(
+      to var(--bestiary-origin),
+      var(--bestiary-edge-glow),
+      transparent 55%
+    );
+  mix-blend-mode: overlay;
+}
+
+.bestiary-page-inner > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cover */
+.bestiary-page--cover .bestiary-page-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bestiary-cover {
+  max-width: 48ch;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.bestiary-cover-badge {
+  font-size: 2.2rem;
+}
+
+.bestiary-cover-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+  font-size: 1.65rem;
+}
+
+.bestiary-cover-subtitle {
+  margin: 0;
+  opacity: 0.86;
+  line-height: 1.35;
+}
+
+.bestiary-cover-note {
+  margin: 0.4rem 0 0;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+.bestiary-cover-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------------------------------------
+   Page content styles
+--------------------------------------- */
+
+.bestiary-page-header {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.bestiary-page-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.6rem;
+  align-items: center;
+  opacity: 0.88;
+  font-size: 0.9rem;
+}
+
+.bestiary-page-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.01em;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.bestiary-page-summary {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+.bestiary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+
+.bestiary-open-glossary {
+  margin: 0.3rem 0 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Paragraph rendering (neu aus Renderer) */
+.bestiary-paragraph {
+  margin: 0 0 0.75rem;
+  line-height: 1.65;
+  opacity: 0.98;
+}
+.bestiary-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Legacy fallback (falls irgendwo noch .bestiary-body direkt pre-wrap ist) */
+.bestiary-body {
+  line-height: 1.65;
+  font-size: 1rem;
+  opacity: 0.98;
+}
+
+/* Sections */
+.bestiary-section {
+  margin-top: 0.9rem;
+}
+
+.bestiary-section-title {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  opacity: 0.92;
+}
+
+/* ---------------------------------------
+   Quickfacts (neu)
+--------------------------------------- */
+
+.bestiary-section--quickfacts {
+  margin-top: 0.75rem;
+}
+
+.bestiary-quickfacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-quickfact {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--bestiary-quickfact-radius);
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 24%, transparent);
+}
+
+.bestiary-quickfact-key {
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.78;
+}
+
+.bestiary-quickfact-val {
+  font-size: 0.92rem;
+  font-weight: 850;
+  opacity: 0.95;
+}
+
+/* ---------------------------------------
+   Statblock / Actions / Notes (neu)
+--------------------------------------- */
+
+.bestiary-statblock-dl {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  column-gap: 0.85rem;
+  row-gap: 0.35rem;
+}
+
+.bestiary-statblock-dl dt {
+  margin: 0;
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+.bestiary-statblock-dl dd {
+  margin: 0;
+  opacity: 0.95;
+}
+
+.bestiary-statblock-list,
+.bestiary-actions-list,
+.bestiary-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+
+.bestiary-statblock-list li,
+.bestiary-actions-list li,
+.bestiary-list li {
+  margin: 0.12rem 0;
+}
+
+.bestiary-notes p {
+  margin: 0 0 0.65rem;
+}
+.bestiary-notes p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------
+   Hero image (neu)
+--------------------------------------- */
+
+.bestiary-hero {
+  margin: 0.75rem 0 0.9rem;
+  border-radius: var(--bestiary-hero-radius);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 35%, transparent);
+}
+
+.bestiary-hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: var(--bestiary-hero-maxh);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.bestiary-hero-caption {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.88rem;
+  opacity: 0.86;
+}
+
+/* ---------------------------------------
+   Details/Accordion (neu)
+--------------------------------------- */
+
+.bestiary-details {
+  margin-top: 0.65rem;
+  border-radius: var(--bestiary-details-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 26%, transparent);
+  overflow: hidden;
+}
+
+.bestiary-details-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.7rem 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bestiary-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.bestiary-details-summary::after {
+  content: "▾";
+  opacity: 0.85;
+  transform: translateY(-1px);
+  transition: transform var(--transition-fast);
+}
+
+.bestiary-details[open] .bestiary-details-summary::after {
+  transform: rotate(180deg) translateY(1px);
+}
+
+.bestiary-details-content {
+  padding: 0.75rem 0.85rem 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
+}
+
+/* ---------------------------------------
+   Extras (NEU) – Zusatzinfos Render
+--------------------------------------- */
+
+.bestiary-details--extras .bestiary-details-content {
+  padding-top: 0.8rem;
+}
+
+.bestiary-extras {
+  margin-top: 0.15rem;
+}
+
+.bestiary-extras-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bestiary-extras-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+
+  padding: 0.65rem 0.7rem;
+  border-radius: var(--bestiary-extras-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+}
+
+.bestiary-extras-key {
+  font-weight: 900;
+  opacity: 0.9;
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.bestiary-extras-val {
+  opacity: 0.96;
+  line-height: 1.55;
+  min-width: 0;
+}
+
+.bestiary-extras-val > *:first-child {
+  margin-top: 0;
+}
+.bestiary-extras-val > *:last-child {
+  margin-bottom: 0;
+}
+
+/* simple list used by extras renderer */
+.bestiary-extras-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+.bestiary-extras-list li {
+  margin: 0.12rem 0;
+}
+
+/* dl used by extras renderer */
+.bestiary-extras-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 0.85rem;
+  row-gap: 0.35rem;
+}
+.bestiary-extras-dl dt {
+  margin: 0;
+  font-weight: 900;
+  opacity: 0.9;
+}
+.bestiary-extras-dl dd {
+  margin: 0;
+  opacity: 0.96;
+}
+
+/* code/json block */
+.bestiary-code {
+  margin: 0.15rem 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--bestiary-code-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 30%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  overflow: auto;
+  max-width: 100%;
+}
+
+/* links inside extras */
+.bestiary-link {
+  color: color-mix(in srgb, var(--accent) 82%, white 18%);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  word-break: break-word;
+}
+.bestiary-link:hover {
+  color: var(--accent);
+}
+
+/* ---------------------------------------
+   Images
+--------------------------------------- */
+
+.bestiary-images {
+  margin-top: 0.25rem;
+}
+
+.bestiary-images-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.bestiary-image-card {
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 40%, transparent);
+}
+
+.bestiary-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+}
+
+.bestiary-image-caption {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  opacity: 0.82;
+}
+
+/* ---------------------------------------
+   Harvest (neu)
+--------------------------------------- */
+
+.bestiary-harvest {
+  margin-top: 0.25rem;
+}
+
+.bestiary-harvest-table {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem 0.8rem;
+  border-radius: var(--bestiary-harvest-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+}
+
+.bestiary-harvest-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.bestiary-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 35%, transparent);
+}
+
+.bestiary-harvest-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+
+.bestiary-harvest-list li {
+  margin: 0.12rem 0;
+}
+
+/* ---------------------------------------
+   Related
+--------------------------------------- */
+
+.bestiary-related {
+  margin-top: 1rem;
+}
+
+.bestiary-related-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+/* ---------------------------------------
+   TOC Sheet / Overlay
+--------------------------------------- */
+
+.bestiary-toc[hidden] {
+  display: none !important;
+}
+
+.bestiary-toc {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+/* Backdrop */
+.bestiary-toc-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bestiary-toc-backdrop);
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.bestiary-toc-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 18px 18px 0 0;
+  border: 1px solid var(--bestiary-toc-border);
+  background: var(--bestiary-toc-surface);
+  box-shadow: var(--shadow-pop);
+
+  transform: translateY(110%);
+  transition: transform var(--transition-med);
+  outline: none;
+}
+
+.bestiary-toc.is-open .bestiary-toc-backdrop {
+  opacity: 1;
+}
+
+.bestiary-toc.is-open .bestiary-toc-panel {
+  transform: translateY(0);
+}
+
+.bestiary-toc-handle {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  margin: 10px auto 6px;
+}
+
+.bestiary-toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+.bestiary-toc-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+  font-size: 1.15rem;
+}
+
+.bestiary-toc-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.bestiary-toc-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+
+/* Groups */
+.bestiary-toc-group {
+  margin: 0 0 0.9rem;
+}
+
+.bestiary-toc-group-title {
+  font-weight: 800;
+  opacity: 0.92;
+  margin: 0.85rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Items */
+.bestiary-toc-items {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bestiary-toc-item {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  padding: 0.65rem 0.7rem;
+  border-radius: 14px;
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
+  background: var(--button-bg);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.bestiary-toc-item:hover {
+  background: var(--button-bg-hover);
+  border-color: color-mix(in srgb, var(--border-subtle) 55%, var(--accent) 25%);
+}
+
+.bestiary-toc-item:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.bestiary-toc-item.is-active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--button-bg));
+}
+
+.bestiary-toc-item-main {
+  min-width: 0;
+}
+
+.bestiary-toc-item-title {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.bestiary-toc-item-sub {
+  opacity: 0.82;
+  font-size: 0.88rem;
+  margin-top: 0.15rem;
+  line-height: 1.25;
+}
+
+.bestiary-toc-item-icon {
+  opacity: 0.85;
+  font-size: 1.1rem;
+}
+
+/* Desktop: TOC als Side-Sheet */
+@media (min-width: 900px) {
+  :root {
+    --bestiary-page-maxw: 860px;
+    --bestiary-hero-maxh: 320px;
+  }
+
+  .bestiary-page {
+    flex: 0 0 min(var(--bestiary-page-maxw), calc(100% - (var(--bestiary-book-pad-inline) * 2)));
+  }
+
+  .bestiary-statblock-dl {
+    grid-template-columns: 140px 1fr;
+  }
+
+  /* Extras grid bigger key column on desktop */
+  .bestiary-extras-row {
+    grid-template-columns: 160px 1fr;
+  }
+  .bestiary-extras-dl {
+    grid-template-columns: 160px 1fr;
+  }
+
+  .bestiary-toc-panel {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: auto;
+
+    width: min(420px, 92vw);
+    max-height: none;
+
+    border-radius: 18px 0 0 18px;
+    transform: translateX(110%);
+  }
+
+  .bestiary-toc.is-open .bestiary-toc-panel {
+    transform: translateX(0);
+  }
+
+  .bestiary-toc-handle {
+    display: none;
+  }
+
+  .bestiary-images-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bestiary-harvest-row {
+    grid-template-columns: 110px 1fr;
+  }
+}
+
+/* ---------------------------------------
+   Accessibility helpers
+--------------------------------------- */
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ---------------------------------------
+   Reduced motion
+--------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bestiary-toc-backdrop,
+  .bestiary-toc-panel,
+  .bestiary-toc-item,
+  .bestiary-details-summary::after,
+  .bestiary-page {
+    transition: none !important;
+  }
+
+  .bestiary-book {
+    perspective: none !important;
+    transform-style: flat !important;
+  }
+
+  .bestiary-page {
+    transform: none !important;
+  }
+
+  .bestiary-page-inner::before,
+  .bestiary-page-inner::after {
+    opacity: 0 !important;
+  }
+}
+
+/* Zusätzlicher Kill-Switch, falls JS bestiary-book--reduced-motion setzt */
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page {
+  transition: none !important;
+  transform: none !important;
+}
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page-inner::before,
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page-inner::after {
+  opacity: 0 !important;
+}
