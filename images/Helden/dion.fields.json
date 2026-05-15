@@ -1,0 +1,2366 @@
+﻿[
+    {
+        "T":  "?B1",
+        "V":  ""
+    },
+    {
+        "T":  "?B2",
+        "V":  ""
+    },
+    {
+        "T":  "?B3",
+        "V":  ""
+    },
+    {
+        "T":  "?B4",
+        "V":  ""
+    },
+    {
+        "T":  "?B5",
+        "V":  ""
+    },
+    {
+        "T":  "?berlebenskunstExp",
+        "V":  ""
+    },
+    {
+        "T":  "?berlebenskunstProf",
+        "V":  ""
+    },
+    {
+        "T":  "?berlebenskunstWei",
+        "V":  "2"
+    },
+    {
+        "T":  "?berzeugenCha",
+        "V":  "0"
+    },
+    {
+        "T":  "?berzeugenExp",
+        "V":  ""
+    },
+    {
+        "T":  "?berzeugenProf",
+        "V":  ""
+    },
+    {
+        "T":  "?bungsbonus",
+        "V":  "3"
+    },
+    {
+        "T":  "AkrobatikExp",
+        "V":  ""
+    },
+    {
+        "T":  "AkrobatikGes",
+        "V":  "7"
+    },
+    {
+        "T":  "AkrobatikProf",
+        "V":  ""
+    },
+    {
+        "T":  "AktTrefferpunkte",
+        "V":  ""
+    },
+    {
+        "T":  "Alleskoenner",
+        "V":  ""
+    },
+    {
+        "T":  "Alter",
+        "V":  ""
+    },
+    {
+        "T":  "Angriff1",
+        "V":  "Fernkampfangriff"
+    },
+    {
+        "T":  "Angriff2",
+        "V":  "Nahkampfangriff "
+    },
+    {
+        "T":  "Angriff3",
+        "V":  "Nebenhandangriff"
+    },
+    {
+        "T":  "Angriff4",
+        "V":  ""
+    },
+    {
+        "T":  "Angriff5",
+        "V":  "Pr?zisionsschuss"
+    },
+    {
+        "T":  "ArkaneKundeExp",
+        "V":  ""
+    },
+    {
+        "T":  "ArkaneKundeInt",
+        "V":  "0"
+    },
+    {
+        "T":  "ArkaneKundeProf",
+        "V":  ""
+    },
+    {
+        "T":  "AthletikExp",
+        "V":  ""
+    },
+    {
+        "T":  "AthletikProf",
+        "V":  ""
+    },
+    {
+        "T":  "AthletikStr",
+        "V":  "3"
+    },
+    {
+        "T":  "Attr1",
+        "V":  "Ges"
+    },
+    {
+        "T":  "Attr2",
+        "V":  "Ges"
+    },
+    {
+        "T":  "Attr3",
+        "V":  "Ges"
+    },
+    {
+        "T":  "Attr4",
+        "V":  ""
+    },
+    {
+        "T":  "Attr5",
+        "V":  "Ges"
+    },
+    {
+        "T":  "AttributZauberwirken",
+        "V":  ""
+    },
+    {
+        "T":  "AuftretenCha",
+        "V":  "0"
+    },
+    {
+        "T":  "AuftretenExp",
+        "V":  ""
+    },
+    {
+        "T":  "AuftretenProf",
+        "V":  ""
+    },
+    {
+        "T":  "Augenfarbe",
+        "V":  ""
+    },
+    {
+        "T":  "Aussehen",
+        "V":  ""
+    },
+    {
+        "T":  "AussehenBild",
+        "V":  ""
+    },
+    {
+        "T":  "Belastet",
+        "V":  "1 - 0 lb"
+    },
+    {
+        "T":  "Beschreibung1",
+        "V":  "Leichte Armbrust"
+    },
+    {
+        "T":  "Beschreibung2",
+        "V":  "Stahldolch mit Platinverzierung"
+    },
+    {
+        "T":  "Beschreibung3",
+        "V":  "Kurzschwert"
+    },
+    {
+        "T":  "Beschreibung4",
+        "V":  ""
+    },
+    {
+        "T":  "Beschreibung5",
+        "V":  "Dieser Angriff muss vor deiner Bewegung angek?ndigt werden und halbiert sofort deine Bewegungsrate."
+    },
+    {
+        "T":  "Bewegungsrate",
+        "V":  "9m"
+    },
+    {
+        "T":  "Bindungen",
+        "V":  "Die Menschen die mir wichtig waren wurden mir genommen, ich will Rache aus?ben und einen neuen Platz in dieser Welt finden."
+    },
+    {
+        "T":  "Bonus1",
+        "V":  "7"
+    },
+    {
+        "T":  "Bonus2",
+        "V":  "7"
+    },
+    {
+        "T":  "Bonus3",
+        "V":  "7"
+    },
+    {
+        "T":  "Bonus4",
+        "V":  ""
+    },
+    {
+        "T":  "Bonus5",
+        "V":  "7"
+    },
+    {
+        "T":  "Cha",
+        "V":  "10"
+    },
+    {
+        "T":  "ChaMod",
+        "V":  "0"
+    },
+    {
+        "T":  "ChaProf",
+        "V":  ""
+    },
+    {
+        "T":  "Charaktername_page1",
+        "V":  "Dion"
+    },
+    {
+        "T":  "Charaktername_page2",
+        "V":  "Dion"
+    },
+    {
+        "T":  "ChaRW",
+        "V":  "0"
+    },
+    {
+        "T":  "EinfachWaffenProf",
+        "V":  ""
+    },
+    {
+        "T":  "Einsch?chternCha",
+        "V":  "0"
+    },
+    {
+        "T":  "Einsch?chternExp",
+        "V":  ""
+    },
+    {
+        "T":  "Einsch?chternProf",
+        "V":  ""
+    },
+    {
+        "T":  "EM",
+        "V":  ""
+    },
+    {
+        "T":  "Erfahrungspunkte",
+        "V":  "           /"
+    },
+    {
+        "T":  "Feinde",
+        "V":  ""
+    },
+    {
+        "T":  "FingerfertigkeitExp",
+        "V":  ""
+    },
+    {
+        "T":  "FingerfertigkeitGes",
+        "V":  "10"
+    },
+    {
+        "T":  "FingerfertigkeitProf",
+        "V":  ""
+    },
+    {
+        "T":  "Ges",
+        "V":  "18"
+    },
+    {
+        "T":  "Gesamtlast",
+        "V":  ""
+    },
+    {
+        "T":  "GesamtTW",
+        "V":  "5w8"
+    },
+    {
+        "T":  "GeschichteExp",
+        "V":  ""
+    },
+    {
+        "T":  "GeschichteInt",
+        "V":  "0"
+    },
+    {
+        "T":  "GeschichteProf",
+        "V":  ""
+    },
+    {
+        "T":  "Geschlecht",
+        "V":  ""
+    },
+    {
+        "T":  "Gesinnung",
+        "V":  ""
+    },
+    {
+        "T":  "GesMod",
+        "V":  "4"
+    },
+    {
+        "T":  "GesProf",
+        "V":  ""
+    },
+    {
+        "T":  "GesRW",
+        "V":  "7"
+    },
+    {
+        "T":  "Gewicht",
+        "V":  ""
+    },
+    {
+        "T":  "Glaube",
+        "V":  ""
+    },
+    {
+        "T":  "GM",
+        "V":  ""
+    },
+    {
+        "T":  "Haarfarbe",
+        "V":  ""
+    },
+    {
+        "T":  "Hautfarbe",
+        "V":  ""
+    },
+    {
+        "T":  "HeilkundeExp",
+        "V":  ""
+    },
+    {
+        "T":  "HeilkundeProf",
+        "V":  ""
+    },
+    {
+        "T":  "HeilkundeWei",
+        "V":  "2"
+    },
+    {
+        "T":  "HeimlichkeitExp",
+        "V":  ""
+    },
+    {
+        "T":  "HeimlichkeitGes",
+        "V":  "10"
+    },
+    {
+        "T":  "HeimlichkeitProf",
+        "V":  ""
+    },
+    {
+        "T":  "Hintergrund",
+        "V":  "Krimineller"
+    },
+    {
+        "T":  "Hintergrundgeschichte1",
+        "V":  ""
+    },
+    {
+        "T":  "Hintergrundgeschichte2",
+        "V":  ""
+    },
+    {
+        "T":  "HochsprungMitAnlauf",
+        "V":  "0.90"
+    },
+    {
+        "T":  "HochsprungOhneAnlauf",
+        "V":  "0.45"
+    },
+    {
+        "T":  "Ideale",
+        "V":  "Ich bin meinen Freunden gegen?ber loyal und dass nicht aufgrund von irgendwelchen Idealen. Alle anderen k?nnen mir v?llig egal sein."
+    },
+    {
+        "T":  "Initiative",
+        "V":  "+9"
+    },
+    {
+        "T":  "Inspiration",
+        "V":  ""
+    },
+    {
+        "T":  "Int",
+        "V":  "10"
+    },
+    {
+        "T":  "IntMod",
+        "V":  "0"
+    },
+    {
+        "T":  "IntProf",
+        "V":  ""
+    },
+    {
+        "T":  "IntRW",
+        "V":  "3"
+    },
+    {
+        "T":  "Inventar1",
+        "V":  "Beschlagene Lederr?stung"
+    },
+    {
+        "T":  "Inventar10",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar11",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar12",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar13",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar14",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar15",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar16",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar17",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar18",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar19",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar2",
+        "V":  "Leichte Armbrust"
+    },
+    {
+        "T":  "Inventar20",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar21",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar22",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar23",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar24",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar25",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar26",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar27",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar28",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar29",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar3",
+        "V":  "Stahldolch mit Platinverzierung"
+    },
+    {
+        "T":  "Inventar30",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar31",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar32",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar33",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar34",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar35",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar36",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar37",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar38",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar39",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar4",
+        "V":  "Kurzschwert"
+    },
+    {
+        "T":  "Inventar40",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar41",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar42",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar43",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar44",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar45",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar46",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar47",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar48",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar49",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar5",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar50",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar51",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar52",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar53",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar54",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar55",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar6",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar7",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar8",
+        "V":  ""
+    },
+    {
+        "T":  "Inventar9",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz1",
+        "V":  "1"
+    },
+    {
+        "T":  "InventarAnz10",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz11",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz12",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz13",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz14",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz15",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz16",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz17",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz18",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz19",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz2",
+        "V":  "1"
+    },
+    {
+        "T":  "InventarAnz20",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz21",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz22",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz23",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz24",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz25",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz26",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz27",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz28",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz29",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz3",
+        "V":  "1"
+    },
+    {
+        "T":  "InventarAnz30",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz31",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz32",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz33",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz34",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz35",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz36",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz37",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz38",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz39",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz4",
+        "V":  "1"
+    },
+    {
+        "T":  "InventarAnz40",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz41",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz42",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz43",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz44",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz45",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz46",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz47",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz48",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz49",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz5",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz50",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz51",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz52",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz53",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz54",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz55",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz6",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz7",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz8",
+        "V":  ""
+    },
+    {
+        "T":  "InventarAnz9",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew1",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew10",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew11",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew12",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew13",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew14",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew15",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew16",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew17",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew18",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew19",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew2",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew20",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew21",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew22",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew23",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew24",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew25",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew26",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew27",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew28",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew29",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew3",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew30",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew31",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew32",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew33",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew34",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew35",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew36",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew37",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew38",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew39",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew4",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew40",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew41",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew42",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew43",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew44",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew45",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew46",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew47",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew48",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew49",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew5",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew50",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew51",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew52",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew53",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew54",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew55",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew6",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew7",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew8",
+        "V":  ""
+    },
+    {
+        "T":  "InventarGew9",
+        "V":  ""
+    },
+    {
+        "T":  "K?rpergr?sse",
+        "V":  ""
+    },
+    {
+        "T":  "Klassenmerkmale1",
+        "V":  "Hinterh?ltiger Angriff\r\nEinmal pro Zug kannst du einer Kreatur, die du triffst, zus?tzlich 3W6 Schaden zuf?gen, falls du bei dem Angriffswurf im Vorteil bist. Der Angriff muss mit einer Fernkampfwaffe oder einer Waffe mit der Eigenschaft Finesse ausgef?hrt werden.\r\nDu musst bei dem Angriffswurf nicht im Vorteil sein, wenn sich ein anderer Gegner des Ziels innerhalb von 1,50m um dieses befindet, dieser Gegner nicht kampfunf?hig ist und du bei dem Angriffswurf nicht im Nachteil bist.\r\n\r\nRaffinierte Aktion\r\nDu kannst in jedem deiner Z?ge eine Bonusaktion verwenden, um damit die Spurten-, R?ckzugs- oder Versteckenaktion auszuf?hren.\r\n\r\n"
+    },
+    {
+        "T":  "Klassenmerkmale2",
+        "V":  "Zielsicher \r\nAls Bonusaktion verschaffst du dir f?r deinen n?chsten Angriffswurf in diesem Zug einen Vorteil. Du kannst diese Bonusaktion nur nutzen, wenn du dich in diesem Zug noch nicht bewegt hast. Nach Einsetzen der Bonusaktion betr?gt deine Bewegungsrate bis zum Ende des Zugs null.\r\n\r\nUnglaubliches Ausweichen\r\nTrifft dich der Angriff einer Kreatur, die du sehen kannst, darfst du deine Reaktion aufwenden, um den Schaden des Angriffs zu halbieren.\r\n\r\nAttentat\r\nDu bist im Vorteil bei Angriffsw?rfen gegen Kreaturen, die in diesem Kampf noch keinen Zug ausgef?hrt haben. Au?erdem ist jeder Treffer, den du gegen einen ?berraschten Gegner erzielst, ein kritischer Treffer.\r\n\r\nGewandtheit der Assassinen\r\nZu Beginn des Kampfes stellst du sofort deine Aktion und Bonusaktion wieder her.\r\n\r\nWachsam\r\nDu kannst solange du bei Bewusstsein bist nicht ?berrascht werden.\r\nDu erh?lst einen+5 Bonus auf Initiative.\r\nAndere Kreaturen erhalten keinen Vorteil auf Angriffsw?rfe gegen dich, als Resultat daraus, dass sie nicht von dir gesehen werden.\r\n\r\nPr?zisionsschuss\r\nEinmal pro Zug, kannst du einen Pr?zisionsschuss ank?ndigen. Dies muss noch vor deiner Bewegung passieren und halbiert sofort deine Bewegungsrate. Der in dem darauf folgenden Fernkampfwaffenangriff entstehende Waffenschaden wird verdoppelt."
+    },
+    {
+        "T":  "KlasseUndStufe",
+        "V":  "Assassine Schurke Stufe 5"
+    },
+    {
+        "T":  "KM",
+        "V":  ""
+    },
+    {
+        "T":  "Kon",
+        "V":  "14"
+    },
+    {
+        "T":  "KonMod",
+        "V":  "2"
+    },
+    {
+        "T":  "KonProf",
+        "V":  ""
+    },
+    {
+        "T":  "KonRW",
+        "V":  "2"
+    },
+    {
+        "T":  "KriegswaffenProf",
+        "V":  ""
+    },
+    {
+        "T":  "Lebensstil",
+        "V":  ""
+    },
+    {
+        "T":  "LeichteR?stungProf",
+        "V":  ""
+    },
+    {
+        "T":  "Makel",
+        "V":  "Ich habe ein Merkmal, dass verr?t, wann ich l?ge."
+    },
+    {
+        "T":  "MaxAnhebenSchiebenZiehen",
+        "V":  "0 lb"
+    },
+    {
+        "T":  "MitTierenUmgehenExp",
+        "V":  ""
+    },
+    {
+        "T":  "MitTierenUmgehenProf",
+        "V":  ""
+    },
+    {
+        "T":  "MitTierenUmgehenWei",
+        "V":  "2"
+    },
+    {
+        "T":  "MittlereR?stungProf",
+        "V":  ""
+    },
+    {
+        "T":  "MotivErkennenExp",
+        "V":  ""
+    },
+    {
+        "T":  "MotivErkennenProf",
+        "V":  ""
+    },
+    {
+        "T":  "MotivErkennenWei",
+        "V":  "5"
+    },
+    {
+        "T":  "NachforschungenExp",
+        "V":  ""
+    },
+    {
+        "T":  "NachforschungenInt",
+        "V":  "0"
+    },
+    {
+        "T":  "NachforschungenProf",
+        "V":  ""
+    },
+    {
+        "T":  "NaturkundeExp",
+        "V":  ""
+    },
+    {
+        "T":  "NaturkundeInt",
+        "V":  "3"
+    },
+    {
+        "T":  "NaturkundeProf",
+        "V":  ""
+    },
+    {
+        "T":  "PassiveWeisheit",
+        "V":  "18"
+    },
+    {
+        "T":  "Pers?nlichkeitsmerkmale",
+        "V":  "Das Erste, was ich an einem neuen Ort mache, ist, die Standorte von allem Wertvollen zu notieren ? oder wo solche Dinge versteckt sein k?nnten."
+    },
+    {
+        "T":  "PM",
+        "V":  ""
+    },
+    {
+        "T":  "R?stungsklasse",
+        "V":  "16"
+    },
+    {
+        "T":  "Rassenmerkmale",
+        "V":  "Sch?tzengabe\r\nDas n?tige K?nnen zum Bogenschie?en ist manchen Personen in die Wiege gelegt, so war es auch bei dir. Du besitzt ein au?ergew?hnliches Talent f?r Angriffe, die Pr?zision statt roher Kraft erfordern. Du erh?ltst folgende Vorteile:\r\n\r\nErh?he deinen Geschicklichkeitswert um 1, bis zu einem Maximum von 20.\r\n\r\nImmer wenn du Vorteil auf einen Angriffswurf hast, der Geschicklichkeit verwendet, darfst du einen der W?rfel einmal neu w?rfeln.\r\n\r\nDu kannst die Aktion \"Pr?zisionsschuss\" nutzen."
+    },
+    {
+        "T":  "Reichweite1",
+        "V":  "25/100m"
+    },
+    {
+        "T":  "Reichweite2",
+        "V":  "1,5m"
+    },
+    {
+        "T":  "Reichweite3",
+        "V":  "1,5m"
+    },
+    {
+        "T":  "Reichweite4",
+        "V":  ""
+    },
+    {
+        "T":  "Reichweite5",
+        "V":  "25/100m"
+    },
+    {
+        "T":  "ReligionExp",
+        "V":  ""
+    },
+    {
+        "T":  "ReligionInt",
+        "V":  "0"
+    },
+    {
+        "T":  "ReligionProf",
+        "V":  ""
+    },
+    {
+        "T":  "RWErfolg1",
+        "V":  ""
+    },
+    {
+        "T":  "RWErfolg2",
+        "V":  ""
+    },
+    {
+        "T":  "RWErfolg3",
+        "V":  ""
+    },
+    {
+        "T":  "RWFehlschlag1",
+        "V":  ""
+    },
+    {
+        "T":  "RWFehlschlag2",
+        "V":  ""
+    },
+    {
+        "T":  "RWFehlschlag3",
+        "V":  ""
+    },
+    {
+        "T":  "Schaden1",
+        "V":  "1W8+4"
+    },
+    {
+        "T":  "Schaden2",
+        "V":  "1w6+4"
+    },
+    {
+        "T":  "Schaden3",
+        "V":  "1w6"
+    },
+    {
+        "T":  "Schaden4",
+        "V":  ""
+    },
+    {
+        "T":  "Schaden5",
+        "V":  "(1W8+4)x2"
+    },
+    {
+        "T":  "Schadentyp1",
+        "V":  "Stich"
+    },
+    {
+        "T":  "Schadentyp2",
+        "V":  "Stich"
+    },
+    {
+        "T":  "Schadentyp3",
+        "V":  "Stich"
+    },
+    {
+        "T":  "Schadentyp4",
+        "V":  ""
+    },
+    {
+        "T":  "Schadentyp5",
+        "V":  "Stich"
+    },
+    {
+        "T":  "SchildeProf",
+        "V":  ""
+    },
+    {
+        "T":  "SchwereR?stungProf",
+        "V":  ""
+    },
+    {
+        "T":  "Sinne",
+        "V":  ""
+    },
+    {
+        "T":  "SizeCat",
+        "V":  "0"
+    },
+    {
+        "T":  "SM",
+        "V":  ""
+    },
+    {
+        "T":  "SonstigeWaffen",
+        "V":  ""
+    },
+    {
+        "T":  "SonstigeWaffenProf",
+        "V":  ""
+    },
+    {
+        "T":  "Spielername",
+        "V":  "Valentin"
+    },
+    {
+        "T":  "Sprache1",
+        "V":  "Gemeinsprache"
+    },
+    {
+        "T":  "Sprache2",
+        "V":  ""
+    },
+    {
+        "T":  "Sprache3",
+        "V":  ""
+    },
+    {
+        "T":  "Sprache4",
+        "V":  ""
+    },
+    {
+        "T":  "Sprache5",
+        "V":  ""
+    },
+    {
+        "T":  "Sprache6",
+        "V":  ""
+    },
+    {
+        "T":  "StarkBelastet",
+        "V":  "1 - 0 lb"
+    },
+    {
+        "T":  "Str",
+        "V":  "10"
+    },
+    {
+        "T":  "StrMod",
+        "V":  "0"
+    },
+    {
+        "T":  "StrProf",
+        "V":  ""
+    },
+    {
+        "T":  "StrRW",
+        "V":  "0"
+    },
+    {
+        "T":  "T?glicheKosten",
+        "V":  ""
+    },
+    {
+        "T":  "T?uschenCha",
+        "V":  "3"
+    },
+    {
+        "T":  "T?uschenExp",
+        "V":  ""
+    },
+    {
+        "T":  "T?uschenProf",
+        "V":  ""
+    },
+    {
+        "T":  "Teilgewicht1",
+        "V":  ""
+    },
+    {
+        "T":  "Teilgewicht2",
+        "V":  ""
+    },
+    {
+        "T":  "Teilgewicht3",
+        "V":  ""
+    },
+    {
+        "T":  "Teilgewicht4",
+        "V":  ""
+    },
+    {
+        "T":  "TempTrefferpunkte",
+        "V":  ""
+    },
+    {
+        "T":  "TrefferpunkteMaximum",
+        "V":  "38"
+    },
+    {
+        "T":  "Trefferw?rfel",
+        "V":  ""
+    },
+    {
+        "T":  "VerbOrg1",
+        "V":  ""
+    },
+    {
+        "T":  "VerbOrg2",
+        "V":  ""
+    },
+    {
+        "T":  "VerbOrgBild",
+        "V":  ""
+    },
+    {
+        "T":  "VerbOrgName",
+        "V":  ""
+    },
+    {
+        "T":  "Volk",
+        "V":  "Mensch"
+    },
+    {
+        "T":  "WahrnehmungExp",
+        "V":  ""
+    },
+    {
+        "T":  "WahrnehmungProf",
+        "V":  ""
+    },
+    {
+        "T":  "WahrnehmungWei",
+        "V":  "8"
+    },
+    {
+        "T":  "Wei",
+        "V":  "14"
+    },
+    {
+        "T":  "WeiMod",
+        "V":  "2"
+    },
+    {
+        "T":  "WeiProf",
+        "V":  ""
+    },
+    {
+        "T":  "WeiRW",
+        "V":  "2"
+    },
+    {
+        "T":  "WeitsprungMitAnlauf",
+        "V":  "3.00"
+    },
+    {
+        "T":  "WeitsprungOhneAnlauf",
+        "V":  "1.50"
+    },
+    {
+        "T":  "Werdegang1",
+        "V":  ""
+    },
+    {
+        "T":  "Werdegang2",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere1",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere2",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere3",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere4",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere5",
+        "V":  ""
+    },
+    {
+        "T":  "WerkzeugUndAndere6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_10",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_11",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_12",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_13",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber1_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_10",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_11",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_12",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_13",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber2_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_10",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_11",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_12",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_13",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber3_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_10",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_11",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_12",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_13",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber4_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber5_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber6_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber7_9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber8_7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauber9_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_10",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_11",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_12",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_13",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive1_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_10",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_11",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_13",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive2_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_10",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_11",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_12",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_13",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive3_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_10",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_11",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_12",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_13",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive4_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive5_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive6_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_8",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive7_9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive8_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_1",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_2",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_3",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_4",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_5",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_6",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberActive9_7",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberAngriffsbonus",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberklasse",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeGesamt9",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht1",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht2",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht3",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht4",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht5",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht6",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht7",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht8",
+        "V":  ""
+    },
+    {
+        "T":  "Zauberpl?tzeVerbraucht9",
+        "V":  ""
+    },
+    {
+        "T":  "ZauberRettungswurfSG",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick1",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick2",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick3",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick4",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick5",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick6",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick7",
+        "V":  ""
+    },
+    {
+        "T":  "Zaubertrick8",
+        "V":  ""
+    }
+]
