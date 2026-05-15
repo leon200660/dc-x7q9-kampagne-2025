@@ -1,0 +1,543 @@
+.heroes-view {
+  min-height: 100%;
+}
+
+.heroes-header {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+}
+
+.heroes-kicker,
+.hero-note-kicker,
+.hero-section-kicker,
+.hero-record-kicker,
+.hero-empty-kicker {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.heroes-toolbar,
+.heroes-selector {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.heroes-toolbar {
+  margin-top: 0.95rem;
+}
+
+.heroes-selector {
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+.heroes-selector::-webkit-scrollbar {
+  height: 6px;
+}
+
+.heroes-selector::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 999px;
+}
+
+.hero-selector-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 48px;
+  padding-inline: 0.85rem;
+  white-space: nowrap;
+}
+
+.hero-selector-chip.is-active {
+  background: var(--accent-surface);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+.hero-selector-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-2) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 36%, var(--border-subtle));
+  color: inherit;
+  font-size: 0.74rem;
+}
+
+.heroes-content {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0 2rem;
+}
+
+.hero-shell,
+.hero-detail-grid,
+.hero-note-copy,
+.hero-summary-copy,
+.hero-section,
+.hero-section-heading,
+.hero-card-list,
+.hero-resource-list,
+.hero-spell-slot-list,
+.hero-notes-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.hero-note,
+.hero-dossier-top,
+.hero-section,
+.hero-empty-card {
+  position: relative;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.hero-note {
+  display: grid;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.hero-note::before,
+.hero-dossier-top::before,
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 35%);
+}
+
+.hero-note--recognized {
+  border-color: color-mix(in srgb, var(--accent-2) 42%, var(--border-subtle));
+}
+
+.hero-note--hint {
+  border-style: dashed;
+}
+
+.hero-note--empty,
+.hero-empty-card {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--input-bg) 88%, transparent);
+}
+
+.hero-note h3,
+.hero-empty-card h3,
+.hero-section-title,
+.hero-record-title {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.hero-note p,
+.hero-empty-card p,
+.hero-record-byline,
+.hero-vital-hint,
+.hero-card-list-head p,
+.hero-resource-meta,
+.hero-notes-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.hero-note-action {
+  justify-self: start;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--accent-surface);
+  color: var(--on-accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-pop);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.hero-note-action:hover,
+.hero-note-action:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 26px rgba(0, 0, 0, 0.32);
+}
+
+.hero-note-seal {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--accent-2) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 34%, var(--border-subtle));
+  font-size: 1.4rem;
+}
+
+.hero-summary-card {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.hero-portrait {
+  width: min(100%, 8.5rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border-subtle));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 58%),
+    color-mix(in srgb, var(--input-bg) 88%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-portrait--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: 0.1em;
+}
+
+.hero-record-title {
+  font-size: clamp(1.5rem, 3.8vw, 2.3rem);
+  font-family: "Cinzel", var(--font-display);
+  line-height: 1.08;
+}
+
+.hero-record-byline {
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--text-main) 74%, var(--text-muted));
+}
+
+.hero-meta-row,
+.hero-summary-line,
+.hero-inline-tag-row,
+.hero-damage-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hero-meta-chip,
+.hero-summary-pill,
+.hero-inline-tag,
+.hero-damage-chip,
+.hero-hit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.42rem 0.7rem;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.hero-summary-pill,
+.hero-hit-badge {
+  color: var(--text-main);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border-subtle));
+}
+
+.hero-damage-chip--spell {
+  color: #1d4ed8;
+  border-color: color-mix(in srgb, #2563eb 35%, var(--border-subtle));
+  background: color-mix(in srgb, #dbeafe 72%, var(--surface) 28%);
+}
+
+.hero-vitals-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.hero-vital-card,
+.hero-ability-card,
+.hero-card-list-item,
+.hero-resource-card,
+.hero-spell-slot-card,
+.hero-notes-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card-bg) 86%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.hero-vital-label,
+.hero-ability-label {
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-vital-value,
+.hero-ability-score {
+  color: var(--text-main);
+  font-size: 1.25rem;
+}
+
+.hero-ability-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hero-ability-card {
+  justify-items: start;
+}
+
+.hero-ability-mod {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.1rem;
+  min-height: 2rem;
+  padding-inline: 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border-subtle));
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.hero-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-list-row,
+.hero-card-list-head,
+.hero-resource-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.hero-spellcasting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.hero-spellcasting-grid span {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 3rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  color: var(--text-main);
+  background: color-mix(in srgb, var(--accent-surface) 18%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border-subtle));
+}
+
+.hero-spellcasting-grid strong {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-resource-bar--spell > span {
+  background: linear-gradient(90deg, #2563eb, var(--accent));
+}
+
+.hero-list-row {
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--input-bg) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 74%, transparent);
+}
+
+.hero-list-row span:first-child,
+.hero-card-list-head h4,
+.hero-resource-head h4,
+.hero-notes-card h4 {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.hero-resource-bar {
+  height: 0.55rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+.hero-resource-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-surface);
+}
+
+.hero-notes-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.hero-placeholder {
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-subtle);
+  background: color-mix(in srgb, var(--input-bg) 84%, transparent);
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.hero-empty-card {
+  text-align: center;
+}
+
+.hero-empty-card code,
+.hero-note code {
+  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--text-main) 85%, var(--accent));
+}
+
+.hero-note-action:focus-visible,
+.hero-selector-chip:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 72%, white 28%);
+  outline-offset: 2px;
+}
+
+@media (min-width: 720px) {
+  .hero-note {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .hero-summary-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .hero-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-section--wide {
+    grid-column: 1 / -1;
+  }
+
+  .hero-ability-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 719px) {
+  .heroes-header {
+    position: relative;
+  }
+
+  .heroes-toolbar {
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+
+  .heroes-content {
+    gap: 0.75rem;
+    padding-block: 0.75rem 1.4rem;
+  }
+
+  .hero-note,
+  .hero-dossier-top,
+  .hero-section,
+  .hero-empty-card {
+    padding: 0.85rem;
+  }
+
+  .hero-summary-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .hero-portrait {
+    width: 4.75rem;
+    border-radius: 0.95rem;
+  }
+
+  .hero-record-title {
+    font-size: 1.45rem;
+  }
+
+  .hero-meta-chip,
+  .hero-summary-pill,
+  .hero-inline-tag,
+  .hero-damage-chip,
+  .hero-hit-badge {
+    min-height: 2.15rem;
+  }
+
+  .hero-vitals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-spellcasting-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-card-list-head,
+  .hero-resource-head,
+  .hero-list-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 980px) {
+  .heroes-toolbar {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .heroes-selector {
+    justify-content: end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-note-action {
+    transition: none;
+  }
+}

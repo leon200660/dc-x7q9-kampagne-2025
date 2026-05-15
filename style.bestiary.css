@@ -1,0 +1,3090 @@
+/* style.bestiary.css
+   Bestiarium View: Mobile-first "Buch"-UX (Swipe + Scroll-Snap) + TOC Sheet/Overlay
+   bewusst separat gehalten (2100-Zeilen-Regel)
+*/
+
+:root {
+  /* Page tokens (theme-aware über bestehende base Tokens) */
+  --bestiary-page-surface: var(--surface-elevated);
+  --bestiary-page-border: var(--border-subtle);
+  --bestiary-page-shadow: var(--shadow-pop);
+  --bestiary-page-radius: var(--radius-lg);
+  --bestiary-page-padding: 18px;
+
+  /* Paper / texture */
+  --bestiary-paper-glint: var(--ui-glint);
+  --bestiary-paper-fiber: var(--ui-glint-soft);
+  --bestiary-paper-faint: var(--ui-glint-faint);
+
+  /* Flip tokens (Umblätter-Illusion) */
+  --bestiary-flip-perspective: 1200px;
+  --bestiary-flip-ease: cubic-bezier(.2,.9,.2,1);
+  --bestiary-flip-duration: 120ms;
+
+  /* Edge shadow overlay */
+  --bestiary-edge-shadow: rgb(0 0 0 / 0.22);
+  --bestiary-edge-glow: rgb(255 255 255 / 0.05);
+
+  /* Fold / gutter */
+  --bestiary-fold-width: 26px;
+
+  /* TOC sheet */
+  --bestiary-toc-backdrop: rgba(0, 0, 0, 0.55);
+  --bestiary-toc-surface: var(--surface-3);
+  --bestiary-toc-border: var(--border-subtle);
+
+  /* Sizes */
+  --bestiary-page-maxw: 720px; /* größer als vorher */
+  --bestiary-page-minw: 320px;
+  --bestiary-book-gap: 14px;
+
+  /* "Buch"-Zone padding */
+  --bestiary-book-pad-inline: 12px;
+  --bestiary-book-pad-block: 10px;
+
+  /* Hero image */
+  --bestiary-hero-radius: 16px;
+  --bestiary-hero-maxh: 260px;
+
+  /* Details */
+  --bestiary-details-radius: 16px;
+
+  /* Harvest */
+  --bestiary-harvest-radius: 16px;
+
+  /* Quickfacts */
+  --bestiary-quickfact-radius: 999px;
+
+  /* Extras (NEU) */
+  --bestiary-extras-radius: 16px;
+  --bestiary-code-radius: 14px;
+}
+
+/* ---------------------------------------
+   View layout
+--------------------------------------- */
+
+.bestiary-view {
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0; /* wichtig für flex + scroll containers */
+}
+
+.bestiary-view[data-bestiary-mode="detail"] {
+  overflow: visible;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.bestiary-view[data-bestiary-mode="list"] {
+  overflow: visible;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.bestiary-view[data-bestiary-mode="detail"] .bestiary-header {
+  position: static;
+}
+
+.bestiary-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  padding: 0.85rem;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-3) 96%, transparent), color-mix(in srgb, var(--surface-2) 92%, transparent));
+  box-shadow: 0 14px 30px rgb(0 0 0 / 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.bestiary-header-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.bestiary-header-copy {
+  min-width: 0;
+}
+
+.bestiary-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.bestiary-subtitle {
+  margin: 0.35rem 0 0;
+  opacity: 0.85;
+  line-height: 1.35;
+  max-width: 60ch;
+}
+
+.bestiary-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bestiary-toolbar {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.bestiary-toolbar > .search-group {
+  flex: 1 1 100%;
+}
+
+.bestiary-meta {
+  opacity: 0.85;
+  font-size: 0.92rem;
+  min-height: 1.35rem;
+}
+
+.bestiary-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 32%, transparent);
+}
+
+.bestiary-mode-button {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.bestiary-mode-button.is-active {
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-4));
+  color: var(--text-strong, currentColor);
+}
+
+.bestiary-position-chip {
+  font-weight: 900;
+}
+
+.bestiary-filter-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+@keyframes bestiarySoftRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bestiary-filter-summary-top {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.1rem;
+  scrollbar-width: none;
+}
+
+.bestiary-filter-summary-top::-webkit-scrollbar {
+  display: none;
+}
+
+.bestiary-active-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 28%, transparent);
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.bestiary-active-filter--result {
+  background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
+}
+
+.bestiary-active-filter--passive {
+  opacity: 0.86;
+}
+
+.bestiary-filter-groups-inline {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.bestiary-filter-group-inline {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.bestiary-filter-group-inline-title {
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-filter-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-filter-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.bestiary-filter-option.is-active {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-soft) 48%, var(--surface-4));
+}
+
+.bestiary-filter-option-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-4) 42%, transparent);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.bestiary-filter-empty {
+  opacity: 0.8;
+  font-size: 0.92rem;
+}
+
+.bestiary-content {
+  flex: 1 1 auto;
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bestiary-view[data-bestiary-mode="detail"] .bestiary-content {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.bestiary-view[data-bestiary-mode="list"] .bestiary-content {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+/* ---------------------------------------
+   Book (horizontal pages)
+--------------------------------------- */
+
+.bestiary-book {
+  flex: 1 1 auto;
+  min-height: 360px;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  gap: var(--bestiary-book-gap);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: contain;
+  touch-action: pan-x;
+  scrollbar-gutter: stable both-edges;
+
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--bestiary-book-pad-inline);
+
+  padding:
+    var(--bestiary-book-pad-block)
+    var(--bestiary-book-pad-inline)
+    calc(12px + env(safe-area-inset-bottom));
+
+  border-radius: var(--radius-lg);
+
+  /* leichter Rahmen um die "Buchzone" */
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+
+  /* Buch-Hintergrund (subtil) */
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,255,255,0.03), transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(255,255,255,0.02), transparent 60%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-4) 24%, transparent),
+      transparent
+    );
+
+  /* Flip Stage */
+  perspective: var(--bestiary-flip-perspective);
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.bestiary-book--list-mode {
+  display: block;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 12px;
+  perspective: none;
+  transform-style: flat;
+  scroll-snap-type: none;
+  touch-action: pan-y;
+}
+
+.bestiary-book--detail-mode {
+  display: block;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 12px;
+  perspective: none;
+  transform-style: flat;
+  scroll-snap-type: none;
+  touch-action: pan-y;
+}
+
+.bestiary-view[data-bestiary-mode="detail"] .bestiary-book--detail-mode {
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.bestiary-view[data-bestiary-mode="list"] .bestiary-book--list-mode {
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+}
+
+.bestiary-book--list-mode .bestiary-page {
+  transform: none !important;
+}
+
+.bestiary-book--detail-mode .bestiary-page {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+  max-width: min(100%, 700px);
+  height: auto;
+  margin: 0 auto calc(12px + env(safe-area-inset-bottom));
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  transform: none !important;
+  overflow: visible;
+  contain: none;
+  will-change: auto;
+}
+
+.bestiary-book--detail-mode .bestiary-page:last-child {
+  margin-bottom: 0;
+}
+
+.bestiary-book--detail-mode .bestiary-page::after,
+.bestiary-book--detail-mode .bestiary-page-inner::before,
+.bestiary-book--detail-mode .bestiary-page-inner::after {
+  display: none;
+}
+
+.bestiary-book--detail-mode .bestiary-page::before {
+  opacity: 0.22;
+}
+
+.bestiary-book--detail-mode .bestiary-page-inner {
+  height: auto;
+  overflow: visible;
+  padding: 16px;
+}
+
+.bestiary-book--list-mode .bestiary-list-preface,
+.bestiary-book--list-mode .bestiary-list-group,
+.bestiary-book--list-mode .bestiary-list-card,
+.bestiary-book--detail-mode .bestiary-page--dossier .bestiary-dossier-header,
+.bestiary-book--detail-mode .bestiary-page--dossier .bestiary-monster-tools,
+.bestiary-book--detail-mode .bestiary-page--dossier .bestiary-section--quickfacts,
+.bestiary-book--detail-mode .bestiary-page--dossier .bestiary-details,
+.bestiary-empty-state {
+  animation: bestiarySoftRise 280ms ease both;
+  animation-delay: calc(var(--bestiary-stagger, 0) * 45ms);
+}
+
+/* Optional: wenn JS reduced-motion toggelt (zusätzlich zum Media-Query) */
+.bestiary-book.bestiary-book--reduced-motion {
+  perspective: none;
+  transform-style: flat;
+}
+
+/* Scrollbar (dezent) */
+.bestiary-book {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--border-subtle) 60%, transparent) transparent;
+}
+.bestiary-book::-webkit-scrollbar {
+  height: 10px;
+}
+.bestiary-book::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--border-subtle) 65%, transparent);
+  border-radius: 999px;
+}
+.bestiary-book::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------------------------------------
+   Page (paper card) + Flip Illusion
+--------------------------------------- */
+
+.bestiary-page {
+  /* Fast ganze Seite: nutzt Viewport, capped für sehr große Screens */
+  flex: 0 0 calc(100% - (var(--bestiary-book-pad-inline) * 2));
+  min-width: min(var(--bestiary-page-maxw), calc(100% - (var(--bestiary-book-pad-inline) * 2)));
+  max-width: var(--bestiary-page-maxw);
+
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  border-radius: var(--bestiary-page-radius);
+  border: 1px solid var(--bestiary-page-border);
+
+  /* Basis-Schatten + dynamischer Zusatz nach --bestiary-shadow */
+  box-shadow:
+    var(--bestiary-page-shadow),
+    0 18px 44px rgb(0 0 0 / calc(0.02 + (var(--bestiary-shadow) * 0.16)));
+
+  background: var(--bestiary-page-surface);
+  position: relative;
+  overflow: hidden;
+
+  /* leichter "Buchrücken" je nach Seite */
+  outline: 1px solid color-mix(in srgb, var(--border-subtle) 25%, transparent);
+
+  /* Flip vars (werden per JS gesetzt) */
+  --bestiary-t: 0;    /* -1..1 */
+  --bestiary-abs: 0;  /* 0..1 */
+  --bestiary-flip: 0deg;
+  --bestiary-shadow: 0; /* 0..1 */
+  --bestiary-origin: right; /* hinge side: left/right */
+
+  /* Fold weights aus t (rechts = t>0 => hinge left => fold links) */
+  --bestiary-fold-left: clamp(0, var(--bestiary-t), 1);
+  --bestiary-fold-right: clamp(0, calc(var(--bestiary-t) * -1), 1);
+
+  transform-style: preserve-3d;
+  transform-origin: var(--bestiary-origin) center;
+  backface-visibility: hidden;
+
+  /* kleine Parallax/Depth Note: translateX nutzt t */
+  transform:
+    translate3d(0,0,0)
+    translateX(calc(var(--bestiary-t) * -8px))
+    rotateY(var(--bestiary-flip));
+
+  will-change: transform;
+
+  transition:
+    transform var(--bestiary-flip-duration) var(--bestiary-flip-ease),
+    border-color var(--transition-fast),
+    outline-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  contain: layout paint;
+}
+
+/* Active Page subtle focus */
+.bestiary-page.is-active {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--bestiary-page-border));
+  outline-color: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.bestiary-page--placeholder .bestiary-page-inner {
+  min-height: 100%;
+}
+
+.bestiary-page-placeholder {
+  min-height: 100%;
+  display: grid;
+  align-content: center;
+  gap: 0.8rem;
+  padding: 1rem 0;
+}
+
+.bestiary-page-placeholder-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.bestiary-page-placeholder-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.38rem;
+  line-height: 1.15;
+}
+
+.bestiary-page-placeholder-summary {
+  margin: 0;
+  line-height: 1.55;
+  opacity: 0.84;
+}
+
+.bestiary-page-placeholder-lines {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.bestiary-page-placeholder-lines span {
+  display: block;
+  height: 0.75rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--surface-4) 55%, transparent), color-mix(in srgb, var(--surface-2) 75%, transparent));
+}
+
+.bestiary-page-placeholder-lines span:nth-child(1) {
+  width: 100%;
+}
+
+.bestiary-page-placeholder-lines span:nth-child(2) {
+  width: 88%;
+}
+
+.bestiary-page-placeholder-lines span:nth-child(3) {
+  width: 72%;
+}
+
+/* Paper texture (sehr subtil, theme-aware) */
+.bestiary-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    radial-gradient(circle at 18% 12%, var(--bestiary-paper-glint), transparent 55%),
+    radial-gradient(circle at 80% 22%, var(--bestiary-paper-fiber), transparent 60%),
+    repeating-linear-gradient(
+      135deg,
+      var(--bestiary-paper-faint) 0 2px,
+      transparent 2px 7px
+    );
+  mix-blend-mode: overlay;
+}
+
+/* Faux "Buchfalz"/Knick – hängt von der Seite ab (über --bestiary-t) */
+.bestiary-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* zwei schmale Streifen: links + rechts, je nach Fold-Weight */
+  background:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / calc(0.10 + (var(--bestiary-shadow) * 0.12))) 0%,
+      transparent 65%
+    )
+    left / var(--bestiary-fold-width) 100% no-repeat,
+    linear-gradient(
+      270deg,
+      rgb(0 0 0 / calc(0.10 + (var(--bestiary-shadow) * 0.12))) 0%,
+      transparent 65%
+    )
+    right / var(--bestiary-fold-width) 100% no-repeat;
+
+  /* Fold-Sichtbarkeit je Seite über Alpha-Multiplikatoren */
+  mask:
+    linear-gradient(
+      90deg,
+      rgb(0 0 0 / var(--bestiary-fold-left)) 0 var(--bestiary-fold-width),
+      transparent var(--bestiary-fold-width) calc(100% - var(--bestiary-fold-width)),
+      rgb(0 0 0 / var(--bestiary-fold-right)) calc(100% - var(--bestiary-fold-width)) 100%
+    );
+
+  opacity: 0.18;
+}
+
+/* Fallback, falls mask nicht unterstützt wird: grob über opacity/clip */
+@supports not (mask: linear-gradient(#000, transparent)) {
+  .bestiary-page::after {
+    opacity: calc(0.10 + (var(--bestiary-shadow) * 0.16));
+  }
+}
+
+.bestiary-page-inner {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  padding: var(--bestiary-page-padding);
+  box-sizing: border-box;
+
+  /* für Overlay-Shadows */
+  isolation: isolate;
+}
+
+/* Dynamischer Kanten-Schatten (Flip Illusion) */
+.bestiary-page-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--bestiary-shadow);
+  background:
+    linear-gradient(
+      to var(--bestiary-origin),
+      var(--bestiary-edge-shadow),
+      transparent 42%
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Ein kleines Kanten-Glühen (Papier-Licht), ebenfalls flip-abhängig */
+.bestiary-page-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: calc(var(--bestiary-shadow) * 0.85);
+  background:
+    linear-gradient(
+      to var(--bestiary-origin),
+      var(--bestiary-edge-glow),
+      transparent 55%
+    );
+  mix-blend-mode: overlay;
+}
+
+.bestiary-page-inner > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cover */
+.bestiary-page--cover .bestiary-page-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bestiary-cover {
+  max-width: 48ch;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.bestiary-cover-badge {
+  font-size: 2.2rem;
+}
+
+.bestiary-cover-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+  font-size: 1.65rem;
+}
+
+.bestiary-cover-subtitle {
+  margin: 0;
+  opacity: 0.86;
+  line-height: 1.35;
+}
+
+.bestiary-cover-note {
+  margin: 0.4rem 0 0;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+.bestiary-cover-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.bestiary-shortcut-shelf {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.45rem;
+  text-align: center;
+}
+
+.bestiary-shortcut-title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-shortcut-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.bestiary-shortcut-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bestiary-page--chapter .bestiary-page-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bestiary-chapter {
+  width: min(100%, 42rem);
+  display: grid;
+  gap: 0.7rem;
+  text-align: center;
+}
+
+.bestiary-chapter-icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 42%, transparent);
+}
+
+.bestiary-chapter-overline {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-chapter-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.bestiary-chapter-summary {
+  margin: 0;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+.bestiary-chapter-meta {
+  display: flex;
+  justify-content: center;
+}
+
+.bestiary-chapter-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 28%, transparent);
+  font-weight: 800;
+}
+
+.bestiary-chapter-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+/* ---------------------------------------
+   Page content styles
+--------------------------------------- */
+
+.bestiary-page-header {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.bestiary-page-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.6rem;
+  align-items: center;
+  opacity: 0.88;
+  font-size: 0.9rem;
+}
+
+.bestiary-page-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.01em;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.bestiary-page-summary {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+.bestiary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+
+.bestiary-open-glossary {
+  margin: 0.3rem 0 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bestiary-monster-tools {
+  margin: 0.2rem 0 0.95rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.bestiary-monster-tools-head {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.bestiary-monster-tools-kicker {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-monster-tools-note {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  opacity: 0.82;
+}
+
+.bestiary-monster-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-action-button.is-active {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
+}
+
+.bestiary-monster-statusline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.bestiary-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.32rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 24%, transparent);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.bestiary-status-pill--accent {
+  background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
+}
+
+.bestiary-page--sealed .bestiary-status-pill,
+.bestiary-page--sealed .bestiary-dossier-seal,
+.bestiary-page--sealed .bestiary-dossier-media,
+.bestiary-page--sealed .bestiary-quickfact,
+.bestiary-page--sealed .bestiary-dossier-meta-card {
+  filter: saturate(0.32);
+}
+
+.bestiary-page--partial .bestiary-dossier-header {
+  border-left: 3px solid color-mix(in srgb, var(--accent) 32%, var(--border-subtle));
+  padding-left: 0.65rem;
+}
+
+.bestiary-page--dossier {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 96%, transparent), color-mix(in srgb, var(--surface-2) 94%, transparent));
+}
+
+.bestiary-dossier-header {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 0.95rem;
+  padding-bottom: 0.9rem;
+}
+
+.bestiary-dossier-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 0 20px 0 14px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, #fff 34%, transparent) 0 48%, color-mix(in srgb, var(--surface-4) 18%, transparent) 52% 100%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.bestiary-dossier-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 48%, transparent), transparent 88%);
+  opacity: 0.5;
+}
+
+.bestiary-dossier-topline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.bestiary-dossier-stamp,
+.bestiary-dossier-topmeta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.38rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 26%, transparent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bestiary-dossier-stamp {
+  background: color-mix(in srgb, var(--accent-soft) 40%, transparent);
+}
+
+.bestiary-dossier-back {
+  min-height: 36px;
+  padding-inline: 0.9rem;
+}
+
+.bestiary-dossier-hero {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.bestiary-dossier-media {
+  min-width: 0;
+}
+
+.bestiary-dossier-media .bestiary-hero {
+  margin: 0;
+  border-radius: 22px;
+  box-shadow: 0 18px 38px rgb(0 0 0 / 0.12);
+}
+
+.bestiary-dossier-media .bestiary-hero-image {
+  aspect-ratio: 4 / 5;
+  min-height: 220px;
+  max-height: clamp(240px, 46svh, 360px);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.bestiary-dossier-media .bestiary-hero-caption {
+  padding: 0.7rem 0.9rem;
+}
+
+.bestiary-dossier-media--empty {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--accent-soft) 34%, transparent), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-4) 34%, transparent), color-mix(in srgb, var(--surface-3) 46%, transparent));
+}
+
+.bestiary-dossier-media--empty span {
+  width: 4rem;
+  height: 4rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.bestiary-dossier-copy {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.bestiary-dossier-kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.66;
+}
+
+.bestiary-dossier-alerts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-dossier-seal {
+  display: grid;
+  gap: 0.16rem;
+  min-width: min(100%, 17rem);
+  padding: 0.85rem 0.95rem;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 24%, transparent), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 94%, transparent), color-mix(in srgb, var(--surface-4) 30%, transparent));
+  box-shadow: 0 14px 26px rgb(0 0 0 / 0.08);
+}
+
+.bestiary-dossier-seal-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.74;
+}
+
+.bestiary-dossier-seal-value {
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.02rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.bestiary-dossier-seal--high {
+  border-color: color-mix(in srgb, #8f211a 44%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(143 33 26 / 0.18), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, #301414 44%, var(--surface-elevated)), color-mix(in srgb, #8f211a 12%, var(--surface-4)));
+}
+
+.bestiary-dossier-seal--blight {
+  border-color: color-mix(in srgb, #56713a 44%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(86 113 58 / 0.2), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, #1f2817 48%, var(--surface-elevated)), color-mix(in srgb, #56713a 12%, var(--surface-4)));
+}
+
+.bestiary-dossier-seal--arcane {
+  border-color: color-mix(in srgb, #435f8f 44%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(67 95 143 / 0.2), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, #182131 52%, var(--surface-elevated)), color-mix(in srgb, #435f8f 12%, var(--surface-4)));
+}
+
+.bestiary-dossier-seal--hunt {
+  border-color: color-mix(in srgb, #8a5b25 44%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(138 91 37 / 0.18), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, #2f2416 48%, var(--surface-elevated)), color-mix(in srgb, #8a5b25 12%, var(--surface-4)));
+}
+
+.bestiary-dossier-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0.48rem 0.78rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 900;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+.bestiary-dossier-badge--danger {
+  border-color: color-mix(in srgb, #8b1e1e 44%, var(--border-subtle));
+  background: color-mix(in srgb, #8b1e1e 14%, var(--surface-elevated));
+  color: color-mix(in srgb, #fff 88%, currentColor);
+}
+
+.bestiary-dossier-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  font-size: clamp(1.8rem, 5.4vw, 2.5rem);
+  line-height: 0.98;
+  letter-spacing: 0.015em;
+  text-wrap: balance;
+}
+
+.bestiary-dossier-summary {
+  margin: 0;
+  max-width: 62ch;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+.bestiary-dossier-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.bestiary-dossier-meta-card {
+  display: grid;
+  gap: 0.24rem;
+  min-height: 4.75rem;
+  align-content: start;
+  padding: 0.8rem 0.85rem;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 86%, transparent), color-mix(in srgb, var(--surface-4) 34%, transparent));
+}
+
+.bestiary-dossier-meta-card--type {
+  border-color: color-mix(in srgb, #6f6250 34%, var(--border-subtle));
+}
+
+.bestiary-dossier-meta-card--size {
+  border-color: color-mix(in srgb, #7d694b 34%, var(--border-subtle));
+}
+
+.bestiary-dossier-meta-card--habitat {
+  border-color: color-mix(in srgb, #4c6b57 34%, var(--border-subtle));
+}
+
+.bestiary-dossier-meta-card--status {
+  border-color: color-mix(in srgb, #6c546f 34%, var(--border-subtle));
+}
+
+.bestiary-dossier-meta-label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-dossier-meta-value {
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.bestiary-page--dossier .bestiary-monster-tools {
+  margin: 0 0 0.95rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border-subtle));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 94%, transparent), color-mix(in srgb, var(--surface-4) 24%, transparent));
+  box-shadow: 0 16px 32px rgb(0 0 0 / 0.05);
+}
+
+.bestiary-page--dossier .bestiary-monster-actions {
+  gap: 0.55rem;
+}
+
+.bestiary-page--dossier .bestiary-action-button {
+  min-height: 46px;
+  padding-inline: 0.9rem;
+  border-radius: 999px;
+  border-color: color-mix(in srgb, var(--border-subtle) 78%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+  font-weight: 850;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* Paragraph rendering (neu aus Renderer) */
+.bestiary-paragraph {
+  margin: 0 0 0.75rem;
+  line-height: 1.65;
+  opacity: 0.98;
+}
+.bestiary-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Legacy fallback (falls irgendwo noch .bestiary-body direkt pre-wrap ist) */
+.bestiary-body {
+  line-height: 1.65;
+  font-size: 1rem;
+  opacity: 0.98;
+}
+
+/* Sections */
+.bestiary-section {
+  margin-top: 0.9rem;
+}
+
+.bestiary-section-title {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  opacity: 0.92;
+}
+
+/* ---------------------------------------
+   Quickfacts (neu)
+--------------------------------------- */
+
+.bestiary-section--quickfacts {
+  margin-top: 0.75rem;
+}
+
+.bestiary-quickfacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+  gap: 0.45rem;
+}
+
+.bestiary-page--dossier .bestiary-quickfacts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.bestiary-quickfact {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 4.4rem;
+  align-content: start;
+  padding: 0.7rem 0.75rem;
+  border-radius: var(--bestiary-quickfact-radius);
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 24%, transparent);
+}
+
+.bestiary-page--dossier .bestiary-quickfact {
+  min-height: 5rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 90%, transparent), color-mix(in srgb, var(--surface-4) 28%, transparent));
+}
+
+.bestiary-page--dossier .bestiary-quickfact--metric {
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 18%, transparent), transparent 58%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 94%, transparent), color-mix(in srgb, var(--surface-4) 24%, transparent));
+}
+
+.bestiary-page--dossier .bestiary-quickfact--lore {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--border-subtle) 90%, transparent);
+}
+
+.bestiary-dossier-signals {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+}
+
+.bestiary-dossier-signal {
+  display: grid;
+  gap: 0.42rem;
+  padding: 0.95rem 1rem;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--surface-4) 22%, transparent));
+  box-shadow: 0 14px 28px rgb(0 0 0 / 0.05);
+}
+
+.bestiary-dossier-signal-kicker {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+
+.bestiary-dossier-signal-value {
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.bestiary-dossier-signal-body > *:first-child {
+  margin-top: 0;
+}
+
+.bestiary-dossier-signal-body > *:last-child {
+  margin-bottom: 0;
+}
+
+.bestiary-dossier-signal--quote {
+  border-color: color-mix(in srgb, #7a6341 28%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(122 99 65 / 0.08), transparent 56%),
+    linear-gradient(180deg, color-mix(in srgb, #f7f0e2 8%, var(--surface-elevated)), color-mix(in srgb, var(--surface-4) 22%, transparent));
+}
+
+.bestiary-dossier-signal--quote .bestiary-dossier-signal-body {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.bestiary-dossier-signal--quote .bestiary-dossier-signal-body::before {
+  content: "“";
+  position: absolute;
+  left: 0;
+  top: -0.18rem;
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1;
+  opacity: 0.42;
+}
+
+.bestiary-dossier-signal--sighting {
+  border-color: color-mix(in srgb, #4c6179 28%, var(--border-subtle));
+}
+
+.bestiary-dossier-signal--threat {
+  border-color: color-mix(in srgb, #8f211a 28%, var(--border-subtle));
+}
+
+.bestiary-dossier-signal--locked {
+  border-style: dashed;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 86%, transparent), color-mix(in srgb, var(--surface-4) 14%, transparent));
+}
+
+.bestiary-locked-copy {
+  display: grid;
+  gap: 0.22rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in srgb, var(--border-subtle) 82%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 18%, transparent);
+  color: color-mix(in srgb, var(--text-2) 88%, var(--text-3));
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.bestiary-dossier-signal--locked .bestiary-locked-copy {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.bestiary-quickfact--wide {
+  grid-column: 1 / -1;
+  min-height: auto;
+}
+
+.bestiary-quickfact-key {
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+
+.bestiary-quickfact-val {
+  font-size: 1rem;
+  font-weight: 850;
+  opacity: 0.95;
+  line-height: 1.25;
+}
+
+/* ---------------------------------------
+   Statblock / Actions / Notes (neu)
+--------------------------------------- */
+
+.bestiary-statblock-dl {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  column-gap: 0.85rem;
+  row-gap: 0.35rem;
+}
+
+.bestiary-statblock-dl dt {
+  margin: 0;
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+.bestiary-statblock-dl dd {
+  margin: 0;
+  opacity: 0.95;
+}
+
+.bestiary-statblock-list,
+.bestiary-actions-list,
+.bestiary-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+
+.bestiary-statblock-list li,
+.bestiary-actions-list li,
+.bestiary-list li {
+  margin: 0.12rem 0;
+}
+
+.bestiary-notes p {
+  margin: 0 0 0.65rem;
+}
+.bestiary-notes p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------
+   Hero image (neu)
+--------------------------------------- */
+
+.bestiary-hero {
+  margin: 0.75rem 0 0.9rem;
+  border-radius: var(--bestiary-hero-radius);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 35%, transparent);
+}
+
+.bestiary-hero-frame {
+  position: relative;
+  padding: 0.65rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #f6efde 10%, transparent), color-mix(in srgb, var(--surface-elevated) 86%, transparent)),
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 14%, transparent), transparent 62%);
+}
+
+.bestiary-hero-frame::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: calc(var(--bestiary-hero-radius) - 6px);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 52%, transparent);
+  pointer-events: none;
+}
+
+.bestiary-hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: var(--bestiary-hero-maxh);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.bestiary-hero-caption {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.65rem 0.8rem 0.75rem;
+  font-size: 0.88rem;
+  opacity: 0.92;
+}
+
+.bestiary-hero-caption-kicker {
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  opacity: 0.64;
+}
+
+.bestiary-hero-caption-text {
+  line-height: 1.4;
+}
+
+.bestiary-dossier-media-note {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+/* ---------------------------------------
+   Details/Accordion (neu)
+--------------------------------------- */
+
+.bestiary-details {
+  margin-top: 0.65rem;
+  border-radius: var(--bestiary-details-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 26%, transparent);
+  overflow: hidden;
+}
+
+.bestiary-page--dossier .bestiary-details {
+  margin-top: 0.75rem;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 88%, transparent), color-mix(in srgb, var(--surface-4) 26%, transparent));
+  box-shadow: 0 14px 30px rgb(0 0 0 / 0.06);
+  content-visibility: auto;
+  contain-intrinsic-size: 220px;
+}
+
+.bestiary-book--detail-mode .bestiary-page--dossier .bestiary-details {
+  content-visibility: visible;
+  contain-intrinsic-size: auto;
+}
+
+.bestiary-details-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.7rem 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bestiary-page--dossier .bestiary-details-summary {
+  padding: 0.95rem 1rem;
+  min-height: 52px;
+}
+
+.bestiary-page--dossier .bestiary-details-summary::before {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.6rem;
+  min-height: 1.8rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 68%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-details--description .bestiary-details-summary::before {
+  content: "Bericht";
+}
+
+.bestiary-details--combat .bestiary-details-summary::before {
+  content: "Kampf";
+}
+
+.bestiary-details--harvest .bestiary-details-summary::before {
+  content: "Ernte";
+}
+
+.bestiary-details--notes .bestiary-details-summary::before {
+  content: "Notiz";
+}
+
+.bestiary-details--links .bestiary-details-summary::before {
+  content: "Archiv";
+}
+
+.bestiary-details--images .bestiary-details-summary::before {
+  content: "Bilder";
+}
+
+.bestiary-details--extras .bestiary-details-summary::before {
+  content: "Zusatz";
+}
+
+.bestiary-details--traces .bestiary-details-summary::before {
+  content: "Spuren";
+}
+
+.bestiary-details--warnings .bestiary-details-summary::before {
+  content: "Warnung";
+}
+
+.bestiary-details--behavior .bestiary-details-summary::before {
+  content: "Verhalten";
+}
+
+.bestiary-details--tactics .bestiary-details-summary::before {
+  content: "Taktik";
+}
+
+.bestiary-details--description {
+  border-color: color-mix(in srgb, #6e5a43 28%, var(--border-subtle));
+}
+
+.bestiary-details--combat {
+  border-color: color-mix(in srgb, #8a4032 28%, var(--border-subtle));
+}
+
+.bestiary-details--harvest {
+  border-color: color-mix(in srgb, #4e6b45 32%, var(--border-subtle));
+}
+
+.bestiary-details--notes {
+  border-color: color-mix(in srgb, #6c5e79 28%, var(--border-subtle));
+}
+
+.bestiary-details--links {
+  border-color: color-mix(in srgb, #4c6179 28%, var(--border-subtle));
+}
+
+.bestiary-details--images {
+  border-color: color-mix(in srgb, #7a6946 28%, var(--border-subtle));
+}
+
+.bestiary-details--extras {
+  border-color: color-mix(in srgb, #52606a 28%, var(--border-subtle));
+}
+
+.bestiary-details--traces {
+  border-color: color-mix(in srgb, #826435 28%, var(--border-subtle));
+}
+
+.bestiary-details--warnings {
+  border-color: color-mix(in srgb, #8f211a 28%, var(--border-subtle));
+}
+
+.bestiary-details--behavior {
+  border-color: color-mix(in srgb, #4c6b57 28%, var(--border-subtle));
+}
+
+.bestiary-details--tactics {
+  border-color: color-mix(in srgb, #435f8f 28%, var(--border-subtle));
+}
+
+.bestiary-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.bestiary-details-summary::after {
+  content: "▾";
+  opacity: 0.85;
+  transform: translateY(-1px);
+  transition: transform var(--transition-fast);
+}
+
+.bestiary-details[open] .bestiary-details-summary::after {
+  transform: rotate(180deg) translateY(1px);
+}
+
+.bestiary-details-content {
+  padding: 0.75rem 0.85rem 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
+}
+
+.bestiary-page--dossier .bestiary-details-content {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.bestiary-description {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.bestiary-dossier-textblock > *:first-child {
+  margin-top: 0;
+}
+
+.bestiary-dossier-textblock > *:last-child {
+  margin-bottom: 0;
+}
+
+.bestiary-dossier-lorelist {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.bestiary-signal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-signal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.3rem;
+  padding: 0.34rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 78%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.bestiary-signal-chip--trace {
+  border-style: dashed;
+  border-color: color-mix(in srgb, #826435 34%, var(--border-subtle));
+  background: color-mix(in srgb, #826435 8%, var(--surface-elevated));
+}
+
+.bestiary-warning-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.42rem;
+  line-height: 1.5;
+}
+
+.bestiary-record-block {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--surface-4) 20%, transparent));
+}
+
+.bestiary-record-block--actions {
+  border-left: 3px solid color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.bestiary-record-block--statblock {
+  border-left: 3px solid color-mix(in srgb, var(--border-subtle) 90%, transparent);
+}
+
+.bestiary-record-block + .bestiary-record-block {
+  margin-top: 0.75rem;
+}
+
+.bestiary-record-block-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-record-block-body > *:first-child {
+  margin-top: 0;
+}
+
+.bestiary-record-block-body > *:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------
+   Extras (NEU) – Zusatzinfos Render
+--------------------------------------- */
+
+.bestiary-details--extras .bestiary-details-content {
+  padding-top: 0.8rem;
+}
+
+.bestiary-extras {
+  margin-top: 0.15rem;
+}
+
+.bestiary-extras-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bestiary-extras-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+
+  padding: 0.65rem 0.7rem;
+  border-radius: var(--bestiary-extras-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 22%, transparent);
+}
+
+.bestiary-extras-key {
+  font-weight: 900;
+  opacity: 0.9;
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.bestiary-extras-val {
+  opacity: 0.96;
+  line-height: 1.55;
+  min-width: 0;
+}
+
+.bestiary-extras-val > *:first-child {
+  margin-top: 0;
+}
+.bestiary-extras-val > *:last-child {
+  margin-bottom: 0;
+}
+
+/* simple list used by extras renderer */
+.bestiary-extras-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+.bestiary-extras-list li {
+  margin: 0.12rem 0;
+}
+
+/* dl used by extras renderer */
+.bestiary-extras-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 0.85rem;
+  row-gap: 0.35rem;
+}
+.bestiary-extras-dl dt {
+  margin: 0;
+  font-weight: 900;
+  opacity: 0.9;
+}
+.bestiary-extras-dl dd {
+  margin: 0;
+  opacity: 0.96;
+}
+
+/* code/json block */
+.bestiary-code {
+  margin: 0.15rem 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--bestiary-code-radius);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 30%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  overflow: auto;
+  max-width: 100%;
+}
+
+/* links inside extras */
+.bestiary-link {
+  color: color-mix(in srgb, var(--accent) 82%, white 18%);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  word-break: break-word;
+}
+.bestiary-link:hover {
+  color: var(--accent);
+}
+
+/* ---------------------------------------
+   Images
+--------------------------------------- */
+
+.bestiary-images {
+  margin-top: 0.25rem;
+}
+
+.bestiary-images-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.bestiary-image-card {
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 40%, transparent);
+  content-visibility: auto;
+  contain-intrinsic-size: 260px;
+}
+
+.bestiary-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+}
+
+.bestiary-image-caption {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  opacity: 0.82;
+}
+
+/* ---------------------------------------
+   Harvest (neu)
+--------------------------------------- */
+
+.bestiary-harvest {
+  margin-top: 0.25rem;
+}
+
+.bestiary-harvest-table {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: var(--bestiary-harvest-radius);
+  border: 1px solid color-mix(in srgb, #4e6b45 28%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(78 107 69 / 0.08), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--surface-4) 22%, transparent));
+}
+
+.bestiary-harvest-planner {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.2rem 0 0.55rem;
+  border-bottom: 1px solid color-mix(in srgb, #4e6b45 22%, var(--border-subtle));
+}
+
+.bestiary-harvest-planner-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.bestiary-harvest-planner-title {
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.bestiary-harvest-planner-sub {
+  margin-top: 0.12rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  opacity: 0.82;
+}
+
+.bestiary-harvest-planner-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  opacity: 0.88;
+}
+
+.bestiary-harvest-planner-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.bestiary-harvest-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.bestiary-harvest-selected-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.36rem 0.66rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #4e6b45 24%, var(--border-subtle));
+  background: color-mix(in srgb, #4e6b45 14%, var(--surface-elevated));
+  font-size: 0.84rem;
+}
+
+.bestiary-harvest-selected-name {
+  font-weight: 850;
+}
+
+.bestiary-harvest-selected-dc {
+  font-family: "Cinzel", var(--font-display);
+}
+
+.bestiary-harvest-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.7rem 0.75rem;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 18%, transparent);
+}
+
+.bestiary-harvest-row.is-active {
+  border-color: color-mix(in srgb, #4e6b45 30%, var(--border-subtle));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #4e6b45 10%, var(--surface-elevated)), color-mix(in srgb, var(--surface-4) 22%, transparent));
+}
+
+.bestiary-harvest-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bestiary-harvest-choice {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--button-bg) 88%, transparent));
+  color: inherit;
+  border-radius: 16px;
+  padding: 0.62rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  font: inherit;
+  text-align: left;
+}
+
+.bestiary-harvest-choice.is-active {
+  border-color: color-mix(in srgb, #4e6b45 44%, var(--border-subtle));
+  background:
+    radial-gradient(circle at top right, rgb(78 107 69 / 0.16), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, #4e6b45 16%, var(--surface-elevated)), color-mix(in srgb, var(--accent-soft) 42%, var(--button-bg)));
+  box-shadow: 0 10px 22px rgb(78 107 69 / 0.12);
+}
+
+.bestiary-harvest-choice-name {
+  font-weight: 800;
+}
+
+.bestiary-harvest-choice-dc {
+  font-size: 0.82rem;
+  opacity: 0.78;
+}
+
+.bestiary-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 35%, transparent);
+}
+
+.bestiary-pill--harvest-total {
+  min-height: 2.55rem;
+  padding-inline: 0.85rem;
+  border-color: color-mix(in srgb, #4e6b45 34%, var(--border-subtle));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #4e6b45 18%, var(--surface-elevated)), color-mix(in srgb, #4e6b45 8%, var(--surface-4)));
+  font-size: 1rem;
+}
+
+.bestiary-pill--harvest-dc {
+  border-color: color-mix(in srgb, #4e6b45 28%, var(--border-subtle));
+  background: color-mix(in srgb, #4e6b45 12%, var(--surface-elevated));
+}
+
+.bestiary-harvest-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  line-height: 1.55;
+}
+
+.bestiary-harvest-list li {
+  margin: 0.12rem 0;
+}
+
+/* ---------------------------------------
+   Related
+--------------------------------------- */
+
+.bestiary-related {
+  margin-top: 1rem;
+}
+
+.bestiary-related-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bestiary-details--links .bestiary-details-content {
+  padding-top: 0.8rem;
+}
+
+.related-link {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.75rem 0.8rem;
+  min-height: 44px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 24%, transparent);
+}
+
+.bestiary-page--dossier .related-link {
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 88%, transparent), color-mix(in srgb, var(--surface-4) 26%, transparent));
+}
+
+.related-link-label {
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+
+.related-link-title {
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* ---------------------------------------
+   List mode
+--------------------------------------- */
+
+.bestiary-list-group {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  content-visibility: auto;
+  contain-intrinsic-size: 340px;
+}
+
+.bestiary-list-group--chapter {
+  gap: 0.8rem;
+}
+
+.bestiary-list-preface {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 0.95rem;
+}
+
+.bestiary-list-group:last-child {
+  margin-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.bestiary-list-group-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 0.95rem;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 16%, transparent), transparent 56%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--surface-4) 18%, transparent));
+}
+
+.bestiary-list-group-head::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.65rem;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 34%, transparent), transparent 78%);
+  opacity: 0.42;
+}
+
+.bestiary-list-group-heading {
+  display: grid;
+  gap: 0.28rem;
+}
+
+.bestiary-list-group-kicker {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.66;
+}
+
+.bestiary-list-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 900;
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.16rem;
+  line-height: 1.15;
+}
+
+.bestiary-list-group-icon {
+  width: 2rem;
+  height: 2rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 68%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 26%, transparent);
+  font-size: 1rem;
+}
+
+.bestiary-list-group-count {
+  min-width: 3rem;
+  min-height: 2.15rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+  text-align: center;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.bestiary-list-group-summary {
+  margin: -0.1rem 0 0;
+  padding: 0 0.2rem 0 0.1rem;
+  opacity: 0.84;
+  line-height: 1.45;
+}
+
+.bestiary-list-group--chapter .bestiary-list-group-summary {
+  padding: 0.1rem 0.9rem 0 0.1rem;
+  font-size: 0.96rem;
+}
+
+.bestiary-list-group-cards {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.bestiary-list-card {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.95rem;
+  min-height: 44px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    radial-gradient(circle at top right, rgb(255 255 255 / 0.05), transparent 36%),
+    color-mix(in srgb, var(--surface-3) 90%, transparent);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.bestiary-list-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: color-mix(in srgb, var(--accent) 36%, transparent);
+  opacity: 0.8;
+}
+
+.bestiary-list-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, #fff 24%, transparent) 0 46%, color-mix(in srgb, var(--surface-4) 18%, transparent) 52% 100%);
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.bestiary-list-card--tone-high::before {
+  background: linear-gradient(180deg, #8f211a, color-mix(in srgb, #8f211a 34%, transparent));
+}
+
+.bestiary-list-card--tone-blight::before {
+  background: linear-gradient(180deg, #56713a, color-mix(in srgb, #56713a 34%, transparent));
+}
+
+.bestiary-list-card--tone-arcane::before {
+  background: linear-gradient(180deg, #435f8f, color-mix(in srgb, #435f8f 34%, transparent));
+}
+
+.bestiary-list-card--tone-hunt::before {
+  background: linear-gradient(180deg, #8a5b25, color-mix(in srgb, #8a5b25 34%, transparent));
+}
+
+.bestiary-list-card-shell {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.bestiary-list-card-media {
+  width: 84px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--accent-soft) 28%, transparent), transparent 62%),
+    color-mix(in srgb, var(--surface-4) 34%, transparent);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.08);
+}
+
+.bestiary-list-card--tone-high .bestiary-list-card-media {
+  border-color: color-mix(in srgb, #8f211a 34%, var(--border-subtle));
+}
+
+.bestiary-list-card--tone-blight .bestiary-list-card-media {
+  border-color: color-mix(in srgb, #56713a 34%, var(--border-subtle));
+}
+
+.bestiary-list-card--tone-arcane .bestiary-list-card-media {
+  border-color: color-mix(in srgb, #435f8f 34%, var(--border-subtle));
+}
+
+.bestiary-list-card--tone-hunt .bestiary-list-card-media {
+  border-color: color-mix(in srgb, #8a5b25 34%, var(--border-subtle));
+}
+
+.bestiary-list-card-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.bestiary-list-card-media--placeholder {
+  display: grid;
+  place-items: center;
+}
+
+.bestiary-list-card-media--placeholder span {
+  width: 2.6rem;
+  height: 2.6rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.bestiary-list-card-body {
+  min-width: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.bestiary-list-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border-subtle));
+  box-shadow: 0 16px 34px rgb(0 0 0 / 0.12);
+}
+
+.bestiary-list-card.is-active {
+  border-color: color-mix(in srgb, var(--accent) 46%, var(--border-subtle));
+  box-shadow: 0 16px 30px rgb(0 0 0 / 0.1);
+}
+
+.bestiary-list-card--sealed {
+  border-style: dashed;
+  filter: saturate(0.34);
+}
+
+.bestiary-list-card--sealed::before {
+  background: linear-gradient(180deg, color-mix(in srgb, #6a6a6a 72%, transparent), transparent);
+}
+
+.bestiary-list-card--partial {
+  border-color: color-mix(in srgb, #7a6341 28%, var(--border-subtle));
+}
+
+.bestiary-list-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.55rem;
+}
+
+.bestiary-list-card-count {
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.bestiary-list-card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.bestiary-list-card-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.48rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-4) 34%, transparent);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.bestiary-list-card-status-pill--favorite {
+  background: color-mix(in srgb, var(--accent-soft) 46%, transparent);
+}
+
+.bestiary-list-card-status-pill--knowledge {
+  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+}
+
+.bestiary-list-card-status-pill--recent {
+  background: color-mix(in srgb, #7a4d16 18%, var(--surface-4));
+  border: 1px solid color-mix(in srgb, #7a4d16 26%, var(--border-subtle));
+}
+
+.bestiary-list-card-jump {
+  opacity: 0.8;
+  font-size: 1rem;
+  font-weight: 900;
+  transform: translateX(0);
+  transition: transform var(--transition-fast);
+}
+
+.bestiary-list-card:hover .bestiary-list-card-jump,
+.bestiary-list-card:focus-visible .bestiary-list-card-jump {
+  transform: translateX(2px);
+}
+
+.bestiary-list-card-heading {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.bestiary-list-card-titlewrap {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.bestiary-list-card-title {
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.bestiary-list-card-subtitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+
+.bestiary-list-card-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 32px;
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #8b1e1e 42%, var(--border-subtle));
+  background: color-mix(in srgb, #8b1e1e 12%, var(--surface-elevated));
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.bestiary-list-card-danger--high {
+  border-color: color-mix(in srgb, #8f211a 42%, var(--border-subtle));
+  background: color-mix(in srgb, #8f211a 12%, var(--surface-elevated));
+}
+
+.bestiary-list-card-danger--blight {
+  border-color: color-mix(in srgb, #56713a 42%, var(--border-subtle));
+  background: color-mix(in srgb, #56713a 12%, var(--surface-elevated));
+}
+
+.bestiary-list-card-danger--arcane {
+  border-color: color-mix(in srgb, #435f8f 42%, var(--border-subtle));
+  background: color-mix(in srgb, #435f8f 12%, var(--surface-elevated));
+}
+
+.bestiary-list-card-danger--hunt {
+  border-color: color-mix(in srgb, #8a5b25 42%, var(--border-subtle));
+  background: color-mix(in srgb, #8a5b25 12%, var(--surface-elevated));
+}
+
+.bestiary-list-card-summary {
+  opacity: 0.9;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bestiary-list-card-summary--locked {
+  color: color-mix(in srgb, var(--text-2) 78%, var(--text-3));
+  font-style: italic;
+}
+
+.bestiary-list-card-facts,
+.bestiary-list-card-traces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.bestiary-list-card-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-4) 34%, transparent);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.bestiary-list-card-trace {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.26rem 0.58rem;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--border-subtle) 84%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 84%, transparent);
+  font-size: 0.78rem;
+  font-weight: 850;
+  opacity: 0.9;
+}
+
+.bestiary-list-card-trace--locked {
+  border-style: dashed;
+  color: color-mix(in srgb, var(--text-2) 80%, var(--text-3));
+  opacity: 0.72;
+}
+
+.bestiary-shortcut-shelf {
+  margin: 0;
+  padding: 0.85rem 0.9rem;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 88%, transparent), color-mix(in srgb, var(--surface-4) 22%, transparent));
+}
+
+.bestiary-list-empty {
+  padding: 1rem;
+}
+
+.bestiary-empty-state {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+  padding: 1.05rem;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 74%, transparent);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 18%, transparent), transparent 52%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--surface-4) 18%, transparent));
+}
+
+.bestiary-empty-state-mark {
+  width: 3rem;
+  height: 3rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-4) 24%, transparent);
+  font-size: 1.4rem;
+}
+
+.bestiary-empty-state-copy {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.bestiary-empty-state-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  font-size: 1.12rem;
+  line-height: 1.2;
+}
+
+.bestiary-empty-state-text,
+.bestiary-empty-state-note {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.bestiary-empty-state-note {
+  opacity: 0.82;
+  font-size: 0.92rem;
+}
+
+.bestiary-empty-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.bestiary-empty-state-button {
+  min-height: 48px;
+  padding-inline: 0.95rem;
+}
+
+#bestiary-view .filter-chip,
+.bestiary-active-filter,
+.bestiary-mode-button,
+.bestiary-details-summary,
+.bestiary-harvest-choice,
+.bestiary-toc-item,
+.related-link {
+  min-height: 48px;
+}
+
+#bestiary-view .filter-chip:focus-visible,
+.bestiary-list-card:focus-visible,
+.bestiary-harvest-choice:focus-visible,
+.related-link:focus-visible,
+.bestiary-page:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 62%, transparent);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------
+   TOC Sheet / Overlay
+--------------------------------------- */
+
+.bestiary-toc[hidden] {
+  display: none !important;
+}
+
+.bestiary-toc {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+/* Backdrop */
+.bestiary-toc-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bestiary-toc-backdrop);
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+
+.bestiary-toc-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 18px 18px 0 0;
+  border: 1px solid var(--bestiary-toc-border);
+  background: var(--bestiary-toc-surface);
+  box-shadow: var(--shadow-pop);
+
+  transform: translateY(110%);
+  transition: transform var(--transition-med);
+  outline: none;
+}
+
+.bestiary-toc.is-open .bestiary-toc-backdrop {
+  opacity: 1;
+}
+
+.bestiary-toc.is-open .bestiary-toc-panel {
+  transform: translateY(0);
+}
+
+.bestiary-toc-handle {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  margin: 10px auto 6px;
+}
+
+.bestiary-toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+.bestiary-toc-title {
+  margin: 0;
+  font-family: "Cinzel", var(--font-display);
+  letter-spacing: 0.02em;
+  font-size: 1.15rem;
+}
+
+.bestiary-toc-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.bestiary-toc-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+
+/* Groups */
+.bestiary-toc-group {
+  margin: 0 0 0.9rem;
+}
+
+.bestiary-toc-group-title {
+  font-weight: 800;
+  opacity: 0.92;
+  margin: 0.85rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.bestiary-toc-group-title-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.bestiary-toc-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-4) 32%, transparent);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+/* Items */
+.bestiary-toc-items {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bestiary-toc-item {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  padding: 0.65rem 0.7rem;
+  border-radius: 14px;
+
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
+  background: var(--button-bg);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.bestiary-toc-item:hover {
+  background: var(--button-bg-hover);
+  border-color: color-mix(in srgb, var(--border-subtle) 55%, var(--accent) 25%);
+}
+
+.bestiary-toc-item:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.bestiary-toc-item.is-active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--button-bg));
+}
+
+.bestiary-toc-item.is-sealed {
+  border-style: dashed;
+  filter: saturate(0.35);
+}
+
+.bestiary-toc-item.is-partial {
+  border-color: color-mix(in srgb, #7a6341 24%, var(--border-subtle));
+}
+
+.bestiary-toc-item-main {
+  min-width: 0;
+}
+
+.bestiary-toc-item-title {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.bestiary-toc-item-sub {
+  opacity: 0.82;
+  font-size: 0.88rem;
+  margin-top: 0.15rem;
+  line-height: 1.25;
+}
+
+.bestiary-toc-item-icon {
+  opacity: 0.85;
+  font-size: 1.1rem;
+}
+
+/* Desktop: TOC als Side-Sheet */
+@media (min-width: 900px) {
+  :root {
+    --bestiary-page-maxw: 860px;
+    --bestiary-hero-maxh: 320px;
+  }
+
+  .bestiary-header {
+    position: static;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .bestiary-header-top {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .bestiary-meta {
+    margin-left: auto;
+  }
+
+  .bestiary-page {
+    flex: 0 0 min(var(--bestiary-page-maxw), calc(100% - (var(--bestiary-book-pad-inline) * 2)));
+  }
+
+  .bestiary-dossier-hero {
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    align-items: start;
+  }
+
+  .bestiary-dossier-signals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bestiary-dossier-signal--quote {
+    grid-column: 1 / -1;
+  }
+
+  .bestiary-page--dossier .bestiary-quickfacts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .bestiary-list-preface {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bestiary-list-card-shell {
+    grid-template-columns: 110px minmax(0, 1fr);
+  }
+
+  .bestiary-list-card-media {
+    width: 110px;
+  }
+
+  .bestiary-statblock-dl {
+    grid-template-columns: 140px 1fr;
+  }
+
+  /* Extras grid bigger key column on desktop */
+  .bestiary-extras-row {
+    grid-template-columns: 160px 1fr;
+  }
+  .bestiary-extras-dl {
+    grid-template-columns: 160px 1fr;
+  }
+
+  .bestiary-toc-panel {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: auto;
+
+    width: min(420px, 92vw);
+    max-height: none;
+
+    border-radius: 18px 0 0 18px;
+    transform: translateX(110%);
+  }
+
+  .bestiary-toc.is-open .bestiary-toc-panel {
+    transform: translateX(0);
+  }
+
+  .bestiary-toc-handle {
+    display: none;
+  }
+
+  .bestiary-images-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bestiary-harvest-row {
+    grid-template-columns: 110px 1fr;
+  }
+}
+
+/* ---------------------------------------
+   Accessibility helpers
+--------------------------------------- */
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ---------------------------------------
+   Reduced motion
+--------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bestiary-toc-backdrop,
+  .bestiary-toc-panel,
+  .bestiary-toc-item,
+  .bestiary-details-summary::after,
+  .bestiary-page,
+  .bestiary-list-card,
+  .bestiary-harvest-choice,
+  .related-link {
+    transition: none !important;
+  }
+
+  .bestiary-list-preface,
+  .bestiary-list-group,
+  .bestiary-list-card,
+  .bestiary-dossier-header,
+  .bestiary-monster-tools,
+  .bestiary-section--quickfacts,
+  .bestiary-details,
+  .bestiary-empty-state {
+    animation: none !important;
+  }
+
+  .bestiary-book {
+    perspective: none !important;
+    transform-style: flat !important;
+    scroll-behavior: auto !important;
+  }
+
+  .bestiary-page {
+    transform: none !important;
+  }
+
+  .bestiary-page-inner::before,
+  .bestiary-page-inner::after {
+    opacity: 0 !important;
+  }
+}
+
+/* Zusätzlicher Kill-Switch, falls JS bestiary-book--reduced-motion setzt */
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page {
+  transition: none !important;
+  transform: none !important;
+}
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page-inner::before,
+.bestiary-book.bestiary-book--reduced-motion .bestiary-page-inner::after {
+  opacity: 0 !important;
+}

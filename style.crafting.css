@@ -1,0 +1,465 @@
+.crafting-view {
+  min-height: 100%;
+}
+
+.crafting-header {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+}
+
+.crafting-toolbar {
+  align-items: center;
+}
+
+.crafting-jumpbar,
+.crafting-section-nav,
+.crafting-codex-filterbar {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding: 0.35rem 0 0.15rem;
+  scrollbar-width: thin;
+}
+
+.crafting-jumpbar::-webkit-scrollbar,
+.crafting-section-nav::-webkit-scrollbar,
+.crafting-codex-filterbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.crafting-jumpbar::-webkit-scrollbar-thumb,
+.crafting-section-nav::-webkit-scrollbar-thumb,
+.crafting-codex-filterbar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 999px;
+}
+
+.crafting-jump-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding-inline: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.crafting-jump-chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.crafting-jump-chip-label {
+  display: inline-block;
+}
+
+.crafting-jump-chip.is-active,
+.crafting-section-chip.is-active,
+.crafting-codex-chip.is-active {
+  background: var(--accent-surface);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+.crafting-content {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0 2rem;
+}
+
+.crafting-overview-grid,
+.crafting-detail-grid,
+.crafting-specialization-grid,
+.crafting-codex-grid,
+.crafting-tree-branches {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.crafting-detail-grid {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+
+.crafting-tree-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+}
+
+.crafting-card {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.crafting-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.crafting-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border-subtle));
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.crafting-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.crafting-card-title,
+.crafting-section-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-main);
+}
+
+.crafting-card-subtitle {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.crafting-stat-row,
+.crafting-chip-row,
+.crafting-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.crafting-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.crafting-section {
+  display: grid;
+  gap: 0.8rem;
+  scroll-margin-top: 8.25rem;
+}
+
+.crafting-section-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--card-bg) 93%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.crafting-rank-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.crafting-rank-card {
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.crafting-rank-card--locked {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-4) 34%, transparent), color-mix(in srgb, var(--surface-2) 60%, transparent));
+  border-style: dashed;
+  opacity: 0.78;
+}
+
+.crafting-rank-label {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.crafting-rank-meta,
+.crafting-empty,
+.crafting-codex-caption {
+  margin: 0.28rem 0 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.crafting-rank-milestone {
+  margin: 0.4rem 0 0;
+  padding-top: 0.45rem;
+  border-top: 1px dashed color-mix(in srgb, var(--border-subtle) 76%, transparent);
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.crafting-rank-milestone--locked {
+  color: color-mix(in srgb, var(--text-muted) 86%, var(--text-main));
+  font-style: italic;
+}
+
+.crafting-branch-card,
+.crafting-codex-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  border: 1px solid var(--border-subtle);
+}
+
+.crafting-placeholder {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-subtle);
+  background: color-mix(in srgb, var(--input-bg) 82%, transparent);
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.crafting-empty-state {
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--card-bg) 90%, transparent);
+  border: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.crafting-tree-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.crafting-tree-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border-subtle));
+  color: var(--text-main);
+  font-size: 0.86rem;
+}
+
+.crafting-codex-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.crafting-codex-toolbar {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.crafting-content-filterbar {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding: 0.15rem 0;
+  scrollbar-width: thin;
+}
+
+.crafting-content-filterbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.crafting-content-filterbar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 999px;
+}
+
+.crafting-content-chip.is-active,
+.crafting-reset-chip {
+  background: var(--accent-surface);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+.crafting-filter-summary {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border-subtle));
+}
+
+.crafting-filter-label {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.crafting-filter-text {
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.crafting-codex-section-shell,
+.crafting-legend-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.crafting-codex-orphan-shell {
+  border-style: dashed;
+}
+
+.crafting-record-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.crafting-record-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+  border: 1px solid var(--border-subtle);
+}
+
+.crafting-record-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.crafting-record-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border-subtle));
+  color: var(--text-main);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.crafting-record-meta,
+.crafting-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.crafting-record-chip,
+.crafting-link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.6rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--chip-bg);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.crafting-link-chip:hover,
+.crafting-link-chip:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent) 12%, var(--chip-bg));
+}
+
+.crafting-record-block {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.crafting-record-label,
+.crafting-rank-note {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-subtle);
+}
+
+.crafting-record-text {
+  margin: 0;
+  color: var(--text-main);
+  line-height: 1.55;
+}
+
+.crafting-codex-empty {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .crafting-jumpbar {
+    gap: 0.5rem;
+  }
+
+  .crafting-jump-chip {
+    min-width: 46px;
+    padding-inline: 0.72rem;
+  }
+
+  .crafting-jump-chip-label {
+    display: none;
+  }
+
+  .crafting-detail-grid,
+  .crafting-tree-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .crafting-content {
+    padding-top: 0.8rem;
+  }
+
+  .crafting-overview-grid,
+  .crafting-specialization-grid,
+  .crafting-codex-grid,
+  .crafting-tree-branches,
+  .crafting-record-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crafting-section {
+    scroll-margin-top: 9.5rem;
+  }
+
+  .crafting-record-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
